@@ -1,0 +1,4453 @@
+Interval	1000	a
+CaseNo	1	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	2	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	3	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	4	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	5	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	6	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	7	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	8	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	9	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	11	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	14	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	15	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	16	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	17	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+SteerAngle	0	舵角0deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	18	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+SteerAngle	180	舵角180deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	21	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	22	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	54	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	55	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	57	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+SW_PVM		カメラスイッチ押下（サイドクリアランス）
+SW_PVM		カメラスイッチ押下（MM画面）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	58	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	59	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	60	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	61	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	62	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	63	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	64	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	65	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	66	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	68	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	71	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	72	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	73	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	74	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+SteerAngle	0	舵角0deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	75	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+SteerAngle	180	舵角180deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	77	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+speed	40	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	78	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	79	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	111	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	112	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	114	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON(ムービング)
+OnNinCamera	OFF	音認カメラOFF(MM画面に遷移)
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	115	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	116	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	117	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	118	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	119	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	120	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	121	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	122	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	123	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	125	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	128	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	129	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	130	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	400
+RelTP		自動表示モードON
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	131	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	400
+RelTP		自動表示モードON
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+SteerAngle	0	舵角0deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	132	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	400
+RelTP		自動表示モードON
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+SteerAngle	180	舵角180deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	134	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	400
+RelTP		自動表示モードON
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	135	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	400
+RelTP		自動表示モードON
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	136	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	400
+RelTP		自動表示モードON
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	168	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	169	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	171	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ムービング）
+TouchTP	1000	100
+RelTP		閉じるボタン押下
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	286	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	287	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	288	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	289	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	290	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	291	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	292	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	293	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	294	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	296	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	299	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	300	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	301	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	302	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+SteerAngle	0	舵角0deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	303	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+SteerAngle	180	舵角180deg
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	306	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	307	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	308	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	340	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	341	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	343	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	344	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	345	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	346	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	347	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	348	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	349	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	350	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	351	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	352	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	354	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	357	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	358	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	359	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	360	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	361	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	393	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	394	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	396	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	397	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	398	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	399	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	400	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	401	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	402	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	403	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	404	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	405	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	407	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	23	車速23㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	410	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	411	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	412	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	413	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	414	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	446	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	447	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	449	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+R_Shift		Rシフト
+D_Shift		Dシフト
+speed	21	車速21㎞(ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	450	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	451	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	452	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	453	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	454	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	455	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	456	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	23	車速23㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	457	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	23	車速23㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	458	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	23	車速23㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	460	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	23	車速23㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	463	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	464	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	465	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	466	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	0	舵角0deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	467	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+SteerAngle	180	舵角180deg
+speed	40	
+speed	31	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	499	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	500	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	502	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下（ワイドフロント）
+TouchTP	1000	400
+RelTP		自動表示モードON
+speed	30	車速30㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+speed	0	車速0㎞(車速連動表示_ワイドフロント)
+TouchTP	1000	400
+RelTP		自動表示モードOFF
+speed	21	車速21㎞(車速連動表示_ワイドフロント)
+WaitMS	10000	10秒待ち（MM画に遷移）
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	617	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	800	0.8秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	618	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	13	
+WaitMS	5000	5秒待ち
+speed	0	
+WaitMS	2000	2秒待ち
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	619	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	5	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	620	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	15	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	621	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	25	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	622	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	40	
+SW_PVM		カメラスイッチ押下
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	623	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	624	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+SteerAngle	0	舵角0deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	625	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+D_Shift		Dシフト
+SW_PVM		カメラスイッチ押下(ワイドフロント)
+TouchTP	1000	250
+RelTP		画面切替ボタン押下(サイドクリアランス)
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+SteerAngle	180	舵角180deg
+OnNinCamera	ON	音認カメラON
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	627	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+OnNinCamera	OFF	音認カメラOFF
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	630	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+PKB	ON	PKBオン
+PKB	OFF	PKBオフ
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	631	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+PKB	OFF	PKBオフ
+PKB	ON	PKBオン
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	632	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+speed	0	
+speed	0	
+WaitMS	5000	5秒待ち
+speed	10	
+WaitMS	5000	5秒待ち
+speed	15	
+WaitMS	5000	5秒待ち
+speed	20	
+WaitMS	5000	5秒待ち
+speed	30	
+WaitMS	5000	5秒待ち
+speed	40	
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	666	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+D_Shift		Dシフト
+P_Shift		Pシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	667	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+TouchTP	1000	250
+RelTP		画面切替ボタン押下
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
+CaseNo	669	
+Repeat	1	リピート回数
+Mirror	OPEN	ミラーを開く
+SteerAngle	0	舵角0deg
+speed	0	車速0km/h
+PKB	OFF	PKBオフ
+R_Shift		Rシフト
+P_Shift		Pシフト
+INIT_View		画面初期化処理
+CCMODE	1	CCモードオン
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\START_REC.bat	キャプチャ開始
+WaitMS	18000	キャプチャ待機
+R_Shift		Rシフト
+P_Shift		Pシフト
+Mirror	OPEN	ミラーを開く
+D_Shift		Dシフト
+P_Shift		Pシフト
+D_Shift		Dシフト
+R_Shift		Rシフト
+WaitMS	5000	テスト結果の確認時間
+P_Shift		Pシフト
+WaitMS	5000	テスト終了確認時間
+Gaibu	C:\Users\TMC\Desktop\Veri\batfile\STOP_REC.bat	キャプチャ終了
+WaitMS	18000	キャプチャ待機
