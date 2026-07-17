@@ -1,0 +1,2754 @@
+/*@!Encoding:932*/
+includes
+{
+  
+}
+
+variables
+{
+  enum _RELAY_STATE {
+    RELAY_STATE_OPEN = 0,
+    RELAY_STATE_CLOSE = 1
+  };
+  char InputScriptFile[100]; // スクリプトファイル名
+  dword ScriptFileHandle ; // スクリプトファイルハンドル
+  char scrBuffer[256];    // スクリプト読み込みバッファ
+  int ScriptFileOpened ; // 1:ファイルオープン中
+  int CommandInterval ; //　コマンド実行インターバル 関数を抜けるため
+  msTimer msExecInterval; // コマンド実行インターバル用タイマー
+  int alive_msExecInterval = 0; // コマンド実行インターバル用タイマー実行中は１、CANCEL中は0;
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+//  msTimer msWaitTimer; // ウェイト用タイマー ウェイトをコマンドインターバルにて実行するので、不要になった。
+//  int alive_msWaitTimer = 0; // ウェイト用タイマー実行中は1,CANCEL中は0;  // 不要
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+  int msWaitTicks = 0;    // ウェイト待ち時間（Pause用）// 使用中
+  msTimer msRespTimer; //　送信ボタン用タイマー（送信ボタンをOFFにする）
+  int alive_msRespTimer = 0; // 送信ボタン用タイマー実行中は1, CANCEL中は0;
+  msTimer msDiagTimer; // カメラダイアグ遷移要求後に、少し待つためのタイマー
+  int alive_msDiagTimer = 0; // カメラダイアグ遷移タイマー起動中は1, CANCEL中は0;
+  msTimer msMultiScript; //複数ファイルを実行するときのスクリプト読み込みタイマー
+  int alive_msMultiScript = 0; // スクリプト読み込みタイマー起動中
+  msTimer msIGN_ON_Timer ; // IGN ONの命令が7ms遅れるため、IG ON後、6msのウェイトを入れる。(Interval 1msで設定しておくことで、次のコマンドと同時実行させるため)
+  int alive_msIGN_ON_Timer  = 0;
+  msTimer msCAMERA_SW_Timer ; // IGN ONの命令が7ms遅れるため、IG ON後、6msのウェイトを入れる。(Interval 1msで設定しておくことで、次のコマンドと同時実行させるため)
+  int alive_msCAMERA_SW_Timer  = 0;
+  msTimer msOnNinCameraTimer; // 音認カメラ表示要求のパラメータを0クリアするためのタイマー（DS_FunIDの変化を見ているので一回抜ける必要があると思われ）
+  int alive_msOnNinCameraTimer = 0;
+  int FactoryAdjustStep = 0; // 工場調整の一連のやりとりを一括で行うためのカウンタ
+  msTimer msFactoryRespTimer; // 工場調整関連の送信のボタンを離すタイマー
+  int TGTMKRPOS = 0; // スクリプトから、
+  int alive_msSW_PVM = 0;   
+  msTimer msSW_PVM ; // ソフトカメラSWをOFFにするためのタイマー
+  msTimer msSW_PVM_from_SCRIPT ; // ソフトカメラSWをOFFにするタイマー（スクリプト用） 
+  byte dataArray1483[8];  // ダイアグ 1483を送るためのバッファ（ターゲットマーカー認識)
+  char outBuf[1024];
+  message *ExtMsg1483; // msg1483のメッセージセレクタ 拡張ID
+  long i1483; // msg1483送信時に使用
+  msTimer msMsg1483Retry ; // msg1483のリトライ用
+  int  isMsg1483FromScript = 0;  //スクリプトからの呼び出しの場合に１、そうでなければ０ 
+  int n;
+  int t;
+  int r;
+  int testnum;
+  char testnum_str[10];
+  char scrCommand[20]; //スクリプトファイルのコマンド
+  char scrParam1[100]; //スクリプトファイルのパラメータ１
+  char scrParam2[120]; //スクリプトファイルのパラメータ２（コメント）
+  char InputGaibuFile[200]; // 外部コマンド　ファイル名 batファイルをたたく
+  int screensize ;
+  char InputFolder[200]; // フォルダを読み込む　村松
+  char InputFileList[200];
+  int FileListOpened =0; // ファイルリストのオープン中に1
+  dword FileListHandle ; // ファイルリストハンドル
+  char ScrFileName[256];    // スクリプトファイル名読み込みバッファ
+  int MultiScriptMode = 0; // 複数スクリプトファイルモード
+//260210初期関連コマンド追記分ここから
+  message *DiagReq;
+  const dword DIAG_REQ_ID = 0x18DA75E0; //CANoe→ECU
+  const dword DIAG_RES_ID = 0x18DAE075; //ECU→CANoe
+  int initViewActive = 0;
+  int initViewStep = 0;
+  byte didlow;
+  int waitA0 = 0;
+  int waitA1 = 0;
+  int waitA3 = 0;
+  int waitA4 = 0;
+  msTimer InitViewSeq;
+  int initViewSeqActive;
+  const int INITVIEW_WAIT_MS = 100;
+  int ret_BackNum = -1;
+  int ret_FrontNum = -1;
+  int ret_AutoDisp = -1;
+  int ret_AutoCamera = -1;
+  msTimer sendDID;
+  int initTargetView;
+  const initTargetViewInterval = 3000; // ラスト画初期化時の操作をするときのコマンドインターバル
+  int CommandStored; // コマンドが読み込み格納済み 260206
+  float currentMyTime ;
+  int NextInterval ;
+//260210初期関連コマンド追記分ここから
+}
+on start {
+  sysSetVariableInt(sysvar::VERI::BA_ON,0);
+  sysSetVariableInt(sysvar::VERI::IG_ON,0);
+  sysSetVariableInt(sysvar::VERI::DID::LastBackViewNum,-1);
+  updateLastBackViewText(-1);
+  sysSetVariableInt(sysvar::VERI::DID::LastFrontViewNum,-1);
+  updateLastFrontViewText(-1);
+  sysSetVariableInt(sysvar::VERI::DID::AutoDispModeNum,-1);
+  updateAutoDispMode(-1);
+  sysSetVariableInt(sysvar::VERI::DID::CameraViewAutoOffNum,-1);
+  updateCameraViewAutoOff(-1);
+  ScriptFileOpened = 0;
+  alive_msMultiScript = 0;
+  CommandInterval = 0; //コマンドの実行間隔 変更するには、interval コマンドで変更
+  openPanel("TEST_EXEC");
+  sysSetVariableInt(sysvar::VERI::TouchPanelAvailable,0); // タッチパネル無効
+  // Piggy専用とする。以下実施2025/9/4 (VHを外す）
+  //  １）CANoe設定変更：  テスト：テスト環境から、PowerControlを外す
+  //  ２）以下２行を追加
+//  sysSetVariableInt(sysvar::VERI::VHorIOpiggy,1); // VHが接続されてない場合、I/O piggyがあるものとして動作させる
+//  write("I/O piggyとして動作");
+  write("あああ");
+}
+
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::ScriptFile
+  概要  TEST_EXECパネルのスクリプトファイルを指定するPathDialogコントロールに別のスクリプトファイルが指定された場合に、ファイルをクローズします。
+  詳細  スクリプトファイルを指定するPathDialog(ファイル名表示とファイルを指定するボタンを組み合わせたもの）で、
+        別ファイルを指定した場合にこのハンドラが呼ばれるので、開いていたスクリプトファイルのファイルハンドルをクローズします。
+******************************************************************************************/
+on sysvar VERI::ScriptFile {  // スクリプトファイルが変わったら、ファイルを閉じる
+  fileClose(ScriptFileHandle);
+  ScriptFileOpened=0;
+}
+
+//on sysvar VERI::sysInputFolder { // 入力フォルダが変わったら、FileList を閉じる
+  
+//--------------------------------------------------------------------------------
+// 関数 ReadScript 
+//    動作：Buffer[]に読み込み済みのスクリプトの１行をコマンドとパラメータに分解する
+//    戻り値：1: 正常に分解できた。 0: コマンド異常
+//    引数：なし
+//    詳細：グローバル変数 Buffer[]の中身を、タブ区切りで３つに分解し、
+//         それぞれをグローバル変数 scrCommand[],scrParam1[],scrParam2[]に格納する。
+//--------------------------------------------------------------------------------
+void ReadScript() {  // グローバル変数Bufferに読み込んだスクリプト１行の文字列処理
+  t=0;
+  write("scrBufferのサイズ %d",strlen(scrBuffer));
+  scrCommand[0] = 0x00;
+  scrParam1[0] = 0x00;
+  scrParam2[0] = 0x00;
+  for (r=0;r<elcount(scrCommand);r++) { //コマンド切り出し ---------------------------------------------------
+    if ((scrBuffer[t]==0x09)||(scrBuffer[t]==0x0a)){
+      break;
+    }
+    if ((scrBuffer[t]>0x60)&&(scrBuffer[t]<0x7B)) { //コマンドを大文字にする
+      scrCommand[r]=scrBuffer[t]-0x20;
+    } else {
+      scrCommand[r]=scrBuffer[t];
+    }
+    t++;
+  }
+  if (r >= elcount(scrCommand)) {
+    r=elcount(scrCommand)-1;  // rが配列長さ以上になった場合、rを領域サイズの最後をさすようにする。　（scrCommandを最大長で切る）
+  }
+  scrCommand[r]=0x00;
+  t++; //　scrBuffer[t]がTabをさしているので次へ
+  if (t >= strlen(scrBuffer)){  // tが読み込みBuffer領域以上になった場合
+    write("Command読み込み異常 t:%d strlen(scrBuffer):%d",t,strlen(scrBuffer));
+    return ;
+  }
+  for (r=0;r<elcount(scrParam1);r++) { //パラメータ１切り出し -------------------------------------------------
+    if (t >= strlen(scrBuffer)) { break ; } // tが読み込み文字列以上になったら処理停止 
+    if ((scrBuffer[t]==0x09)||(scrBuffer[t]==0x0a)){
+      break;
+    }
+    scrParam1[r]=scrBuffer[t];
+    t++;
+  }
+  if (r >= elcount(scrParam1)) {
+    r=elcount(scrParam1)-1;  // rが配列長さ以上になった場合、rを領域サイズの最後をさすようにする。　（scrParam1を最大長で切る）
+  }
+  scrParam1[r]=0x00;
+  t++; //　scrBuffer[t]がTabをさしているので次へ
+  if (t >= strlen(scrBuffer)){  // tがBuffer領域以上になった場合
+    write("Param1読み込み異常 t:%d strlen(scrBuffer):%d",t,strlen(scrBuffer));
+    return ;
+  }
+  for (r=0;r<elcount(scrParam2);r++) { //パラメータ2切り出し --------------------------------------------------
+    if (t >= strlen(scrBuffer)) { break ; } // tが読み込み文字列以上になったら処理停止 
+    if ((scrBuffer[t]==0x09)||(scrBuffer[t]==0x0a)||scrBuffer[t]==0x00){
+      break;
+    }
+    scrParam2[r]=scrBuffer[t];
+    t++;
+  }
+  if (t > strlen(scrBuffer)){  // tがBuffer領域以上になった場合
+    write("Param2読み込み異常 t:%d strlen(scrBuffer):%d",t,strlen(scrBuffer));
+    return ;
+  }
+  if (r >= elcount(scrParam2)) {
+    r=elcount(scrParam2)-1;  // rが配列長さ以上になった場合、rを領域サイズの最後をさすようにする。　（scrParam1を最大長で切る）
+  }
+  scrParam2[r]=0x00;
+  write ("Read %s, %s, %s",scrCommand,scrParam1,scrParam2);
+  return ;
+}
+
+//--------------------------------------------------------------------------------
+// 関数 dispatch() 
+//    動作：グローバル変数scrCommand[]に格納されたコマンドによって、それぞれの処理を実行する。
+//    戻り値： int  1: 次のスクリプト行の実行にすすむ。　CommandInterval待ってから実行
+//                      呼び出し元は、次の行の実行のためスクリプト実行タイマーのセットをする）
+//                 0: 次のスクリプトの行の実行に進んではダメ。
+//                      本関数の中で、次の処理（ウェイト待ちや、コマンド受信）のタイマーをセットする
+//                      呼び出し元はスクリプト実行タイマーのセットはしない。
+//                 2: 次のスクリプトの行の実行を即時呼び出し
+//    引数：なし
+//--------------------------------------------------------------------------------
+
+int dispatch() { //戻り値１は次のコマンド待ちへ。０は次のコマンドを待たない（ウェイト、もしくはエラー終了）
+  // "BA" :  +BのON/OFF制御  VH:V30, IOPiggy:DOUT0 
+  if (strncmp(scrCommand,"BA",strlen(scrCommand))==0) { // BA
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { //                                                // IO piggy で動作している場合
+        sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT0,1);
+      return 1;
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) {  
+        sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT0,0);
+      return 1;
+    } 
+    write ("BAの引数不正");
+    return 0;
+  } 
+  if  (strncmp(scrCommand,"IGN",strlen(scrCommand))==0) { // IGN
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { //                                // IO piggyで動作
+        sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT1,1) ;
+        return 1;
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) {
+        sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT1,0) ;
+      return 1;
+    }
+    write ("IGNの引数不正");
+    return 0;
+  } 
+  if ((strncmp(scrCommand,"WAITMS",strlen(scrCommand))==0)||(strncmp(scrCommand,"WaitMS",strlen(scrCommand))==0)) {
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+
+  // WaitMSの場合のコマンドインターバルをなくすための対策　2026/1/16
+  // WaitMS専用タイマーmsWaitTimerを使うのではなく、msExecIntervalの呼び出し時間でWaitをかけるものとする
+  // このため、Dispatch内でのWAITMSの処理は不要　また、次の行を即時実行するために、2を返すようにした。
+    // 次の行を読む
+    //cancelTimer(msExecInterval);
+    //alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    msWaitTicks = atol(scrParam1);
+    write("Wait %d",msWaitTicks);
+    //setTimer(msWaitTimer,msWaitTicks);
+    //alive_msWaitTimer = 1;
+    //return 0; //コマンド待ちを止める。  
+    return 2;  // 2：次のコマンドを即時実行
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+  }
+//↓---シグナルの順序対応　260130
+  if (strncmp(scrCommand,"P_SHIFT",strlen(scrCommand))==0) {
+    sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 1);
+    setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+    setSignal(G2M1::DDM21::DDM1S18::PTCURSFT,6);
+    return 1;
+  }
+  if (strncmp(scrCommand,"R_SHIFT",strlen(scrCommand))==0) {
+    sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 2); 
+    setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,1);
+    setSignal(G2M1::DDM21::DDM1S18::PTCURSFT,5);
+    return 1;
+  }
+  if (strncmp(scrCommand,"N_SHIFT",strlen(scrCommand))==0) {
+    sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 3);  
+    setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+    return 1;
+  }
+  if (strncmp(scrCommand,"D_SHIFT",strlen(scrCommand))==0) {
+    sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 4);  
+    setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+    setSignal(G2M1::DDM21::DDM1S18::PTCURSFT,3);
+    return 1;
+  }
+  if (strncmp(scrCommand,"LIGHT",strlen(scrCommand))==0) {
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::CDC21::AVN1S73::DN_DISP,1);
+      return 1;
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) {
+      setSignal(G2M1::CDC21::AVN1S73::DN_DISP,0);
+      return 1;
+    } 
+    write ("Lightの引数不正");
+    return 0;
+  }
+  if (strncmp(scrCommand,"CUSTPVM",strlen(scrCommand))==0) {
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::CDC21::AVN1S73::CUST_PVM,1);
+      return 1;
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) {
+      setSignal(G2M1::CDC21::AVN1S73::CUST_PVM,0);
+      return 1;
+    } 
+    write ("CustPVMの引数不正");
+    return 0;
+  }
+  if (strncmp(scrCommand,"TOUCHTP",strlen(scrCommand))==0) {
+    setSignal(G2M1::CDC21::AVN1S73::X_COORD,atol(scrParam1));
+    setSignal(G2M1::CDC21::AVN1S73::Y_COORD,atol(scrParam2));    
+    return 1;
+  }
+  if (strncmp(scrCommand,"RELTP",strlen(scrCommand))==0) {
+    setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+    setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+    return 1;
+  }
+  if (strncmp(scrCommand,"SHIMUKE",strlen(scrCommand))==0) {
+    if (strncmp(scrParam1,"JPN",strlen(scrParam1))==0) { // 
+      putValue(SigDt_BDB1S08_C_CODE123,0x0) ; // 国
+      putValue(SigDt_BDB1S08_STRG_WHL,2);     // ハンドル
+      putValue(SigDt_AVN1S20_A_LANG,0x0);     // 言語
+      return 1;
+    } 
+    if (strncmp(scrParam1,"USA",strlen(scrParam1))==0) { // 
+      putValue(SigDt_BDB1S08_C_CODE123,0x104) ;
+      putValue(SigDt_BDB1S08_STRG_WHL,1);
+      putValue(SigDt_AVN1S20_A_LANG,0x1);
+      return 1;
+    } 
+    if (strncmp(scrParam1,"CHI",strlen(scrParam1))==0) { // 
+      putValue(SigDt_BDB1S08_C_CODE123,0x707) ;
+      putValue(SigDt_BDB1S08_STRG_WHL,1);
+      putValue(SigDt_AVN1S20_A_LANG,0x10);
+      return 1;
+    } 
+    if (strncmp(scrParam1,"GER",strlen(scrParam1))==0) { // 
+      putValue(SigDt_BDB1S08_C_CODE123,0x427) ;
+      putValue(SigDt_BDB1S08_STRG_WHL,1);
+      putValue(SigDt_AVN1S20_A_LANG,0x04);
+      return 1;
+    } 
+    write ("Shimukeの引数不正");
+    return 0;
+  }
+  if (strncmp(scrCommand,"CDSIZE",strlen(scrCommand))==0) {
+//    write("CDSize %d", strlen(scrParam1));
+    putValue(SigDt_AVN1S73_CD_SIZE,atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"U4C_CAMERA",strlen(scrCommand))==0) {
+    putValue(SigDt_ZN11S69_VSI_U4C, atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"U4Y_WASHER",strlen(scrCommand))==0) {
+    putValue(SigDt_ZN11S69_VSI_U4Y, atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"B3N_TOWING",strlen(scrCommand))==0) {
+    putValue(SigDt_ZN11S49_VSI_B3N, atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"DA03",strlen(scrCommand))==0) { //仕様情報切替
+    putValue(EnvSID31_RID_Tx_IOL, 0xDA03);
+    putValue(EnvSID31_Type_IOL,1);
+    putValue(EnvSID31_RspNecessity_IOL,0);
+    putValue(EnvSID31_Tx_IOL,1);
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  if (strncmp(scrCommand,"T127B",strlen(scrCommand))==0) { //$127B：光軸調整値初期化開始要求
+    putValue(EnvSID31_RID_Tx_PVM, 0x127B);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  if (strncmp(scrCommand,"S127C",strlen(scrCommand))==0) { //$127C：周辺監視システム初期化要求
+    putValue(EnvSID31_RID_Tx_PVM, 0x127C);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  if (strncmp(scrCommand,"T127D",strlen(scrCommand))==0) { //ターゲットマーカ強制
+    putValue(EnvSID31_RID_Tx_PVM, 0x127D);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  if (strncmp(scrCommand,"T1240",strlen(scrCommand))==0) { //$1240：ターゲットマーカ認識開始要求
+    putValue(EnvSID31_RID_Tx_PVM, 0x1240);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  if (strncmp(scrCommand,"T1247",strlen(scrCommand))==0) { //$1247：光軸調整検査画面表示要求(画面レス)_PVM
+    putValue(EnvSID31_RID_Tx_PVM, 0x1247);
+    putValue(EnvSID31_Type_PVM,1);  // StartRoutine 
+    putValue(EnvSID31_RspNecessity_PVM,0); // アクティブレスポンス要
+    putValue(EnvSID31_Tx_PVM,1);  // 送信
+    cancelTimer(msExecInterval);  // 次のコマンドへは進まない
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  if (strncmp(scrCommand,"V1241",strlen(scrCommand))==0) { //$1241：ビューデータ開始要求
+    putValue(EnvSID31_RID_Tx_PVM, 0x1241);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+    setTimer(msRespTimer,1);
+    alive_msRespTimer = 1;
+    return 0; //コマンド待ちを止める。
+  }
+  
+  if (strncmp(scrCommand,"LANGUAGE",strlen(scrCommand))==0) {//AVN1S20(434)言語設定
+    putValue(SigDt_AVN1S20_A_LANG, atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"CCMODE",strlen(scrCommand))==0) {//AVN1S73(13E)センターディスプレイカメラモード状態
+    setSignal(G2M1::CDC21::AVN1S73::CC_MODE,atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"CASENO",strlen(scrCommand))==0) { // ケース番号表示用
+    sysSetVariableString(sysvar::VERI::Case1,scrParam1);
+    sysSetVariableString(sysvar::VERI::Case2,scrParam2);
+    return 1;
+  }
+  if (strncmp(scrCommand,"REPEAT",strlen(scrCommand))==0) { // リピート回数表示用
+    sysSetVariableString(sysvar::VERI::RepCNT1,scrParam1);
+    sysSetVariableString(sysvar::VERI::RepCNT2,scrParam2);
+    return 1;
+  }
+  if (strncmp(scrCommand,"MIRROR",strlen(scrCommand))==0) { // ミラー開閉
+    if (strncmp(scrParam1,"OPEN",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::BDL::BDB1S04::MRMV_R,0) ;
+      return 1;
+    } 
+    if (strncmp(scrParam1,"CLOSE",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::BDL::BDB1S04::MRMV_R,1) ;
+      return 1;
+    } 
+    return 1; //パラメータがどちらでもない場合無視
+  }
+  if (strncmp(scrCommand,"CAMERASW",strlen(scrCommand))==0) { // カメラスイッチON/OFF　VH制御
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { //       
+/*
+      if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) { // VHで動作している場合
+        sysSetVariableInt(sysvar::VHdevice::Relay::relay_V31,RELAY_STATE_CLOSE);
+        cancelTimer(msExecInterval);
+        alive_msExecInterval = 0;
+        setTimer(msCAMERA_SW_Timer, 6); // IG ON　後 6msウェイトを入れる（リレーONに7msかかる。コマンドインターバルを1msと置くと、次のコマンド実行とIGN ONを同じタイミングにできる
+        alive_msCAMERA_SW_Timer = 1;    // このあたりIGと同じにしておく
+        return 0;
+      }else{ // IO piggyで動かしている場合
+*/
+        sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT2,1);
+        return 1;
+/*
+      }
+*/
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) { // 
+/*
+      if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) { // VHで動作している場合
+        sysSetVariableInt(sysvar::VHdevice::Relay::relay_V31,RELAY_STATE_OPEN);
+      } else {
+*/
+        sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT2,0);
+/*
+      }        
+*/
+      return 1;
+    } 
+    return 1; // パラメータがどちらでもなければ無視
+  }
+  if (strncmp(scrCommand,"STEERANGLE",strlen(scrCommand))==0) {//EPS1S11(030)舵角信号ピニオン角
+    setSignal(G5M::DDM_5::EPS1S11::PANG,atol(scrParam1));
+    return 1;
+  }
+  if (strncmp(scrCommand,"SPEED",strlen(scrCommand))==0) {//VSC1G13(0D7)車速SP1
+    setSignal(G2M1::DDM21::VSC1G13::SP1,atol(scrParam1));
+    return 1;
+  }
+
+  
+  if (strncmp(scrCommand,"GAIBU",strlen(scrCommand))==0) {//外部コマンド実行用
+    write("commandline:%s",scrParam1);
+    sysExec(scrParam1 ,"","C:\\Users\\TMC\\Desktop\\Veri\\batfile");
+    return 1;
+  }
+//---- ディーラー調整画面への遷移 ---  
+  if (strncmp(scrCommand,"DEALER",strlen(scrCommand))==0) {//外部コマンド実行用
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::CDC21::AVN1S73::DI_MODE,1);
+      cancelTimer(msExecInterval);
+      alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+      setTimer(msDiagTimer,100);
+      alive_msDiagTimer = 1;
+      return 0; //コマンド待ちを止める。
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::CDC21::AVN1S73::DI_MODE,0);
+      setSignal(G2M1::CDC21::AVN1S73::CMD_MODE,0);
+      setSignal(G2M1::CDC21::AVN1S73::MMD_MODE,0);
+      return 1;
+    } 
+  }
+//MTMモード VSC1S96(427) 
+  if (strncmp(scrCommand,"MTM",strlen(scrCommand))==0) {//外部コマンド実行用
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 
+      putValue(SigDt_ENG1G90_B_OMODE,1);
+      setSignal(G2M1::DDM21::VSC1G12::V_GXHR0,-0.43);
+      setSignal(G2M1::DDM21::VSC1G12::V_GYHR0,-0.43);
+      setSignal(G2M1::DDM21::VSC1G12::V_YR1HR0,-3.0);
+
+      return 1;
+    } 
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) { // 
+      putValue(SigDt_ENG1G90_B_OMODE,0);
+      setSignal(G2M1::DDM21::VSC1G12::V_GXHR0,-0.43);
+      setSignal(G2M1::DDM21::VSC1G12::V_GYHR0,-0.43);
+      setSignal(G2M1::DDM21::VSC1G12::V_YR1HR0,-3.0);
+      return 1;
+    } 
+  }
+
+//-----------------------------1217追記分------------------------------------------------------
+  
+ if (strncmp(scrCommand,"PKB",strlen(scrCommand))==0) {//PKB 251209 ikami
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::BDL::BDB1S01::PKB_BDB,1);
+      return 1;
+    }  else if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) {
+      setSignal(G2M1::BDL::BDB1S01::PKB_BDB,0);
+      return 1;
+    }
+  }
+  if (strncmp(scrCommand,"BACKDOOR",strlen(scrCommand))==0) {//PKB 251209 ikami
+    if (strncmp(scrParam1,"OPEN",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::BDL::BDB1S01::BCTY,1);
+      return 1;
+    }  else if (strncmp(scrParam1,"CLOSE",strlen(scrParam1))==0) {
+      setSignal(G2M1::BDL::BDB1S01::BCTY,0);
+      return 1;
+    }
+  }
+  if (strncmp(scrCommand,"DISABLE_SHIFT",strlen(scrCommand))==0) { //シフト無効 251209 ikami
+    if (strncmp(scrParam1,"DIS",strlen(scrParam1))==0) {
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_DDM21::MESSAGES::ECT1G01::TIMINGS::EnableCyclic,0);
+      return 1;
+    }  else if (strncmp(scrParam1,"ENA",strlen(scrParam1))==0) {
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_DDM21::MESSAGES::ECT1G01::TIMINGS::EnableCyclic,1);
+      return 1;
+    }
+  }
+  if (strncmp(scrCommand,"DISABLE_SPEED",strlen(scrCommand))==0) {//車速無効 251209 ikami
+    if (strncmp(scrParam1,"DIS",strlen(scrParam1))==0) { // 
+      setSignal(G2M1::DDM21::VSC1G13::SP1S,1);
+      return 1;
+    }  else if (strncmp(scrParam1,"ENA",strlen(scrParam1))==0) {
+      setSignal(G2M1::DDM21::VSC1G13::SP1S,0);
+      return 1;
+    }
+  }
+  if (strncmp(scrCommand,"DISABLE_AVN1S73",strlen(scrCommand))==0) {//AVN通信無効 251209 ikami
+    if (strncmp(scrParam1,"DIS",strlen(scrParam1))==0) { // 
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S73::TIMINGS::EnableCyclic,0);
+      return 1;
+    }  else if (strncmp(scrParam1,"ENA",strlen(scrParam1))==0) {
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S73::TIMINGS::EnableCyclic,1);
+      return 1;
+    }
+  }
+  if (strncmp(scrCommand,"DISABLE_STEER",strlen(scrCommand))==0) {//舵角無効 251209 ikami
+    if (strncmp(scrParam1,"DIS",strlen(scrParam1))==0) { // 
+      setSignal(G5M::DDM_5::EPS1S11::PANGINV,1);
+      return 1;
+    }  else if (strncmp(scrParam1,"ENA",strlen(scrParam1))==0) {
+      setSignal(G5M::DDM_5::EPS1S11::PANGINV,0);
+      return 1;
+    }
+  }
+  
+  //-------------------1217追記分ここまで----------------------------------------------------------
+
+// AVNS1S20途絶
+  if (strncmp(scrCommand,"TOZETSU",strlen(scrCommand))==0) {//AVNS1S20途絶 OFFで通信途絶
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) { // 
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S20::TIMINGS::EnableCyclic,0);
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S71::TIMINGS::EnableCyclic,0);      
+
+      return 1;
+    } 
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S20::TIMINGS::EnableCyclic,1);
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S71::TIMINGS::EnableCyclic,1); 
+      return 1;
+    } 
+  }
+// 音声認識カメラON/OFF
+  
+  if (strncmp(scrCommand,"ONNINCAMERA",strlen(scrCommand))==0) {//AVN1S78 先進安全音認用機能
+    if (strncmp(scrParam1,"OFF",strlen(scrParam1))==0) { // 機能ID 0x18
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST1,1);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST2,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST3,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST4,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST5,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_FUNID,0x18);
+
+      cancelTimer(msExecInterval);
+      alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+      setTimer(msOnNinCameraTimer,1000);
+      alive_msOnNinCameraTimer = 1;
+      return 0; //コマンド待ちを止める。
+    } 
+    if (strncmp(scrParam1,"ON",strlen(scrParam1))==0) { // 機能ID 0x17
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST1,1);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST2,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST3,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST4,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_INST5,0);
+      setSignal(G5M::CDC_5::AVN1S78::DS_FUNID,0x17);
+      cancelTimer(msExecInterval);
+      alive_msExecInterval = 0;
+//    write(">Wait %d",atol(scrParam1));
+      setTimer(msOnNinCameraTimer,1000);
+      alive_msOnNinCameraTimer = 1;
+      return 0; //コマンド待ちを止める。
+    } 
+  }
+  
+  if (strncmp(scrCommand,"ONNINMARK",strlen(scrCommand))==0) {//ikami
+#if 0    
+    int param;
+    if (strlen(scrParam1)!=0) {
+      param = (int)scrParam1[0] - 0x30;
+      write("%x %x", scrParam1[0], param);
+      if ((param >= 0) && (param <= 5)) { 
+        putValue(SigDt_AVN1S73_VR_STATE,param);
+      }
+    }
+    return 1;
+#endif
+    write("scrParam1:>%s<",scrParam1);
+    write("strlen(scrParam1): %d",strlen(scrParam1));
+    write("0と等しい？　%d",strncmp(scrParam1,"0",strlen(scrParam1)));
+    if (strlen(scrParam1)>0) {
+      if (strncmp(scrParam1,"0",strlen(scrParam1))==0) { // 
+        putValue(SigDt_AVN1S73_VR_STATE,0);
+        write("VR_STATE 0");
+        return 1;
+      }  else if (strncmp(scrParam1,"1",strlen(scrParam1))==0) { // 
+        putValue(SigDt_AVN1S73_VR_STATE,1);
+        write("VR_STATE 1");
+        return 1;
+      }  else if (strncmp(scrParam1,"2",strlen(scrParam1))==0) { // 
+        putValue(SigDt_AVN1S73_VR_STATE,2);
+        write("VR_STATE 2");
+        return 1;
+      }  else if (strncmp(scrParam1,"3",strlen(scrParam1))==0) { // 
+        putValue(SigDt_AVN1S73_VR_STATE,3);
+        write("VR_STATE 3");
+        return 1;
+      }  else if (strncmp(scrParam1,"4",strlen(scrParam1))==0) { // 
+        putValue(SigDt_AVN1S73_VR_STATE,4);
+        write("VR_STATE 4");
+        return 1;
+      }  else if (strncmp(scrParam1,"5",strlen(scrParam1))==0) { // 
+        putValue(SigDt_AVN1S73_VR_STATE,5);
+        write("VR_STATE 5");
+        return 1;
+      }
+    }
+    write("VR_STATE 不正　：パラメータなし");
+    return 1;  // 実行を止めないために1を返しておく
+  }
+
+  ///// 工場軸調 ターゲットマーカー位置設定 TarGeTMarkerPOSition
+  if (strncmp(scrCommand,"TGTMKRPOS",strlen(scrCommand))==0) {
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+    FactoryAdjustStep = 0;
+    FactoryAdjust();
+    return 0;
+  }
+
+  //// カメラソフトＳＷ
+  if (strncmp(scrCommand,"SW_PVM",strlen(scrCommand))==0) {
+    write("SW_PVM");
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+    SoftCameraSW_Script();
+    return 0;
+  }
+  
+  //// SID22 ダイアグ1483送信  光軸調整状態の確認（ビューデータ生成が完了すると5になる。これを待ってから実行継続とする）
+  if (strncmp(scrCommand,"DIAG1483",strlen(scrCommand))==0) {
+    write("ダイアグ1483送信");
+    // コマンド実行を止める
+    isMsg1483FromScript = 1; // スクリプトからの呼び出し
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+    outputExtMsg1483();
+    return 0;
+  }
+  //------------------------------ラスト画初期化コマンドここから----------------------------------------------------
+  //// INIT_VIEW ラスト画初期化
+  
+  if (strncmp(scrCommand,"INIT_VIEW",strlen(scrCommand))==0) {
+    write("INIT_VIEW:コマンド読み読み");
+    
+    waitA0 = 0; waitA1 = 0;waitA3 = 0;waitA4 = 0;//パネル経由の呼び出しを止める
+    
+    cancelTimer(msExecInterval);//コマンド実行を止める
+    alive_msExecInterval = 0;
+    
+     //取得状態を未取得に戻す 初期化
+    sysSetVariableInt(sysvar::VERI::DID::LastBackViewNum,-1);
+    updateLastBackViewText(-1);
+    sysSetVariableInt(sysvar::VERI::DID::LastFrontViewNum,-1);
+    updateLastFrontViewText(-1);
+    sysSetVariableInt(sysvar::VERI::DID::AutoDispModeNum,-1);
+    updateAutoDispMode(-1);
+    sysSetVariableInt(sysvar::VERI::DID::CameraViewAutoOffNum,-1);
+    updateCameraViewAutoOff(-1);
+    
+     //取得開始
+    initViewActive = 1;
+    initTargetView = 0;
+    
+     //outputDiagReq(0xA0);  // DID送信   outputDIDReq()にする。
+     //write("INIT_VIEW : send DID 13A0");
+    write("INIT_VIEW start");
+    initview();
+    write("INIT_VIEW end");
+    return 0;
+  }
+ //------------------------------ラスト画初期化コマンドここまで----------------------------------------------------
+  
+  write("不正なコマンドがありました。%s",scrCommand);
+  return 0;
+}
+
+
+on timer msOnNinCameraTimer {
+  setSignal(G5M::CDC_5::AVN1S78::DS_INST1,0);
+  setSignal(G5M::CDC_5::AVN1S78::DS_INST2,0);
+  setSignal(G5M::CDC_5::AVN1S78::DS_INST3,0);
+  setSignal(G5M::CDC_5::AVN1S78::DS_INST4,0);
+  setSignal(G5M::CDC_5::AVN1S78::DS_INST5,0);
+  setSignal(G5M::CDC_5::AVN1S78::DS_FUNID,0x0);
+  setTimer(msExecInterval,CommandInterval);
+  alive_msExecInterval = 1;
+  cancelTimer(msOnNinCameraTimer);
+  alive_msOnNinCameraTimer = 0;
+}
+
+
+on timer msDiagTimer {
+  setSignal(G2M1::CDC21::AVN1S73::DI_MODE,0);
+  setSignal(G2M1::CDC21::AVN1S73::CMD_MODE,1);
+  setSignal(G2M1::CDC21::AVN1S73::MMD_MODE,1);
+  setTimer(msExecInterval,CommandInterval);
+  alive_msExecInterval = 1;
+  cancelTimer(msDiagTimer);
+  alive_msDiagTimer = 0;
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::sysRead
+  概要  TEST_EXECパネルの再生ボタン（三角）の処理を実行します。 単一スクリプトの実行の入口
+  詳細  TEST_EXECパネルの再生ボタンを押下した時に、システム変数VERI::sysReadが0→1に変化し、このハンドラが呼ばれる
+        再生ボタンの左側のファイル名(VERI::ScriptFile)を読み出し、関数ExecScript(InputScriptFile）へ渡します
+******************************************************************************************/
+on sysvar VERI::sysRead { // Read and RUN ボタン押下
+  if(sysGetVariableInt(sysvar::VERI::sysRead)==0 || ScriptFileOpened==1) {
+    return; // Readボタンを離したとき、または、ファイルをすでに開いているときにReadボタンが押されても何もしない　（連打防止）
+  }
+  sysGetVariableString(sysvar::VERI::ScriptFile,InputScriptFile,elcount(InputScriptFile));
+  write("TestScript:%s",InputScriptFile);
+  ExecScript(InputScriptFile);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::Pause
+  概要  TEST_EXECパネルのPauseボタン(トグルスイッチ) の処理を実行します。 実行中のスクリプトを中断／再開します
+  詳細  TEST_EXECパネルのPauseボタンをONにすると、自動実行に関するタイマーをキャンセルします。
+        TEST_EXECパネルのPauseボタンをOFFにすると、自動実行に関するタイマーを再開させます。
+          この処理をさせるために、自動実行部分で使用させるすべてのタイマーには、Alive_(タイマー名)の変数を割り当ててあり
+          Alive_(タイマー名)の変数が1で、ポーズをかけた場合にそのタイマーをキャンセル、ポーズ解除でタイマーをセットします。
+          タイマーにセットする値は初期値またはおおよその値になります。
+******************************************************************************************/
+on sysvar VERI::Pause { // Pauseボタン
+  if (sysGetVariableInt(sysvar::VERI::Pause)==1) { //　実行中のタイマーを止める
+    if (alive_msExecInterval == 1) {
+      cancelTimer(msExecInterval);
+    } 
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+//    if (alive_msWaitTimer == 1) {
+//      cancelTimer(msWaitTimer);
+//    }
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+    if (alive_msRespTimer == 1) {
+      cancelTimer(msRespTimer);
+    }
+    if (alive_msDiagTimer == 1) {
+      cancelTimer(msDiagTimer);
+    }
+    if (alive_msMultiScript == 1) {
+      cancelTimer(msMultiScript);
+    }
+    if (alive_msIGN_ON_Timer ==1) {
+      cancelTimer(msIGN_ON_Timer);
+    }
+    if (alive_msOnNinCameraTimer == 1) {
+      cancelTimer(msOnNinCameraTimer);
+    }
+    if (alive_msCAMERA_SW_Timer == 1) {
+      cancelTimer(msCAMERA_SW_Timer);
+    }
+  } else {  // 止まっていたタイマーを動かす
+    if (alive_msExecInterval == 1) {
+      setTimer(msExecInterval,CommandInterval);
+    } 
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+//    if (alive_msWaitTimer == 1) {
+//      setTimer(msWaitTimer,msWaitTicks);
+//    }
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+    if (alive_msRespTimer == 1) {
+      setTimer(msRespTimer,1);
+    }
+    if (alive_msDiagTimer == 1) {
+      setTimer(msDiagTimer,100);
+    }
+    if (alive_msMultiScript ==1) {
+      setTimer(msMultiScript, 1);
+    }
+    if (alive_msIGN_ON_Timer == 1) {
+      setTimer(msIGN_ON_Timer,6);
+    }
+    if (alive_msOnNinCameraTimer == 1) {
+      setTimer(msOnNinCameraTimer,1);
+    }
+    if (alive_msCAMERA_SW_Timer == 1) {
+      setTimer(msCAMERA_SW_Timer,6);
+    }
+  }
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::execStop
+  概要  TEST_EXECパネルのSTOPボタン(■のラベルのスイッチ) の処理を実行します。 実行中のスクリプトを停止します。
+        再開はできません。
+  詳細  TEST_EXECパネルのSTOPボタン(■のラベルのスイッチ)を押すとこのハンドラが呼ばれます。
+        自動実行で使用中のタイマーをすべてキャンセルし、開いているファイルハンドルをすべてクローズします。
+        このボタンを押した場合に、自動実行の状態がどのようになっているかわからないため、CANoeの実行を止めることをお勧めします。
+******************************************************************************************/
+on sysvar VERI::execStop { //ストップボタン
+    ShowCommand("強制終了","","CANoe 停止→開始を推奨");
+    if (alive_msExecInterval == 1) {
+      alive_msExecInterval = 0;
+      cancelTimer(msExecInterval);
+    } 
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+//    if (alive_msWaitTimer == 1) {
+//      alive_msWaitTimer = 0;
+//      cancelTimer(msWaitTimer);
+//    }
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+    if (alive_msRespTimer == 1) {
+      alive_msRespTimer = 0;
+      cancelTimer(msRespTimer);
+    }
+    if (alive_msDiagTimer == 1) {
+      alive_msDiagTimer = 0;
+      cancelTimer(msDiagTimer);
+    }
+    if (alive_msMultiScript == 1) {
+      alive_msMultiScript = 0;
+      cancelTimer(msMultiScript);
+    }
+    if (alive_msIGN_ON_Timer == 1) {
+      alive_msIGN_ON_Timer = 0;
+      cancelTimer(msIGN_ON_Timer);
+    }
+    if (alive_msCAMERA_SW_Timer == 1) {
+      alive_msCAMERA_SW_Timer = 0;
+      cancelTimer(msCAMERA_SW_Timer);
+    }
+    if (ScriptFileOpened == 1) {
+      ScriptFileOpened = 0;
+      fileClose(ScriptFileHandle);
+    }
+    if (FileListOpened == 1) {
+      FileListOpened = 0;
+      fileClose(FileListHandle);
+    }
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::sysReadFolder
+  概要  TEST_EXECパネルのFolderRead and Run ボタンの処理実行をします。複数スクリプト実行の入口になります。
+  詳細  TEST_EXECパネルのFolderRead and Run ボタンを押下/離すと、システム変数VERI::sysReadFolderが変化し、
+        このハンドラが呼ばれます。FolderRead and Runボタンの左側のフォルダ名(VERI::sysInputFolder)を読み出し、
+        これをフォルダ名として、そのフォルダの中の0000.filelist.txtを、スクリプトリストとしてオープンします。
+        ファイルアクセスに時間がかかりそうなので、いったんイベントハンドラを抜けるために、タイマーmsMultiScriptをセットして、
+        このハンドラを抜けます。
+******************************************************************************************/
+on sysvar VERI::sysReadFolder { // Folder Read and RUN ボタン押下
+  if(sysGetVariableInt(sysvar::VERI::sysReadFolder)==0 || FileListOpened==1) {
+    return; // Readボタンを離したとき、または、0000.FileList.txtをすでに開いているときにReadボタンが押されても何もしない　（連打防止）
+  }  
+  
+  sysSetVariableInt(sysvar::VERI::sysReadFolder, 0); // 20250905 muramatsu
+
+  sysGetVariableString(sysvar::VERI::sysInputFolder, InputFolder ,elcount(InputFolder));
+  snprintf(InputFileList,elcount(InputFileList),"%s\\0000.FileList.txt",InputFolder);
+  FileListHandle = openFileRead(InputFileList,0); //  ASCIIモードでファイルを開く
+  if (FileListHandle==0) {
+    write("ファイルリスト %sが開けません %d",InputFileList);
+  }
+  write("FileList: %s:", InputFileList);
+  FileListOpened = 1;
+  MultiScriptMode = 1;
+  setTimer(msMultiScript,1); // 1ms後にファイル読み込み実行
+  alive_msMultiScript = 1;
+  //フォルダの中のファイルを探すため、文字列をつなげる
+//  testnum = 1;
+//  sysGetVariableString(sysvar::VERI::sysInputFolder, InputScriptFile ,elcount(InputScriptFile));
+//  snprintf(InputScriptFile,elcount(InputScriptFile),"%s\\%d.txt",InputScriptFile,testnum);
+//  FileListHandle = openFileRead(In
+//  ltoa(testnum, testnum_str, 10);
+//  write("スクリプトファイル %sを開きました",InputScriptFile);
+//  strncat(InputScriptFile, "\\", elcount(InputScriptFile));
+//  write("スクリプトファイル %sを開きました",InputScriptFile);
+//  strncat(InputScriptFile, testnum_str, elcount(InputScriptFile));
+//  write("スクリプトファイル %sを開きました",InputScriptFile);
+//  strncat(InputScriptFile, ".", elcount(InputScriptFile));
+  
+  
+//  n=fileGetString(ScrFileName,elCount(ScrFileName),FileListHandle);
+//  if (n==0) {
+//    write("ファイルリストが読めません");
+//  }
+    /*
+  sysGetVariableString(sysvar::VERI::ScriptFile, InputScriptFile ,elcount(InputScriptFile));
+  write("TestScript:%s",InputScriptFile);
+  ScriptFileHandle = openFileRead(InputScriptFile,0); //  ASCIIモードでファイルを開く
+  if (ScriptFileHandle==0) {
+    write("スクリプトファイル %sが開けません %d",InputScriptFile, ScriptFileHandle);
+  }
+  ScriptFileOpened = 1;
+  ReadScript();
+  ShowCommand(scrCommand,scrParam1,scrParam2);
+  if (strncmp(scrCommand,"Interval",strlen(scrCommand))==0) {
+    CommandInterval=atol(scrParam1); // ほんとはParam1の範囲をチェックしたほうがよい。最初に絶対にInterValを入れる。１行目を読み飛ばしてしまうため
+    write("INT: %d",CommandInterval);
+  }
+  sysSetVariableInt(sysvar::VERI::CMDITVL, CommandInterval);
+  settimer(msExecInterval,CommandInterval);
+  */
+}
+
+on timer msMultiScript {
+  n=fileGetString(ScrFileName,elCount(ScrFileName),FileListHandle);
+  for (t=0;t<elcount(ScrFileName);t++) { 
+    if (ScrFileName[t]==0x0a) { ScrFileName[t]=0x00; }
+  }
+//  write("msMultiScript Handler %d",n);
+  if (n==0) { // 0が帰ってきたらFileListの終端
+    ShowCommand("連続実行終了","","");
+    write("~~~連続実行終了~~~");
+    cancelTimer(msMultiScript);
+    alive_msMultiScript = 0;
+    MultiScriptMode = 0;
+    fileClose(FileListHandle);
+    FileListOpened = 0;
+    return;
+  }
+  snprintf(InputScriptFile,elcount(InputScriptFile),"%s\\%s",InputFolder,ScrFileName);
+  CancelTimer(msMultiScript);
+  alive_msMultiScript = 0;
+  write("%s",ScrFileName);
+  write("TestScript:%s",InputScriptFile);
+  ExecScript(InputScriptFile);
+}
+
+//--------------------------------------------------------------------------------
+// 関数 execScript( スクリプトファイル名 ) 
+//    動作：引数で渡されたスクリプトファイルを開いて、コマンド実行周期INTERVALコマンドが入った１行目を読み出し、コマンド実行周期をセットし、２行目以降のスクリプトを実行させる。
+//    戻り値： なし
+//    引数：スクリプトファイル名
+//--------------------------------------------------------------------------------
+void ExecScript(char ScriptFileName[]) { // 引数で受け取ったスクリプトファイルを実行する。
+  write ("ExecScript %s",ScriptFileName);
+  ScriptFileHandle = openFileRead(ScriptFileName,0); //  ASCIIモードでファイルを開く
+  if (ScriptFileHandle==0) {
+    write("スクリプトファイル %sが開けません %d",ScriptFileName, ScriptFileHandle);
+  }
+  ScriptFileOpened = 1;
+  n=fileGetString(scrBuffer,elCount(scrBuffer),ScriptFileHandle);
+  if (n==0) {
+    write("スクリプトファイルが読めません");
+  }
+  ReadScript();
+  ShowCommand(scrCommand,scrParam1,scrParam2);
+  if (strncmp(scrCommand,"INTERVAL",strlen(scrCommand))==0) {
+    CommandInterval=atol(scrParam1); // ほんとはParam1の範囲をチェックしたほうがよい。最初に絶対にInterValを入れる。１行目を読み飛ばしてしまうため
+    write("INT: %d",CommandInterval);
+  }
+  sysSetVariableInt(sysvar::VERI::CMDITVL, CommandInterval);
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+  // WaitMSの場合のコマンドインターバルをなくすための対策　2026/1/16
+  // 次の行を読む
+  n=fileGetString(scrBuffer,elcount(scrBuffer),ScriptFileHandle);
+  CommandStored = n; //コマンド読み込み結果
+  if (n==0) {
+    write("Intervalコマンドの次の行が読めません");
+  }
+  ReadScript();
+  ShowCommand(scrCommand,scrParam1,scrParam2);
+  if (strncmp(scrCommand,"WAITMS",strlen(scrCommand))==0) {
+    //msWaitTicks = atol(scrParam1);
+    //write("WAITMS: %d",msWaitTicks);
+    setTimer(msExecInterval,0);
+    alive_msExecInterval = 1;
+    return;
+  }
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+  settimer(msExecInterval,CommandInterval);
+  alive_msExecInterval = 1;
+}
+
+//--------------------------------------------------------------------------------
+// 関数 ShowCommand( コマンド文字列、パラメータ１文字列、パラメータ２文字列 ) 
+//    動作：引数で渡されたコマンド文字列、パラメータ１文字列、パラメータ２文字列を、CANoeのWriteウィンドウに出力する（動作確認用）
+//    戻り値： なし
+//    引数：コマンド文字列、パラメータ１文字列、パラメータ２文字列
+//--------------------------------------------------------------------------------
+
+void ShowCommand(char mycmd[],char myp1[], char myp2[]) {
+  sysSetVariableString(sysvar::VERI::cmd,mycmd);
+  sysSetVariableString(sysvar::VERI::param1,myp1);
+  sysSetVariableString(sysvar::VERI::param2,myp2);
+}
+
+
+on timer msExecInterval {
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+
+  if (CommandStored == 0) { // コマンドが読み込み済みならDispatchを実行する　260204
+    write("~~~遅延実行終了~~~");
+    canceltimer(msExecInterval);
+    alive_msExecInterval = 0;
+    return;
+  }
+  currentMyTime = timeNow()/100000.0 ;
+  write ("◆%f◆Execute %s, %s, %s",currentMyTime,scrCommand,scrParam1,scrParam2);
+  ShowCommand(scrCommand,scrParam1,scrParam2);
+  NextInterval = dispatch(); // コマンド実行 戻り値が１でなければウェイトか実行エラーなので次の実行タイマーの待ちには入らない
+     //NextInterval dispatchの戻り値
+     //             0: コマンドインターバルタイマーセットしない（別のタイマーが作動中）
+     //             1: コマンドインターバルタイマーを、CommandIntervalでセットする（次のコマンド実行を待つ）
+     // 　　　　　　 2: コマンドインターバルタイマーを、0でセットする。即時呼び出し (dispatchでWAITMSを実行した時の戻り値）
+  // 次の行読み込み
+  // NextIntervalが0で帰ってきても次の行を読み込んでしまっている。要検討
+  n=fileGetString(scrBuffer,elCount(scrBuffer),ScriptFileHandle);
+  CommandStored = n; // コマンド読み込み結果　260206
+  if (n==0) { // 0が帰ってきたらファイル終端
+    ShowCommand("終了","","");
+    write("~~~終了~~~");
+    ScriptFileOpened = 0;
+    fileClose(ScriptFileHandle);
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+    if ( MultiScriptMode== 1) { // 複数ファイル実行中の場合次のファイル読み込み
+      setTimer(msMultiScript,1);
+      alive_msMultiScript = 1;
+    }
+    return ;
+  }
+  ReadScript(); // コマンド分解
+  if (strlen(scrCommand) == 0) {  // 空行読み込み時も終了
+    write("~~~空行読み込み 実行終了~~~");
+    CommandStored = 0;
+    canceltimer(msExecInterval);
+    alive_msExecInterval = 0;
+    return;    
+  }
+//  write("%d",strlen(scrCommand));
+  write("%d%",NextInterval);
+  switch (NextInterval){
+    case 1:                        //1: 次の行を実行。次行がWAITMSなら即実行、通常行ならCommandInterval待ち
+      write("ここは1ばん");
+      if (strncmp(scrCommand,"WAITMS",strlen(scrCommand))==0) { //次の行がWAITMSの時の処理
+        write("WAITMSのほう");
+        settimer(msExecInterval,0);
+        alive_msExecInterval = 1;
+      } else {
+        write("WAITMSじゃないほう");
+        settimer(msExecInterval,CommandInterval);
+        alive_msExecInterval = 1;
+      }
+      return;
+    case 2:                      //2: WAITMS実行の戻り値。次行が通常・WAITMSどちらでもmsWaitTicks待ち
+      settimer(msExecInterval,msWaitTicks);
+      alive_msExecInterval = 1;
+      return;
+    case 0:                     //0: 次の行は実行しない（別タイマーで受信）
+      canceltimer(msExecInterval);
+      alive_msExecInterval = 0;
+      return;
+    default:
+      canceltimer(msExecInterval);
+      alive_msExecInterval = 0;
+      return;
+  }
+
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+}
+
+//↓---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+/*on timer msWaitTimer{
+//  write("msWaitTimerハンドラ");
+  setTimer(msExecInterval,0);
+  alive_msExecInterval = 1;
+  cancelTimer(msWaitTimer);
+  alive_msWaitTimer = 0;
+}
+*/
+//↑---WaitMSコマンドで、コマンド実行待ちとWait時間を両方待ってしまうため、コマンド実行待ちをウェイト時間に変更------260116------
+
+on timer msIGN_ON_Timer {
+//  write("msIGN_ON_Timer");
+  setTimer(msExecInterval,CommandInterval);
+  alive_msExecInterval = 1;
+  cancelTimer(msIGN_ON_Timer);
+  alive_msIGN_ON_Timer = 0;
+}
+
+on timer msCAMERA_SW_Timer {
+//  write("msCAMERA_SW_Timer");
+  setTimer(msExecInterval,CommandInterval);
+  alive_msExecInterval = 1;
+  cancelTimer(msCAMERA_SW_Timer);
+  alive_msCAMERA_SW_Timer = 0;
+}
+
+on timer msRespTimer{
+  putValue(EnvSID31_Tx_IOL,0);  
+  putValue(EnvSID31_Tx_PVM,0);  
+  setTimer(msExecInterval,CommandInterval);
+  alive_msExecInterval = 1;
+  cancelTimer(msRespTimer);
+  alive_msRespTimer = 0;
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::BA_ON
+  概要  VERIパネルのBA_ONボタンの処理実行をします。
+  詳細  VH1160を使ったシステムと、I/OPiggyを使ったシステムで動作が変わります。
+        VH1160の場合、システム変数VHDevice::Relay::Relay_V30 に、RELAY_STATE_CLOSE または、RELAY_STATE_OPENをセットします。
+        これにより、テストモジュールPowerControlとして組み込まれたモジュールの中で、このシステム変数を見て、
+        VH1160のリレー30(VBatt, +Bとして使用）をクローズ（ON）または、オープン（OFF)にします。
+        I/OPiggyの場合、システム変数IO::IOPiggy1::DOUT0 に、１(ON) または 0(OFF)をセットします。
+        DOUT1をSSRのINPUT側(コイル側）に接続し、SSRのOUTPUT側（接点側）に定電圧電源の＋BとECUの＋Bの間に入れることで、
+        ＋BのON/OFF制御を行います。
+******************************************************************************************/
+on sysvar sysvar::VERI::BA_ON { // +Bボタン    VH:V30, IO piggy DOUT0 
+  if (sysGetVariableInt(sysvar::VERI::BA_ON)==1) {
+    // write("BA");
+    //if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) {  // for VH
+      //write("VH V30 close");
+     /*sysSetVariableInt(sysvar::VHdevice::Relay::relay_V30,RELAY_STATE_CLOSE);
+    } else { // I/O piggy
+      //write("DOUT0 on");
+      */
+      sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT0,1);
+/*    
+  }
+*/
+  }else{
+/*    if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) {  // for VH
+      sysSetVariableInt(sysvar::VHdevice::Relay::relay_V30,RELAY_STATE_OPEN);
+    } else {
+*/    
+      sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT0,0);
+    }
+/* 
+    }
+*/    
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::IG_ON
+  概要  VERIパネルのIG_ONボタンの処理実行をします。
+  詳細  VH1160を使ったシステムと、I/OPiggyを使ったシステムで動作が変わります。
+        VH1160の場合、システム変数VHDevice::Relay::Relay_V15 に、RELAY_STATE_CLOSE または、RELAY_STATE_OPENをセットします。
+        これにより、テストモジュールPowerControlとして組み込まれたモジュールの中で、このシステム変数を見て、
+        VH1160のリレー15(IGN, IGとして使用）をクローズ（ON）または、オープン（OFF)にします。
+        I/OPiggyの場合、システム変数IO::IOPiggy1::DOUT1 に、１(ON) または 0(OFF)をセットします。
+        DOUT1をSSRのINPUT側(コイル側）に接続し、SSRのOUTPUT側（接点側）に定電圧電源のIGとECUのIGの間に入れることで、
+        IGのON/OFF制御を行います。
+******************************************************************************************/
+on sysvar sysvar::VERI::IG_ON { // IGボタン   VH:V15, I/O piggy DOUT1
+  if (sysGetVariableInt(sysvar::VERI::IG_ON)==1) {
+    write("IG_ON");
+/*    
+    if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) {  // for VH
+      sysSetVariableInt(sysvar::VHdevice::Relay::relay_V15,RELAY_STATE_CLOSE);
+    } else {
+*/    
+      sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT1,1);
+/*    
+  }
+*/    
+  }else{
+    write("IG_OFF");
+/*    
+    if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) {  // for VH
+      sysSetVariableInt(sysvar::VHdevice::Relay::relay_V15,RELAY_STATE_OPEN);
+    } else {                                                  // for I/O piggy
+*/    
+      sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT1,0);
+    }
+/*  
+  }
+*/    
+}
+
+// VH動作時は、VHのV31の出力側のGNDを使って、カメラSWのI/O制御にしている。 V31の入力側のGNDに、ADUのGNDを接続
+// IO Piggy 動作時は、DOUT2のON/OFFとする
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::GND_ON
+  概要  VERIパネルのGNDのトグルボタン、カメラSW（物理）というラベルの処理実行をします。
+        ハードウェアのカメラスイッチ（VIEWSW）のON/OFFをします。
+  詳細  VH1160を使ったシステムと、I/OPiggyを使ったシステムで動作が変わります。
+        VH1160の場合、システム変数VHDevice::Relay::Relay_V31 に、RELAY_STATE_CLOSE または、RELAY_STATE_OPENをセットします。
+        これにより、テストモジュールPowerControlとして組み込まれたモジュールの中で、このシステム変数を見て、
+        VH1160のリレー31(IGN, IGとして使用）をクローズ（ON）または、オープン（OFF)にします。(31端子と31'端子の間のクローズ／オープン）
+        システム接続においては、31端子にADUのGNDを、31'端子にADUのカメラSWの配線を接続します。
+        I/OPiggyの場合、システム変数IO::IOPiggy1::DOUT2 に、１(ON) または 0(OFF)をセットします。
+        DOUT2をSSRのINPUT側(コイル側）に接続し、SSRのOUTPUT側（接点側）を定電圧電源のIGとECUのカメラSWの配線の間に入れることで、
+        カメラＳＷのON/OFF制御を行います。
+******************************************************************************************/
+on sysvar sysvar::VERI::GND_ON { // PVMSWボタン
+  if (sysGetVariableInt(sysvar::VERI::GND_ON)==1) { // ボタン押下 押したとき
+/*    
+    if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) {  // for VH
+      sysSetVariableInt(sysvar::VHdevice::Relay::relay_V31,RELAY_STATE_CLOSE);
+    } else { // for IO piggy
+*/
+      sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT2,1);
+/*
+    }
+*/
+  }else{                                            // ボタン話す
+/*
+    if (sysGetVariableInt(sysvar::VERI::VHorIOpiggy) == 0) {  // for VH
+      sysSetVariableInt(sysvar::VHdevice::Relay::relay_V31,RELAY_STATE_OPEN);
+    } else {
+*/
+      sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT2,0);
+/*
+    }      
+*/
+  }
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::SHIFT_P
+  概要  VERIパネルのParkingというラベルのボタンの処理実行をします。 駐車モードきりかえ
+  詳細  シフトに関するシステム変数の操作のみ実行します。実際にCAN信号を出すのは、もともとのCFGファイルで実行されます。
+        シグナル ZN11S0::REV_SW       → 0
+        システム変数 ECT1G01_B_PRNDB   → １
+******************************************************************************************/
+on sysvar sysvar::VERI::SHIFT_P { //　シフトP
+  if (sysGetVariableInt(sysvar::VERI::SHIFT_P)==0) {
+    return;   
+  }
+  sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 1);
+  setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+  setSignal(G2M1::DDM21::DDM1S18::PTCURSFT,6);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::SHIFT_R
+  概要  VERIパネルのReverseというラベルのボタンの処理実行をします。 駐車モードきりかえ
+  詳細  シフトに関するシステム変数の操作のみ実行します。実際にCAN信号を出すのは、もともとのCFGファイルで実行されます。
+        シグナル ZN11S0::REV_SW       → 1
+        システム変数 ECT1G01_B_PRNDB   → 2
+******************************************************************************************/
+on sysvar sysvar::VERI::SHIFT_R { // シフトR
+  if (sysGetVariableInt(sysvar::VERI::SHIFT_R) == 0) {
+    return ;
+  }
+  sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 2); 
+  setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,1);
+  setSignal(G2M1::DDM21::DDM1S18::PTCURSFT,5);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::SHIFT_N
+  概要  VERIパネルのNewtralというラベルのボタンの処理実行をします。 駐車モードきりかえ
+  詳細  シフトに関するシステム変数の操作のみ実行します。実際にCAN信号を出すのは、もともとのCFGファイルで実行されます。
+        シグナル ZN11S0::REV_SW       → 0
+        システム変数 ECT1G01_B_PRNDB   → 3
+******************************************************************************************/
+on sysvar sysvar::VERI::SHIFT_N { // シフトN
+  if (sysGetVariableInt(sysvar::VERI::SHIFT_N) == 0) {
+    return;
+  }
+  sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 3);  
+  setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::SHIFT_D
+  概要  VERIパネルのDriveというラベルのボタンの処理実行をします。 駐車モードきりかえ
+  詳細  シフトに関するシステム変数の操作のみ実行します。実際にCAN信号を出すのは、もともとのCFGファイルで実行されます。
+        シグナル ZN11S0::REV_SW       → 0
+        システム変数 ECT1G01_B_PRNDB   → 4
+******************************************************************************************/
+on sysvar sysvar::VERI::SHIFT_D { // シフトD
+  if (sysGetVariableInt(sysvar::VERI::SHIFT_D) == 0) {
+    return;
+  }
+  sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 4);  
+  setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+  setSignal(G2M1::DDM21::DDM1S18::PTCURSFT,3);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::CC10
+  概要  VERIパネルのセンターディスプレイ表示サイズのサイズ設定ボタンの処理実行をします。
+  詳細  ボタンの左のテキストボックスの値を読み込み、環境変数SigDt_AVN1S73_CD_SIZEへ格納
+        具体的にはPVM_Panelの仕様情報のセンターディスプレイサイズのドロップダウンの値が変わります。。
+******************************************************************************************/
+on sysvar sysvar::VERI::CC10 { // センターディスプレイサイズ　1010b:1280x621(10.5in)
+  if (sysGetVariableInt(sysvar::VERI::CC10)==0) { return; }
+  screensize=sysGetVariableInt(sysvar::VERI::GamenSize);
+  putValue(SigDt_AVN1S73_CD_SIZE,screensize);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::CAMERA_F
+  概要  VERIパネルの"F:PVM"ボタンを押した時の処理。環境変数SigDt_ZN11S69_VSI_U4CにFを格納します
+        具体的にはPVM_Panelの仕様情報のU4C周辺監視カメラの値をFにします。
+******************************************************************************************/
+on sysvar sysvar::VERI::CAMERA_F { //U4C周辺監視カメラ　F:PVM 
+  if (sysGetVariableInt(sysvar::VERI::CAMERA_F)==0) { return; }
+    putValue(SigDt_ZN11S69_VSI_U4C, 0x46);
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::CAMERA_MTM
+  概要  VERIパネルの"G:MTM"ボタンを押した時の処理。環境変数SigDt_ZN11S69_VSI_U4CにGを格納します
+        具体的にはPVM_Panelの仕様情報のU4C周辺監視カメラの値をGにします。
+******************************************************************************************/
+on sysvar sysvar::VERI::CAMERA_MTM { //U4C周辺監視カメラ　M:MTM 
+  if (sysGetVariableInt(sysvar::VERI::CAMERA_MTM)==0) { return; }
+    putValue(SigDt_ZN11S69_VSI_U4C, 0x47);
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::CAMERA_B
+  概要  VERIパネルの"B:BGM"ボタンを押した時の処理。環境変数SigDt_ZN11S69_VSI_U4CにBを格納します
+        具体的にはPVM_Panelの仕様情報のU4C周辺監視カメラの値をBにします。
+******************************************************************************************/
+on sysvar sysvar::VERI::CAMERA_B { //U4C周辺監視カメラ　B:BGM 
+  if (sysGetVariableInt(sysvar::VERI::CAMERA_B)==0) { return; }
+    putValue(SigDt_ZN11S69_VSI_U4C, 0x42);
+}
+
+//--------------------------1217以降追記分----------------------------------------------
+
+on sysvar sysvar::VERI::Disable_Shift { // 無効シフト
+  if (sysGetVariableInt(sysvar::VERI::Disable_Shift)==1) { // ボタン押下
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_DDM21::MESSAGES::ECT1G01::TIMINGS::EnableCyclic,0);
+  }else{                                            // ボタン離す
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_DDM21::MESSAGES::ECT1G01::TIMINGS::EnableCyclic,1);      
+  }
+}
+on sysvar sysvar::VERI::Disable_Speed { // 車速無効
+  if (sysGetVariableInt(sysvar::VERI::Disable_Speed)==1) { // ボタン押下
+      setSignal(G2M1::DDM21::VSC1G13::SP1S,1);
+  }else{                                            // ボタン離す
+      setSignal(G2M1::DDM21::VSC1G13::SP1S,0);     
+  }
+}
+on sysvar sysvar::VERI::Disable_AVN1S73 { // AVN通信無効
+  if (sysGetVariableInt(sysvar::VERI::Disable_AVN1S73)==1) { // ボタン押下
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S73::TIMINGS::EnableCyclic,0);
+  }else{                                            // ボタン離す
+      sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S73::TIMINGS::EnableCyclic,1);
+  }
+}
+on sysvar sysvar::VERI::Disable_Steer { // 舵角無効
+  if (sysGetVariableInt(sysvar::VERI::Disable_Steer)==1) { // ボタン押下
+      setSignal(G5M::DDM_5::EPS1S11::PANGINV,1);
+  }else{                                            // ボタン離す
+      setSignal(G5M::DDM_5::EPS1S11::PANGINV,0);
+  }
+}
+on sysvar sysvar::VERI::PKB { // PKB
+  if (sysGetVariableInt(sysvar::VERI::PKB)==1) { // ボタン押下
+      setSignal(G2M1::BDL::BDB1S01::PKB_BDB,1);
+  }else{                                            // ボタン離す
+      setSignal(G2M1::BDL::BDB1S01::PKB_BDB,0);
+  }
+}
+on sysvar sysvar::VERI::BACKDOOR { // バックドア
+  if (sysGetVariableInt(sysvar::VERI::BACKDOOR)==1) { // ボタン押下
+      setSignal(G2M1::BDL::BDB1S01::BCTY,1);
+  }else{                                            // ボタン離す
+      setSignal(G2M1::BDL::BDB1S01::BCTY,0);
+  }
+}
+
+//--------------------------1217以降追記分ここまで----------------------------------------------
+
+/** PVM_Panelの仕様情報をまとめて日本仕様にする 操作**/ 
+on sysvar sysvar::VERI::Country::Japan { // 仕向け設定　日本
+  if (sysGetVariableInt(sysvar::VERI::Country::Japan)==0) { return; }
+  putValue(SigDt_BDB1S08_C_CODE123,0x0) ;
+  putValue(SigDt_BDB1S08_STRG_WHL,2);
+  putValue(SigDt_AVN1S20_A_LANG,0x0);
+}
+/** PVM_Panelの仕様情報をまとめてUSA仕様にする 操作**/ 
+on sysvar sysvar::VERI::Country::USA { // 仕向け設定　USA
+  if (sysGetVariableInt(sysvar::VERI::Country::USA)==0) { return; }
+  putValue(SigDt_BDB1S08_C_CODE123,0x104) ;
+  putValue(SigDt_BDB1S08_STRG_WHL,1);
+  putValue(SigDt_AVN1S20_A_LANG,0x1);
+}
+/** PVM_Panelの仕様情報をまとめて中国仕様にする 操作**/ 
+on sysvar sysvar::VERI::Country::China { // 仕向け設定　中国
+  if (sysGetVariableInt(sysvar::VERI::Country::China)==0) { return; }
+  putValue(SigDt_BDB1S08_C_CODE123,0x707) ;
+  putValue(SigDt_BDB1S08_STRG_WHL,1);
+  putValue(SigDt_AVN1S20_A_LANG,0x10);
+}
+/** PVM_Panelの仕様情報をまとめてドイツ仕様にする 操作**/ 
+on sysvar sysvar::VERI::Country::Germany { // 仕向け設定　0ドイツ
+  if (sysGetVariableInt(sysvar::VERI::Country::Germany)==0) { return; }
+  putValue(SigDt_BDB1S08_C_CODE123,0x427) ;
+  putValue(SigDt_BDB1S08_STRG_WHL,1);
+  putValue(SigDt_AVN1S20_A_LANG,0x04);
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::SiyouJoho
+  概要  VERIパネルの"DA03仕様情報切替"ボタンを押した時の処理。SID31_IOLパネルの操作を環境変数を介して実施し、仕様情報切替コマンドを送信します。
+******************************************************************************************/
+on sysvar sysvar::VERI::SiyouJoho { //仕様情報切替 
+  if (sysGetVariableInt(sysvar::VERI::SiyouJoho)==0) {     
+    putValue(EnvSID31_Tx_IOL,0);
+    return; 
+  }
+    putValue(EnvSID31_RID_Tx_IOL, 0xDA03);
+    putValue(EnvSID31_Type_IOL,1);
+    putValue(EnvSID31_RspNecessity_IOL,0);
+    putValue(EnvSID31_Tx_IOL,1);
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::TargetMarkerStart
+  概要  VERIパネルの"1240ﾀｰｹﾞｯﾄﾏｰｶｰ認識開始"ボタンを押した時の処理。SID31_PVMパネルの操作を環境変数を介して実施し、ﾀｰｹﾞｯﾄﾏｰｶｰ認識開始要求コマンドを送信します。
+******************************************************************************************/
+on sysvar sysvar::VERI::TargetMarkerStart //1240　ターゲットマーカー認識開始要求
+{
+  if (sysGetVariableInt(sysvar::VERI::TargetMarkerStart)==0) {
+    putValue(EnvSID31_Tx_PVM,0);  
+    return; 
+  }
+    putValue(EnvSID31_RID_Tx_PVM, 0x1240);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::TargetMarkerForce
+  概要  VERIパネルの"127Dﾀｰｹﾞｯﾄﾏｰｶｰ強制"ボタンを押した時の処理。SID31_PVMパネルの操作を環境変数を介して実施し、ﾀｰｹﾞｯﾄﾏｰｶｰ強制認識開始要求コマンドを送信します。
+******************************************************************************************/
+on sysvar sysvar::VERI::TargetMarkerForce //127D　ターゲットマーカー強制
+{
+  if (sysGetVariableInt(sysvar::VERI::TargetMarkerForce)==0) {
+    putValue(EnvSID31_Tx_PVM,0);  
+    return; 
+  }
+    putValue(EnvSID31_RID_Tx_PVM, 0x127D);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::ViewDataCreate
+  概要  VERIパネルの"1241ビューデータ生成"ボタンを押した時の処理。SID31_PVMパネルの操作を環境変数を介して実施し、ビューデータ生成開始要求コマンドを送信します。
+******************************************************************************************/
+on sysvar sysvar::VERI::ViewDataCreate //1241 ビューデータ生成開始要求
+{
+  if (sysGetVariableInt(sysvar::VERI::ViewDataCreate)==0) {     
+    putValue(EnvSID31_Tx_PVM,0);  
+    return; 
+  }
+    putValue(EnvSID31_RID_Tx_PVM, 0x1241);
+    putValue(EnvSID31_Type_PVM,1);
+    putValue(EnvSID31_RspNecessity_PVM,0);
+    putValue(EnvSID31_Tx_PVM,1);  
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::HeadLight_ON
+  概要  VERIパネルの"ヘッドライトON"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施し、シグナルDN_Disp(昼夜画状態通知)を”1b:夜”にします。
+******************************************************************************************/
+on sysvar sysvar::VERI::HeadLight_ON { // ﾍｯﾄﾞﾗｲﾄON
+  if (sysGetVariableInt(sysvar::VERI::HeadLight_ON)==0) { return; }
+  setSignal(G2M1::CDC21::AVN1S73::DN_DISP,1);
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::HeadLight_OFF
+  概要  VERIパネルの"ヘッドライトON"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施し、シグナルDN_Disp(昼夜画状態通知)を”0b:昼”にします。
+******************************************************************************************/
+on sysvar sysvar::VERI::HeadLight_OFF { // ﾍｯﾄﾞﾗｲﾄOFF
+  if (sysGetVariableInt(sysvar::VERI::HeadLight_OFF)==0) { return; }
+  setSignal(G2M1::CDC21::AVN1S73::DN_DISP,0);
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::OFFROAD
+  概要  VERIパネルの"オフロードON"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施しします。
+******************************************************************************************/
+on sysvar sysvar::VERI::OFFROAD { // オフロードモードターンアシストインジケータ駆動要求
+  if (sysGetVariableInt(sysvar::VERI::OFFROAD)==0) {
+    return;
+  } else {
+    putValue(SigDt_ENG1G90_B_OMODE,1);
+    setSignal(G2M1::DDM21::VSC1G12::V_GXHR0,-0.43);
+    setSignal(G2M1::DDM21::VSC1G12::V_GYHR0,-0.43);
+    setSignal(G2M1::DDM21::VSC1G12::V_YR1HR0,-3.0);
+  }
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::OFFROAD_OFF
+  概要  VERIパネルの"オフロードOFF"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施しします。
+******************************************************************************************/
+on sysvar sysvar::VERI::OFFROAD_OFF { // オフロードモードターンアシストインジケータ駆動要求オフ
+  if (sysGetVariableInt(sysvar::VERI::OFFROAD_OFF)==0) {
+    return;
+  } else {
+    putValue(SigDt_ENG1G90_B_OMODE,0);
+    setSignal(G2M1::DDM21::VSC1G12::V_GXHR0,-0.43);
+    setSignal(G2M1::DDM21::VSC1G12::V_GYHR0,-0.43);
+    setSignal(G2M1::DDM21::VSC1G12::V_YR1HR0,-3.0);
+  }
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::Tozetsu
+  概要  VERIパネルの"AVN1S20途絶"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施し
+        AVNS1S20を途絶させます
+******************************************************************************************/
+on sysvar sysvar::VERI::Tozetsu { // AVNS1S20　通信途絶
+  if (sysGetVariableInt(sysvar::VERI::Tozetsu)==0) {
+    return;
+  } else {
+    sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S20::TIMINGS::EnableCyclic,0);
+  }
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::Tozetsu
+  概要  VERIパネルの"AVN1S20途絶"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施しします。
+******************************************************************************************/
+on sysvar sysvar::VERI::Tozetsu_OFF { // AVNS1S20　通信再開
+  if (sysGetVariableInt(sysvar::VERI::Tozetsu_OFF)==0) {
+    return;
+  } else {
+    sysSetVariableInt(sysvar::IL_CAN1::NODES::N_CDC21::MESSAGES::AVN1S20::TIMINGS::EnableCyclic,1);
+  }
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::Rev_SCR_SW_Psh
+  概要  VERIパネルの"リバース画面切替 押"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施しします。
+        バック画面上の、ワイドバック、ナローバックの切替ボタンを、タッチ座標のシグナルを使って操作する
+******************************************************************************************/
+
+  on sysvar sysvar::VERI::TOUCH::Rev_SCR_SW_Psh { // バック画切替 押す
+  if (sysGetVariableInt(sysvar::VERI::TOUCH::Rev_SCR_SW_Psh) == 0) {
+    setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+    setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+    return ;
+  }
+  setSignal(G2M1::CDC21::AVN1S73::X_COORD,980);
+  setSignal(G2M1::CDC21::AVN1S73::Y_COORD,260);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::Rev_SCR_SW_Rel
+  概要  VERIパネルの"リバース画面切替 離"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施しします。
+        バック画面上の、ワイドバック、ナローバックの切替ボタンを、タッチ座標のシグナル送信します。
+******************************************************************************************/
+on sysvar sysvar::VERI::TOUCH::Rev_SCR_SW_Rel { // バック画切替　離す
+  if (sysGetVariableInt(sysvar::VERI::TOUCH::Rev_SCR_SW_Rel) == 0) {
+    return ;
+  }
+  setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+  setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::TOUCH::Touch
+  概要  VERIパネルの"Touch"ボタンを押した時の処理。PVM_Panelパネルの操作を環境変数を介して実施しします。
+        Touchボタンの左側のテキストボックスで指定されたX,Y座標を使って、シグナル送信します。
+        Touchボタンを押下した時に押したシグナルを送信、離した時に離したシグナルを送信します
+******************************************************************************************/
+on sysvar sysvar::VERI::TOUCH::Touch {
+  if (sysGetVariableInt(sysvar::VERI::TOUCH::Touch) == 0) {
+    setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+    setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+    return ;
+  } else {
+    setSignal(G2M1::CDC21::AVN1S73::X_COORD,sysGetVariableInt(sysvar::VERI::TOUCH::PosX));
+    setSignal(G2M1::CDC21::AVN1S73::Y_COORD,sysGetVariableInt(sysvar::VERI::TOUCH::PosY));
+  }
+}
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::GaibuRun
+  概要  VERIパネルの"外部コマンド実行"ボタンを押した時の処理。
+        外部コマンド実行の左側のファイル選択にて選択されたコマンドを実行します。
+******************************************************************************************/
+on sysvar sysvar::VERI::GaibuRun {
+  if (sysGetVariableInt(sysvar::VERI::GaibuRun) == 0) {
+    return ;
+  } else {
+    sysGetVariableString(sysvar::VERI::GaibuCommand,InputGaibuFile,elCount(InputGaibuFile));
+    sysExec(InputGaibuFile ,"");
+  }
+  return;
+}
+
+//--------------------------------------------------------------------------------
+// 関数SoftCameraSW()   
+//    対象変数：　signal DSBus::CGW_D::AVN1S73::SW_PVM
+//    動作 signal SW_PVMをONにして、100ms後にOFFにする。
+//    戻り値：なし
+//    引数：なし
+//--------------------------------------------------------------------------------
+void SoftCameraSW() {
+  setSignal(G2M1::BDL::ZN11S26::HSW_PVM, 1); // 既存の状態にかかわらず１にする。
+  setTimer(msSW_PVM,100);                       // 100msあとにシグナルを0にする。
+  write ("◆%f◆PVMスイッチON",timeNow()/100000.0);
+}
+
+//--------------------------------------------------------------------------------
+// タイマーイベントハンドラ msSW_PVM   
+//    関数SoftCameraSW()でONにしたシグナルSW_PVMを、タイマーカウントアップ後に0にする
+//--------------------------------------------------------------------------------
+on timer msSW_PVM { // SW_PVMをOFFにする
+  cancelTimer (msSW_PVM);
+  setsignal(G2M1::BDL::ZN11S26::HSW_PVM,0);
+  write ("◆%f◆PVMスイッチOFF",timeNow()/100000.0);
+}
+
+/*****************************************************************************************
+システム変数イベントハンドラ  VERI::CameraSoftSW
+  概要  VERIパネルでのカメラSWボタンが押下された時に、SoftCameraSW()を呼び出すことで、0.1秒だけソフトカメラSWをONにする。
+******************************************************************************************/
+on sysvar sysvar::VERI::CameraSoftSW {    // VERIパネルの「カメラソフトSW」ボタンに対応
+  if (sysGetVariableInt(sysvar::VERI::CameraSoftSW) == 0) {
+    return ;
+  }else{
+    SoftCameraSW();
+  }
+}
+
+/*****************************************************************************************
+ 関数 SoftCameraSW_Script()  (ソフトカメラスイッチ (スクリプトからの呼び出し用）)
+    動作 下記のsignal SW_PVMを1にして、100ms後に0にする。
+    対象パネル： PVM_Panel
+    対象コントロール：カメラソフトSW押下情報
+    対象変数：　signal DSBus::CGW_D::AVN1S73::SW_PVM
+******************************************************************************************/
+void SoftCameraSW_Script() { // スクリプトから呼び出された時用の関数 設定秒数の間、スクリプト実行を止める
+  setSignal(G2M1::BDL::ZN11S26::HSW_PVM, 1); // 既存の状態にかかわらず１にする
+  setTimer(msSW_PVM_from_SCRIPT,100);                       // 100msあとにシグナルを0にする。
+  write("CAMERA_ON at SoftCameraSW_SCript");
+}
+
+/*****************************************************************************************
+ タイマーイベントハンドラ msSW_PVM_from_SCRIPT   
+    関数SoftCameraSW_Script()でONにしたシグナルSW_PVMを、タイマーカウントアップ後に0にする
+******************************************************************************************/
+on timer msSW_PVM_from_SCRIPT {
+  cancelTimer (msSW_PVM_from_SCRIPT);
+  setsignal(G2M1::BDL::ZN11S26::HSW_PVM,0);
+  setTimer(msExecInterval, CommandInterval);
+  alive_msExecInterval = 1;
+  write("CAMERA_OFF and msExecInterval set at SoftCameraSW_SCript");
+  
+}
+/*****************************************************************************************
+ 工場調整　
+--------------------------------------------------------------------------------
+ システム変数イベントハンドラ VERI::MICO04   
+    動作：VERIパネルの工場調整ボタンが押された時に呼ばれるハンドラ
+          ボタンの下にステータスを表すラジオボタンが15個並んでおり、これをクリアする。
+          工場調整は、15のステップから構成され、グローバル変数FactoryAdjustStepにてどのステップにいるかを示す
+          関数FactoryAdjust()にて、工場調整を実行する。
+******************************************************************************************/
+on sysvar sysvar::VERI::MICO4 {  // 工場調整用のビューデータ補正の前準備
+  if ((sysGetVariableInt(sysvar::VERI::MICO4) == 0 ) && (FactoryAdjustStep != 0) ){
+    return ;
+  } else {
+    sysSetVariableInt(sysvar::VERI::Factory::S01,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S02,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S03,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S04,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S05,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S06,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S07,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S08,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S09,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S10,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S11,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S12,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S13,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S14,0);
+    sysSetVariableInt(sysvar::VERI::Factory::S15,0);
+    FactoryAdjustStep = 0;
+    FactoryAdjust();   
+    return ;
+  }
+}
+
+/*****************************************************************************************
+ タイマーイベントハンドラ myFactoryRespTimer
+    動作：FactoryAdjust()関数の中で、SID10_ADUパネル、SID2E_PVM、SID3E_ADUパネルの中の送信ボタンが押された場合のボタンを離す処理
+         （実際に押すのではなく、送信ボタンを押すと、割り当てられているシステム変数が1にセットされるので、
+          このハンドラが呼び出されたタイミングで、割り当てられたシステム変数を0にすることでボタンを離した時の動作をさせる 
+******************************************************************************************/
+on timer msFactoryRespTimer { // 工場調整関係の送信ボタンを離す 
+  putValue(EnvSID3E_Tx_ADU,0); 
+  putValue(EnvSID3E_Stop_ADU,0);
+  putValue(EnvSID10_Tx_ADU,0);
+  putValue(EnvSID2E_Tx_PVM,0);
+
+  cancelTimer(msFactoryRespTimer) ;
+  write("送信");
+}
+
+/*****************************************************************************************
+// 環境変数イベントハンドラ EnvSID3E_Resp_Flag_ADU
+//    動作：SID3E_ADUパネルの中の肯定応答、否定応答に割り当てられている環境変数EnvSID3E_Resp_Flag_ADUが変化した場合のイベントハンドラ
+//          SID3E_ADUにて送信ボタンを押し、レスポンスを受信したときに、レスポンスの種類に応じて、この環境変数の値が変わる（SID3E_ADUパネル上のラジオボタン(肯定／否定）に表示）
+//          この環境変数に、126（肯定）または、127（否定）が受信されることで、SID3E_ADUのコマンドレスポンスが得られたことになるので、
+//          工場調整の次のステップに進む（FactoryAdjust()関数を呼び出す）
+******************************************************************************************/
+on envVar EnvSID3E_Resp_Flag_ADU {
+  write("SID3E_Resp_Flag: %d (FactoryAdjustStep %d) ", getValue(EnvSID3E_Resp_Flag_ADU) ,FactoryAdjustStep);
+  if (FactoryAdjustStep == 1) {
+    if ((getValue(EnvSID3E_Resp_Flag_ADU) == 126)/*肯定*/ || (getValue(EnvSID3E_Resp_Flag_ADU) == 127)/*否定*/) {
+      FactoryAdjust(); // 肯定でも否定でもいったん進む
+      return;
+    }
+  }
+// 　工場調整にてSID3Eの送信停止をやめた（志土地さんアドバイス)
+//  if (FactoryAdjustStep == 15) { // SID3E_ADU 通信停止ボタンを押しても肯定も否定も帰ってこず０になる。
+//    if (getValue(EnvSID3E_Resp_Flag_ADU) == 0) {
+//      FactoryAdjust(); // 肯定でも否定でもいったん進む
+//      return;
+//    }
+//  }
+//  write("ここには来ない");  // 最初のステップか最後のステップでなければ何もしない
+}
+
+/*****************************************************************************************
+// 環境変数イベントハンドラ EnvSID10_Resp_Flag_ADU
+//    動作：SID10_ADUパネルの中の肯定応答、否定応答に割り当てられている環境変数EnvSID10_Resp_Flag_ADUが変化した場合のイベントハンドラ
+//          SID10_ADUにて送信ボタンを押し、レスポンスを受信したときに、レスポンスの種類に応じて、この環境変数の値が変わる（SID10_ADUパネル上のラジオボタン(肯定／否定）に表示）
+//          この環境変数に、80（肯定）または、127（否定）が受信されることで、SID3E_ADUのコマンドレスポンスが得られたことになるので、
+//          工場調整の次のステップに進む（FactoryAdjust()関数を呼び出す）
+******************************************************************************************/
+on envVar EnvSID10_Resp_Flag_ADU {
+  write("SID10_Resp_Flag: %d ", getValue(EnvSID10_Resp_Flag_ADU));
+  if ((getValue(EnvSID10_Resp_Flag_ADU) == 80)/*肯定*/ || (getValue(EnvSID3E_Resp_Flag_ADU) == 127)/*否定*/) {
+      FactoryAdjust(); // 肯定でも否定でもいったん進む
+  }
+}
+
+/*****************************************************************************************
+// 環境変数イベントハンドラ EnvSID2E_Resp_Flag_PVM
+//    動作：SID2E_PVMパネルの中の肯定応答、否定応答に割り当てられている環境変数EnvSID2E_Resp_Flag_PVMが変化した場合のイベントハンドラ
+//          SID2E_ADUにて送信ボタンを押し、レスポンスを受信したときに、レスポンスの種類に応じて、この環境変数の値が変わる（SID2E_ADUパネル上のラジオボタン(肯定／否定）に表示）
+//          この環境変数に、110（肯定）または、127（否定）が受信されることで、SID2E_PVMのコマンドレスポンスが得られたことになるので、
+//          工場調整の次のステップに進む（FactoryAdjust()関数を呼び出す）
+******************************************************************************************/
+on envVar EnvSID2E_Resp_Flag_PVM {
+  write("EnvSID2E_Resp_Flag_PVM %d", getValue(EnvSID2E_Resp_Flag_PVM));
+  if ((getValue(EnvSID2E_Resp_Flag_PVM) == 110)/*肯定*/) { // || (getvalue(EnvSID2E_Resp_Flag_PVM) == 127)/*否定*/) {
+      FactoryAdjust(); //　肯定の時に次へ進む
+  }
+}
+//動作確認用
+on envVar EnvSID10_ID_ADU {
+  write("EnvSID10_ID_ADU %d", getValue(EnvSID10_ID_ADU));
+}
+
+//動作確認用
+on envVar EnvSID2E_DID_Tx_PVM {
+  write("EnvSID2E_DID_Tx_PVM %x", getValue(EnvSID2E_DID_Tx_PVM));
+}
+
+//動作確認用
+on envVar EnvSID2E_id5148_pos26_Tx_PVM {
+  write("EnvSID2E_id5148_pos26_Tx_PVM %d", getValue(EnvSID2E_id5148_pos26_Tx_PVM));
+}
+
+/*****************************************************************************************
+// 関数 FactoryAdjust()  SID2E_PVMパネルで行う、工場調整の設定を行う
+//    説明 関係するコマンドの受信ごとにこの関数が呼ばれる。
+//      グローバル変数 FactoryAdjustStep によって、FactoryAdjustStep()関数の動作が変わる
+//       FactoryAdjustStep   :   動作
+//           0               :   SID3E_ADUパネルにて送信ボタンを押す。 FactoryAdjustStepを1に進めて、関数を抜ける
+//                               これのレスポンスを判定するEnvSID3E_Resp_Flag_ADUのイベントハンドラから再度この関数が呼ばれることで、
+//                               次のステップである 1 の処理が実行される
+//           1               :   SID10_ADUパネルで、$01デフォルトを選択して送信ボタンを押す。FactoryAdjustStepを2に進めて関数を抜ける
+//                               これのレスポンスを判定するEnvSID10_Resp_Flag_ADUのイベントハンドラから再度この関数が呼ばれることで、
+//                               次のステップである 2 の処理が実行される
+//           2               :   SID10_ADUパネルで、$03拡張を選択して、送信ボタンを押す。FactorAdjustStepを3に進めて関数を抜ける
+//                               これのレスポンスを判定するEnvSID10_Resp_Flag_ADUのイベントハンドラから再度この関数が呼ばれることで、
+//                               次のステップである 3 の処理が実行される
+//           3               :   SID2E_PVMパネルで、$5140 光軸調整乗員書き込みを送信する。FactoryAdjstStepを4にしておき、レスポンスがきたら、次ステップ4に進む
+//           4               :   SID2E_PVMパネルで、$5141 光軸調整判定閾値   を送信する。FactoryAdjstStepを5にしておき、レスポンスがきたら、次ステップ5に進む
+//           5               :   SID2E_PVMパネルで、$5142 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置(後方)を送信する。FactoryAdjstStepを6にしておき、レスポンスがきたら、次ステップ6に進む
+//           6               :   SID2E_PVMパネルで、$5143 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置(前方)を送信する。FactoryAdjstStepを7にしておき、レスポンスがきたら、次ステップ7に進む
+//           7               :   SID2E_PVMパネルで、$5144 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置_バックカメラ正面マーカー(向き)を送信する。FactoryAdjstStepを8にしておき、レスポンスがきたら、次ステップ8に進む
+//           8               :   SID2E_PVMパネルで、$5145 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置_バックカメラ正面マーカーを送信する。FactoryAdjstStepを9にしておき、レスポンスがきたら、次ステップ9に進む
+//           9               :   SID2E_PVMパネルで、$5146 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置_フロントカメラ正面マーカー(向き)を送信する。FactoryAdjstStepを10にしておき、レスポンスがきたら、次ステップ10に進む
+//           10              :   SID2E_PVMパネルで、$5147 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置_フロントカメラ正面マーカーを送信する。FactoryAdjstStepを11にしておき、レスポンスがきたら、次ステップ11に進む
+//           11              :   SID2E_PVMパネルで、$5148 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置_サイドカメラ正面マーカー(向き)光軸調整乗員書き込みを送信する。FactoryAdjstStepを12にしておき、レスポンスがきたら、次ステップ12に進む
+//           12              :   SID2E_PVMパネルで、$5149 自動光軸ﾀｰｹﾞｯﾄﾏｰｶｰ位置_サイドカメラ正面マーカー光軸調整乗員書き込みを送信する。FactoryAdjstStepを13にしておき、レスポンスがきたら、次ステップ13に進む
+//           13              :   SID10_ADUパネルで、$01デフォルトを選択して送信ボタンを押す。FactoryAdjustStep15にしておき、レスポンスが来たら、次ステップ15へ進む
+//           14              :   SID3E_ADUパネルで、送信停止を送信する（不要とのことなので欠番）
+//           15              :   スクリプトの次の行を実行するたえに、スクリプト実行タイマー msExecIntervalをセットする。次はタイマーハンドラmsExecIntervalにて、次の行を実施する
+******************************************************************************************/
+void FactoryAdjust() { //工場調整
+  write ("FactotyAdjStep: %d", FactoryAdjustStep ) ;
+  if (FactoryAdjustStep == 0) {
+    // 1: SID3E_ADU $00 送信
+    putValue(EnvSID3E_RspNecessity_ADU,0);
+    putValue(EnvSID3E_Tx_ADU,1); // 送信ボタンを押す
+    setTimer(msFactoryRespTimer,1); // 1ms後にボタンを離す    
+    FactoryAdjustStep = 1;
+//    return;
+  } else if (FactoryAdjustStep == 1) {
+    sysSetVariableInt(sysvar::VERI::Factory::S01,1);  // １つめ完了　２つ目へ
+      // 2: SID10_ADU $01:デフォルト
+    putValue(EnvSID10_ID_ADU, 1); // $01:デフォルト
+    putValue(EnvSID10_RspNecessity_ADU, 0); // アクティブレスポンス要
+    putValue(EnvSID10_Tx_ADU,1); // 送信ボタンを押す
+    setTimer(msFactoryRespTimer,1); // 1ms後にボタン離す
+    FactoryAdjustStep = 2;
+  } else if (FactoryAdjustStep == 2) {
+    sysSetVariableInt(sysvar::VERI::Factory::S02,1); //２つめ完了３つめへ進む
+      // 3: SID10_ADU $03:拡張
+    putValue(EnvSID10_ID_ADU, 3); //$03:拡張
+    putValue(EnvSID10_RspNecessity_ADU, 0); //アクティブレスポンス要
+    putValue(EnvSID10_Tx_ADU,1); //　送信ボタン押す
+    setTimer(msFactoryRespTimer,1); // 1ms後にボタン離す
+    FactoryAdjustStep = 3;
+  } else if (FactoryAdjustStep == 3) {
+    sysSetVariableInt(sysvar::VERI::Factory::S03,1); // ３つ目完了
+      // 4: SID2E_PVM $5140:光軸調整乗員書き込み   01
+    putValue(EnvSID2E_DID_Tx_PVM,0x5140); // 
+    putValue(EnvSID2E_id5140_pos10_Tx_PVM,1) ;
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,10);
+    FactoryAdjustStep = 4;
+  } else if (FactoryAdjustStep == 4) {
+    sysSetVariableInt(sysvar::VERI::Factory::S04,1);
+      // 5: SID2E_PVM $5141:光軸調整検査判定... 　    // Automationの手順では送っていないが、MICOの手順書では送っている
+    putValue(EnvSID2E_DID_Tx_PVM,0x5141);
+    putValue(EnvSID2E_id5141_pos10_Tx_PVM,0x0);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,10);
+    FactoryAdjustStep = 5;
+  } else if (FactoryAdjustStep == 5) {
+    sysSetVariableInt(sysvar::VERI::Factory::S05,1);
+      // 6: SID2E_PVM $5142:自動光軸ターゲットマーカー位置(後方)_PVM  
+    putValue(EnvSID2E_DID_Tx_PVM,0x5142);
+    putValue(EnvSID2E_id5142_pos20_Tx_PVM,4850);
+    putValue(EnvSID2E_id5142_pos40_Tx_PVM,1400);
+    putValue(EnvSID2E_id5142_pos60_Tx_PVM,220);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 6;
+  } else if (FactoryAdjustStep == 6) {
+    sysSetVariableInt(sysvar::VERI::Factory::S06,1);
+      // 7: SID2E_PVM $5143:自動光軸ターゲットマーカー位置　1500、1400、220
+    putValue(EnvSID2E_DID_Tx_PVM,0x5143);
+    putValue(EnvSID2E_id5143_pos20_Tx_PVM,1500);
+    putValue(EnvSID2E_id5143_pos40_Tx_PVM,1400);
+    putValue(EnvSID2E_id5143_pos60_Tx_PVM,220);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 7;
+  } else if (FactoryAdjustStep == 7) {
+    sysSetVariableInt(sysvar::VERI::Factory::S07,1);
+      // 8: SID2E_PVM $5144:自動光軸ターゲットマーカー　　　0040  ターゲットマーカーH方向のみ"1", 他は"0"
+    putValue(EnvSID2E_DID_Tx_PVM,0x5144);
+    putValue(EnvSID2E_id5144_pos17_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos16_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos15_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos14_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos13_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos12_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos11_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos10_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos27_Tx_PVM,0);
+    putValue(EnvSID2E_id5144_pos26_Tx_PVM,64);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 8;
+  } else if (FactoryAdjustStep == 8) {
+    sysSetVariableInt(sysvar::VERI::Factory::S08,1);
+      // 9: SID2E_PVM $5145:自動光軸ターゲットマーカー　　　5600、0、50
+    putValue(EnvSID2E_DID_Tx_PVM,0x5145);
+    putValue(EnvSID2E_id5145_pos20_Tx_PVM,5600);
+    putvalue(EnvSID2E_id5145_pos40_Tx_PVM,0);
+    putvalue(EnvSID2E_id5145_pos60_Tx_PVM,50);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 9;
+  } else if (FactoryAdjustStep == 9) {
+    sysSetVariableInt(sysvar::VERI::Factory::S09,1);
+      //10: SID2E_PVM $5146:自動光軸ターゲットマーカー　　　0040　ターゲットマーカーH方向のみ"1", 他は"0"
+    putValue(EnvSID2E_DID_Tx_PVM,0x5146);
+    putValue(EnvSID2E_id5146_pos17_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos16_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos15_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos14_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos13_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos12_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos11_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos10_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos27_Tx_PVM,0);
+    putValue(EnvSID2E_id5146_pos26_Tx_PVM,64);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 10;
+  } else if (FactoryAdjustStep == 10) {
+    sysSetVariableInt(sysvar::VERI::Factory::S10,1);
+      //11: SID2E_PVM $5147:自動光軸ターゲットマーカー　　　2260、0、50
+    putvalue(EnvSID2E_DID_Tx_PVM,0x5147);
+    putvalue(EnvSID2E_id5147_pos20_Tx_PVM,2260);
+    putvalue(EnvSID2E_id5147_pos40_Tx_PVM,0);
+    putvalue(EnvSID2E_id5147_pos60_Tx_PVM,50);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 11;    
+  } else if (FactoryAdjustStep == 11) {
+    sysSetVariableInt(sysvar::VERI::Factory::S11,1);
+      //12: SID2E_PVM $5148:自動光軸ターゲットマーカー　　　0040  ターゲットマーカーH方向のみ"1!, 他は"0"
+    putvalue(EnvSID2E_DID_Tx_PVM,0x5148);
+    putValue(EnvSID2E_id5148_pos17_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos16_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos15_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos14_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos13_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos12_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos11_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos10_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos27_Tx_PVM,0);
+    putValue(EnvSID2E_id5148_pos26_Tx_PVM,64);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 12;
+  } else if (FactoryAdjustStep == 12) {
+    sysSetVariableInt(sysvar::VERI::Factory::S12,1);
+    //13: SID2E_PVM $5149:自動光軸ターゲットマーカー　　　0,1450,700
+    putValue(EnvSID2E_DID_Tx_PVM,0x5149);
+    putvalue(EnvSID2E_id5149_pos20_Tx_PVM,0);
+    putvalue(EnvSID2E_id5149_pos40_Tx_PVM,1450);
+    putvalue(EnvSID2E_id5149_pos60_Tx_PVM,700);
+    putValue(EnvSID2E_Tx_PVM,1);  // 送信ボタン押す
+    setTimer(msFactoryRespTimer,1);
+    FactoryAdjustStep = 13;
+  } else if (FactoryAdjustStep == 13) {
+    sysSetVariableInt(sysvar::VERI::Factory::S13,1);
+    //14: SID10_ADU $01:デフォルト
+    putValue(EnvSID10_ID_ADU, 1); // $01:デフォルト
+    putValue(EnvSID10_RspNecessity_ADU, 0); // アクティブレスポンス要
+    putValue(EnvSID10_Tx_ADU,1); // 送信ボタンを押す
+    setTimer(msFactoryRespTimer,1); // 1ms後にボタン離す
+    FactoryAdjustStep = 15;    // Step14を飛ばす
+  } else if (FactoryAdjustStep == 14) {
+    sysSetVariableInt(sysvar::VERI::Factory::S14,1);
+    //15: SID3E_ADU $00 送信停止
+    // このコマンドは応答が帰ってこないように見える。250805 志土地さんに確認したところ不要ではないかとのことで削除
+//    putValue(EnvSID3E_Resp_Flag_ADU,0);
+//    putValue(EnvSID3E_RspNecessity_ADU,0);
+//    putValue(EnvSID3E_Stop_ADU,1); // 送信ボタンを押す
+//    setTimer(msFactoryRespTimer,1); // 1ms後にボタンを離す        
+//    FactoryAdjustStep = 15;
+  } else if (FactoryAdjustStep == 15) {
+    sysSetVariableInt(sysvar::VERI::Factory::S15,1);
+    setTimer(msExecInterval,CommandInterval);
+    alive_msExecInterval = 1;
+  } else {
+    write("ここには来ない　at factoryadjust()");
+  }
+}
+  
+/*****************************************************************************************
+// ダイアグ 1483送信
+//--------------------------------------------------------------------------------
+// 関数 outputExtMsg1483()  
+//    引数なし
+//    戻り値なし
+//  動作：ダイアグ 1483送信
+//    受信の5バイト目が、ビューデータ生成の状態を表す 0x05になったら完了
+//    拡張ID：0x18DA75E0
+//    DLC : 8バイト
+//    送信データ：0x03, 0x22, 0x14, 0x83, 0x00, 0x00, 0x00, 0x00(後ろの４つは意味なし）
+//    受信データ：0x04, 0x62, 0x14, 0x83, 0xXX, 0x00, 0x00, 0x00(後ろの３つは意味なし）
+//        data(5)の0xXXがビューデータ生成の状態
+//    対象変数：　signal DSBus::CGW_D::AVN1S73::SW_PVM
+//    動作 ダイアグ1483を送信する
+//    条件 いつでも送信可能
+******************************************************************************************/
+void outputExtMsg1483() {
+  ExtMsg1483.id = mkExtID(0x18DA75E0);
+  ExtMsg1483.dlc=8;
+  ExtMsg1483.byte(0) = 0x03;
+  ExtMsg1483.byte(1) = 0x22;
+  ExtMsg1483.byte(2) = 0x14;
+  ExtMsg1483.byte(3) = 0x83;
+  output(ExtMsg1483);
+}
+
+/*****************************************************************************************
+// ダイアグ 1483送信
+// VERI パネルから、Msg1483ボタンを押した時の動作
+******************************************************************************************/
+on sysvar sysvar::VERI::Msg1483 {
+  if (sysGetVariableInt(sysvar::VERI::Msg1483) == 0) {
+    return;
+  } else {
+    outputExtMsg1483();
+    write("Send 1483"); 
+    sysSetVariableInt(sysvar::VERI::Msg1483_ret5, 0);  //表示消し
+    sysSetVariableInt(sysvar::VERI::Msg1483_ret_other5, 0); // 表示消し
+  }
+}
+
+/*****************************************************************************************
+// ダイアグ1483のレスポンスの受信 (スクリプトからの1483と、パネルからの1483の両方に対応
+// 拡張IDのためか、DIDのみ選択して受信することができないため、全部受信してIDを比較して受信することにした
+******************************************************************************************/
+on message * {
+//  write("%X", this.id);
+  if (this.id == mkExtId(0x18DAE075)) {
+    // msg 1483処理ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+    if ((this.byte(2)==0x14) && (this.byte(3)==0x83)) { 
+//    write("Receive 1483 %02X %02X %02X %02X %02X %02X %02X %02X",this.byte(0),this.byte(1),this.byte(2),this.byte(3),this.byte(4),this.byte(5),this.byte(6),this.byte(7));
+    write("Receive 1483 %02X",this.byte(4));
+      if (this.byte(4) == 5) {
+        sysSetVariableInt(sysvar::VERI::Msg1483_ret5, 1);
+        sysSetVariableInt(sysvar::VERI::Msg1483_ret_other5, 0);
+      } else {
+        sysSetVariableInt(sysvar::VERI::Msg1483_ret_other5, 1);
+        sysSetVariableInt(sysvar::VERI::Msg1483_ret5, 0);
+      }
+      
+      sysSetVariableInt(sysvar::VERI::Msg1483_retval, this.byte(4));
+    
+    
+      if (isMsg1483FromScript == 1) {// スクリプトからの呼び出し
+        if (this.byte(4) == 5) {  //戻り値が５の場合、通常の実行に戻る
+          cancelTimer(msMsg1483Retry); //リトライタイマーのキャンセル    
+                                     //スクリプト実行再開
+          setTimer(msExecInterval,CommandInterval);
+          alive_msExecInterval = 1;
+                                    //呼び出し元を示す変数を戻す（これをしないと、パネルからの呼び出しでリトライしてしまう）
+          isMsg1483FromScript = 0;
+        } else {                  //戻り値が５以外の場合リトライする
+        //リトライタイマーのセット
+          setTimer(msMsg1483Retry, 500) ;
+        } 
+      }else { // スクリプトからではない呼び出し（パネルボタン）
+        }
+      }
+    // msg DID処理ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー    
+    // パネル呼び出しによるDID取得
+    //-------13A0---------
+//    write("this.byte(2)%02X,this.byte(3)%02X",this.byte(2),this.byte(3));
+    if ((waitA0 = 1)&&(this.byte(2)==0x13)&&(this.byte(3)==0xA0)) {
+      ret_BackNum = this.byte(4);
+      write("LastBackView: %02X",ret_BackNum);
+      sysSetVariableInt(sysvar::VERI::DID::LastBackViewNum,ret_BackNum);
+      updateLastBackViewText(ret_BackNum);
+      waitA0 = 0;
+    }
+    //-------13A1---------
+    if ((waitA1 = 1)&&(this.byte(2)==0x13)&&(this.byte(3)==0xA1)) {
+      ret_FrontNum = this.byte(4);
+      write("LastFrontView: %02X",ret_FrontNum);
+      sysSetVariableInt(sysvar::VERI::DID::LastFrontViewNum,ret_FrontNum);
+      updateLastFrontViewText(ret_FrontNum);
+      waitA1 = 0;
+    }
+    //-------13A3---------
+    if ((waitA3 = 1)&&(this.byte(2)==0x13)&&(this.byte(3)==0xA3)) {
+      ret_AutoDisp = this.byte(4);
+      write("LastAutoDisp: %02X",ret_AutoDisp);
+      sysSetVariableInt(sysvar::VERI::DID::AutoDispModeNum,ret_AutoDisp);
+      updateAutoDispMode(ret_AutoDisp);
+      waitA3 = 0;
+    }
+    //-------13A4------------
+    if ((waitA4 = 1)&&(this.byte(2)==0x13)&&(this.byte(3)==0xA4)) {
+      ret_AutoCamera = this.byte(4);
+      write("LastAutoCamera: %02X",ret_AutoCamera);
+      sysSetVariableInt(sysvar::VERI::DID::CameraViewAutoOffNum,ret_AutoCamera);
+      updateCameraViewAutoOff(ret_AutoCamera);
+      waitA4 = 0;
+    }
+    
+    //コマンドからの呼び出しによるDID取得
+    if(initViewActive == 1)
+    {
+      //-------13A0------------
+    if ((this.byte(2)==0x13)&&(this.byte(3)==0xA0)) {
+        ret_BackNum = this.byte(4);
+        sysSetVariableInt(sysvar::VERI::DID::LastBackViewNum,ret_BackNum);
+        updateLastBackViewText(ret_BackNum);
+        didlow = 0xA1;
+        setTimer(sendDID,100);
+        write("INIT_VIEW : send DID 13A0");
+        return;
+      } else if ((this.byte(2)==0x13)&&(this.byte(3)==0xA1)) {
+      //-------13A1-------------
+        ret_FrontNum = this.byte(4);
+        sysSetVariableInt(sysvar::VERI::DID::LastFrontViewNum,ret_FrontNum);
+        updateLastFrontViewText(ret_FrontNum);
+        didlow = 0xA3;
+        setTimer(sendDID,100);
+        write("INIT_VIEW : send DID 13A1");
+        return;
+      } else if ((this.byte(2)==0x13)&&(this.byte(3)==0xA3)) {
+      //--------13A3-------------
+        ret_AutoDisp = this.byte(4);
+        sysSetVariableInt(sysvar::VERI::DID::AutoDispModeNum,ret_AutoDisp);
+        updateAutoDispMode(ret_AutoDisp);
+        didlow = 0xA4;
+        setTimer(sendDID,100);
+        write("INIT_VIEW : send DID 13A3");
+        return;
+      } else if ((this.byte(2)==0x13)&&(this.byte(3)==0xA4)) {
+      //--------13A4--------------
+        ret_AutoCamera = this.byte(4);
+        sysSetVariableInt(sysvar::VERI::DID::CameraViewAutoOffNum,ret_AutoCamera);
+        updateCameraViewAutoOff(ret_AutoCamera);
+        sysSetVariableInt(sysvar::VERI::DID::didReceived,1);
+        write("INIT_VIEW : send DID 13A4");
+        return;
+      }
+    }
+  }
+}
+
+/*****************************************************************************************
+//DID取得用のタイマー
+*****************************************************************************************/
+on timer sendDID{
+  write("DID送信");
+  if ((didlow == 0xA0) || (didlow == 0xA1) || (didlow == 0xA3) || (didlow == 0xA4)){
+    outputDiagReq(didlow);
+  }
+  cancelTimer(sendDID);
+}
+
+/*****************************************************************************************
+ ダイアグ1483のリトライタイマー　
+--------------------------------------------------------------------------------
+ タイマーイベントハンドラ msMsg1483Retry   
+    動作：タイムアップにて、ダイアグ1483を再送する
+******************************************************************************************/
+on timer msMsg1483Retry {  // 1483のリトライタイマー
+  cancelTimer(msMsg1483Retry);
+  outputExtMsg1483();
+}
+
+/*
+on sysvar sysvar::VERI::TouchPanelAvailable {
+  if (sysGetVariableInt(sysvar::VERI::TouchPanelAvailable) == 0) {
+    // タッチパネル無効
+    cancelTimer(
+  } else {
+    // タッチパネル有効
+  }
+}
+*/
+/*****************************************************************************************
+コンボボックスのテスト用
+******************************************************************************************/
+on sysvar sysvar::VERI::GetC { //コンボボックステスト用
+  if (sysGetVariableInt(sysvar::VERI::GetC) == 0) {
+    return;
+  }
+//  write("0x%04X",getValue(SigDt_BDB1S08_STRG_WHL));
+  
+}
+
+/*****************************************************************************************
+キーイベントハンドラ msMsg1483Retry   
+    動作：キーボードでAを押したら、Folder Read and Runボタンを動作させる
+******************************************************************************************/
+on key 'a'{ // Folder and Run shortcut
+  
+  sysSetVariableInt(sysvar::VERI::sysReadFolder, 1);
+  
+  //write("aaa"); 
+  
+}
+
+/***************************************************************************************
+//DID13A0取得
+//--------------------------------------------------------------------------------
+// 関数 outputDiagReq()
+//didlow:
+//  0xA0 → 13A0(LastBackView)
+//  0xA1 → 13A1(LastFrontView)
+//  0xA3 → 13A3(AutoDispMode)
+//  0xA4 → 13A4(CameraViewAutoOff)
+******************************************************************************************/
+void outputDiagReq(byte didlow)
+{
+  DiagReq.id = mkExtId(DIAG_REQ_ID);
+  DiagReq.dlc=8;
+  
+  DiagReq.byte(0) = 0x03;
+  DiagReq.byte(1) = 0x22;
+  DiagReq.byte(2) = 0x13;
+  DiagReq.byte(3) = didlow;
+  DiagReq.byte(4) = 0x00;
+  DiagReq.byte(5) = 0x00;
+  DiagReq.byte(6) = 0x00;
+  DiagReq.byte(7) = 0x00;
+  output(DiagReq);
+}
+
+
+/*****************************************************************************************
+LastBackView3状態表示
+-1：未取得
+0：ナローバックビュー
+1：ワイドバックビュー
+*****************************************************************************************/
+void updateLastBackViewText(int v){
+  if(v == 0) {
+    sysSetVariableString(sysvar::VERI::DID::LastBackViewText,"ナローバックビュー");
+  } else if(v == 1){
+    sysSetVariableString(sysvar::VERI::DID::LastBackViewText,"ワイドバックビュー");
+  } else {
+    sysSetVariableString(sysvar::VERI::DID::LastBackViewText,"未取得");
+  }
+}
+
+
+
+/**************************************************************************************
+パネルボタン：getLastBackView
+**************************************************************************************/
+on sysvar sysvar::VERI::DID::getLastBackView{
+  if (sysGetVariableInt(sysvar::VERI::DID::getLastBackView) == 0) {
+    return;
+    
+  } else if (initViewActive == 1){
+    write("INIT_VIEW running");
+    return;
+    
+  } else {
+    
+    sysSetVariableInt(sysvar::VERI::DID::LastBackViewNum,-1);
+    updateLastBackViewText(-1);
+    
+    waitA0 = 1;
+    outputDiagReq(0xA0);
+    write("send DID13A0");
+    
+  }
+}
+
+
+/*****************************************************************************************
+LastFrontView3状態表示
+-1：未取得
+0：ワイドフロントビュー
+1：サイドクリアランスビュー
+*****************************************************************************************/
+void updateLastFrontViewText(int v){
+  if(v == 0) {
+    sysSetVariableString(sysvar::VERI::DID::LastFrontViewText,"ワイドフロントビュー");
+  } else if(v == 1){
+    sysSetVariableString(sysvar::VERI::DID::LastFrontViewText,"サイドクリアランスビュー");
+  } else {
+    sysSetVariableString(sysvar::VERI::DID::LastFrontViewText,"未取得");
+  }
+}
+
+/**************************************************************************************
+パネルボタン：getLastFrontView
+**************************************************************************************/
+on sysvar sysvar::VERI::DID::getLastFrontView{
+  if (sysGetVariableInt(sysvar::VERI::DID::getLastFrontView) == 0) {
+    return;
+    
+  } else if (initViewActive == 1){
+    write("INIT_VIEW running");
+    return;
+    
+  } else {
+    sysSetVariableInt(sysvar::VERI::DID::LastFrontViewNum,-1);
+    updateLastFrontViewText(-1);
+    
+    waitA1 = 1;
+    outputDiagReq(0xA1);
+    write("send DID13A1");
+    
+  }
+}
+
+/*****************************************************************************************
+AutpDispMode3状態表示（自動表示モード）
+-1：未取得
+0：OFF
+1：ON
+*****************************************************************************************/
+void updateAutoDispMode(int v){
+  if(v == 0) {
+    sysSetVariableString(sysvar::VERI::DID::AutoDispModeText,"OFF");
+  } else if(v == 1){
+    sysSetVariableString(sysvar::VERI::DID::AutoDispModeText,"ON");
+  } else {
+    sysSetVariableString(sysvar::VERI::DID::AutoDispModeText,"未取得");
+  }
+}
+
+/**************************************************************************************
+パネルボタン：getAutoDispMode（自動表示モード状態取得）
+**************************************************************************************/
+on sysvar sysvar::VERI::DID::getAutoDispMode{
+  if (sysGetVariableInt(sysvar::VERI::DID::getAutoDispMode) == 0) {
+    return;
+    
+  } else if (initViewActive == 1){
+    write("INIT_VIEW running");
+    return;
+    
+  } else {
+    sysSetVariableInt(sysvar::VERI::DID::AutoDispModeNum,-1);
+    updateAutoDispMode(-1);
+    
+    waitA3 = 1;
+    outputDiagReq(0xA3);
+    write("send DID13A3");
+    
+  }
+}
+
+/*****************************************************************************************
+CameraViewAutoOff3状態表示（カメラ映像自動オフ）
+-1：未取得
+0：ON
+1：OFF
+*****************************************************************************************/
+void updateCameraViewAutoOff(int v){
+  if(v == 0) {
+    sysSetVariableString(sysvar::VERI::DID::CameraViewAutoOffText,"ON");
+  } else if(v == 1){
+    sysSetVariableString(sysvar::VERI::DID::CameraViewAutoOffText,"OFF");
+  } else {
+    sysSetVariableString(sysvar::VERI::DID::CameraViewAutoOffText,"未取得");
+  }
+}
+
+/**************************************************************************************
+パネルボタン：getCameraViewAutoOff（カメラ映像自動オフ）
+**************************************************************************************/
+on sysvar sysvar::VERI::DID::getCameraViewAutoOff{
+  if (sysGetVariableInt(sysvar::VERI::DID::getCameraViewAutoOff) == 0) {
+    return;
+  
+  } else if (initViewActive == 1){
+    write("INIT_VIEW running");
+    return;
+    
+  } else {
+    sysSetVariableInt(sysvar::VERI::DID::CameraViewAutoOffNum,-1);
+    updateCameraViewAutoOff(-1);
+    
+    waitA4 = 1;
+    outputDiagReq(0xA4);
+    write("send DID13A4");
+    
+  }
+}
+
+/******************************************************************************************
+//initview() 初期化関数
+******************************************************************************************/
+ void initview(){
+  //DIDを使って現在値を取得する
+  didlow = 0xA0; // DIDの番号
+  setTimer(sendDID,20);
+
+}
+
+/******************************************************************************************
+//DID取得完了後
+//初期値かどうか判断し、InitViewSeqタイマーを使って、初期化する
+//initTargetView 0:ラストバックビュー 1:ラストフロントビュー 2:自動表示モード 3:カメラ映像自動
+******************************************************************************************/
+on sysvar sysvar::VERI::DID::didReceived {
+  if (sysGetVariableInt(sysvar::VERI::DID::didReceived) == 0) {
+    return;
+  } else {
+    initTargetView = 0; //初期化ターゲットを0:ラストバックビューから始める
+    initViewStep = 1;
+    write("初期化開始");
+
+    setTimer(InitViewSeq,initTargetViewInterval);
+    sysSetVariableInt(sysvar::VERI::DID::didReceived,0) ;
+  }
+}
+
+/******************************************************************************************
+// ラスト画初期化の処理を行う
+//initTargetView 0:ラストバックビュー 1:ラストフロントビュー 2:自動表示モード 3:カメラ映像自動
+*******************************************************************************************/
+on timer InitViewSeq{
+  
+  cancelTimer(InitViewSeq);  
+  
+  if(initTargetView == 0){//　ラストバックビューの初期化処理
+    if(ret_BackNum == 1) {               //ラストバックビューの戻り値が１：ワイドバックビューの場合。
+//      write("LastBackView:ワイドバックビュー");
+      switch(initViewStep){
+        case 1:                                       // リバースに入れる
+          write("1:リバースに入れる");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 2); 
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,1);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,1);
+          initViewStep = 2;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 2:                                      // ミラーを開く
+          write("ミラーを開く");
+          setSignal(G2M1::BDL::BDB1S04::MRMV_R,0) ;
+          initViewStep = 3;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 3:                                      // 車速を0kmにする
+          write("車速を0kmにする");
+          setSignal(G2M1::DDM21::VSC1G13::SP1,0);
+          initViewStep = 4;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 4:                                      // 画面切り替えボタンを押下する
+          write("画面切り替えボタンを押下する");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,1000);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,250);
+          initViewStep = 5;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 5:                                      // 画面切り替えボタンを離す
+          write("画面切り替えボタンを離す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+          initViewStep = 6;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 6:                                     // パーキングに戻す
+          write("パーキングに戻す");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 1); 
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,0);
+          initTargetView = 1;                           // 次は1：ラストフロントビューの処理
+          initViewStep = 1;                               // カウンタを１に
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        default:
+          cancelTimer(InitViewSeq);
+          write("DID初期化エラー0");
+          return;
+      }
+    } else {                   //ラストバックビューの戻り値が0：ナローバックビューの場合。
+      write("元からナローバックビュー");
+      initTargetView = 1;                               // 何もせずに、1:ラストフロントビューの処理に進む
+      initViewStep = 1; 
+      setTimer(InitViewSeq,initTargetViewInterval);
+      return;
+    }
+  } else if (initTargetView == 1) { // ラストフロントビューの初期化処理
+    if (ret_FrontNum == 1) {                  // ラストフロントビューの戻り値が1: サイドクリアランスビューの場合。
+      switch(initViewStep) {
+        case 1:                                         // ドライブに入れる
+          write("ドライブに入れる");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 4); 
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,1);
+          initViewStep = 2;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 2:                                        // ミラー開く
+          write("ミラー開く");
+          setSignal(G2M1::BDL::BDB1S04::MRMV_R,0) ;
+          initViewStep = 3;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 3:                                      // 車速を0kmにする
+          write("車速を0kmにする");
+          setSignal(G2M1::DDM21::VSC1G13::SP1,0);
+          if (ret_AutoDisp == 1) {  // AutoDispが1:ONの場合、PVMが表示されているため、カメラスイッチを押さない　ラスト画が表示される（サイドフロントビュー）
+            initViewStep = 8;       // 画面切替ボタンを１回押す　（ワイドフロントビュー）（ラスト画更新）
+          } else {                  // AutoDispが1でない場合、PVMが表示されていないため、カメラスイッチを押す　　ワイドフロントビューが表示される。（固定）
+            initViewStep = 4;       // カメラスイッチを押す（ワイドフロント）→　画面切替押下１回目（サイドフロントビュー表示）　→　画面切替押下２回目（ワイドフロントビュー）（これでラスト画が更新）
+          }
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 4:                                      // カメラスイッチを押す  (TSS4とBEVでは動きが違うので注意)
+          write(" カメラスイッチを押す ");
+          setSignal(G2M1::CDC21::AVN1S73::SW_PVM, 1); // 既存の状態にかかわらず1にする
+          //          sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT2,1);
+          initViewStep = 5;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 5:                                      // カメラスイッチを離す  (TSS4とBEVでは動きが違うので注意)
+          write("カメラスイッチを離す");
+          setSignal(G2M1::CDC21::AVN1S73::SW_PVM, 0); // 既存の状態にかかわらず0にする
+          //sysSetVariableInt(sysvar::IO::IOPiggy1::DOUT2,0);
+          initViewStep = 6;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 6:                                      // 画面切り替えボタンを押す　　
+          write("画面切り替えボタンを押す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,1000);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,250);
+          initViewStep = 7;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 7:                                      // 画面切り替えボタンを離す
+          write("画面切り替えボタンを離す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+          initViewStep = 8;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 8:                                      // 画面切り替えボタンを押す　　
+          write("画面切り替えボタンを押す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,1000);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,250);
+          initViewStep = 9;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 9:                                      // 画面切り替えボタンを離す
+          write("画面切り替えボタンを離す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+          initViewStep = 10;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 10:                                      // パーキングに戻す
+          write("パーキングに戻す");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 1); 
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,0);
+          initTargetView = 2;                        // 次は2：自動表示モードの処理
+          initViewStep = 1;                               // カウンタを１に
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        default:
+          cancelTimer(InitViewSeq);
+          write("DID初期化エラー1");
+          return;
+      }
+    } else {                                 // ラストフロントビューの戻り値が0: ワイドフロントビューの場合
+      write("元からワイドフロントビュー");
+      initTargetView = 2;                               // 何もせずに、2:自動表示モードーの処理に進む
+      initViewStep = 1; 
+      setTimer(InitViewSeq,initTargetViewInterval);
+      return;
+    }
+  } else if (initTargetView == 2) { // 自動表示モードの初期化処理　
+    if (ret_AutoDisp == 1){             //自動表示モードの戻り値が　1:ONの場合の初期化処理
+      switch(initViewStep){
+        case 1:                                         //ドライブに入れる
+          write("ドライブに入れる");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 4);  
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,1);
+          initViewStep = 2;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 2:                                         //自動表示ボタンを押す
+          write("自動表示ボタンを押す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,1000);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,400);
+          initViewStep = 3;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 3:                                         //自動表示ボタンを離す
+          write("自動表示ボタンを離す");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);
+          initViewStep = 4;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 4:                                      // パーキングに戻す
+          write("パーキングに戻す");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 1);
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,0);
+          initTargetView = 3;                         // 次は3: カメラ映像自動OFFの処理
+          initViewStep = 1;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        default:
+          cancelTimer(InitViewSeq);
+          write("DID初期化エラー2");
+          return;
+      }
+    } else {                                // 自動表示モードの戻り値が0: OFFの場合（デフォルト)
+      write("元から自動表示モードOFF");
+      initTargetView = 3;                         // なにもせずに、3:カメラ映像移動オフの設定に進む
+      initViewStep = 1;
+      setTimer(InitViewSeq,initTargetViewInterval);
+      return;
+    }
+  } else if (initTargetView == 3){ // カメラ映像自動オフの初期化処理  BEVではまったく動きが違いそうなので確認が必要
+    if(ret_AutoCamera ==1){           //　カメラ映像自動オフの戻り値が1:OFFの場合の初期化処理   
+      switch(initViewStep){
+        case 1:                                         // CUST_PVMシグナルをONにする
+          write("CUST_PVMシグナルをONにする");
+          setSignal(G2M1::CDC21::AVN1S73::CUST_PVM,1);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,1);
+          initViewStep = 2;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 2:                                         // CUST_PVMシグナルをOFFにする  設定画面に遷移する   
+          write("CUST_PVMシグナルをOFFにする  設定画面に遷移する");
+          setSignal(G2M1::CDC21::AVN1S73::CUST_PVM,0);
+          initViewStep = 3;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 3:                                         // タッチパネルを押す　（カメラ映像自動オフをONする。（デフォルト値に戻す））
+          write("タッチパネルを押す（カメラ映像自動オフをONする。（デフォルト値に戻す））");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,700);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,250);    
+          initViewStep = 4;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 4:                                         // タッチパネルを離す　（カメラ映像自動オフをONにする
+          write("タッチパネルを離す（カメラ映像自動オフをONにする");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);    
+          initViewStep = 5;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 5:                                         // タッチパネルを押す　　（設定画面を抜ける
+          write("タッチパネルを押す（設定画面を抜ける");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,160);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,40);    
+          initViewStep = 6;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 6:                                         // タッチパネルを離す　（設定画面抜ける
+          write("タッチパネルを離す（設定画面抜ける");
+          setSignal(G2M1::CDC21::AVN1S73::X_COORD,0);
+          setSignal(G2M1::CDC21::AVN1S73::Y_COORD,0);   
+          initViewStep = 7;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 7:                                         //リバースに入れる（MM画面に戻らない場合があるため）
+          write("リバースに入れる");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 2); 
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,1);
+          initViewStep = 8;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 8:                                          //パーキングに戻す
+          write("パーキングに戻す");
+          sysSetVariableInt(sysvar::PVM::SigDt_ECT1G01_B_PRNDB, 1);
+          setSignal(G2M1::DDM21::EHV1G30::BCKLTRQ,0);
+          setSignal(G2M1::CDC21::AVN1S73::CC_MODE,0);
+          initViewStep = 9;
+          setTimer(InitViewSeq,initTargetViewInterval);
+          return;
+        case 9:                                         //　初期化完了
+          write("初期化完了");
+          setTimer(msExecInterval,0);                 // 次のスクリプト行の実行に飛ばす 仮にコメントアウト
+          alive_msExecInterval = 1;
+          //cancelTimer(msExecInterval);
+          //alive_msExecInterval = 0;
+          initViewActive =0;
+          return;
+        default:
+          cancelTimer(InitViewSeq);
+          write("DID初期化エラー3 %d",initViewStep);
+          return;
+      }
+    } 
+      else {
+      write("元からカメラ自動モードON");
+      write("初期化完了");
+      setTimer(msExecInterval,0);                 // 次のスクリプト行の実行に飛ばす 仮にコメントアウト
+      alive_msExecInterval = 1;
+      //cancelTimer(msExecInterval);
+      //alive_msExecInterval = 0;
+      initViewActive =0;
+      return;
+     }
+  } else { // initTargetView が0から3の間でない場合
+    write("!!! ラスト画関連(DID)初期化エラー");
+    return;
+  }
+}
