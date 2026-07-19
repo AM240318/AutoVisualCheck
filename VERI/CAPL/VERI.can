@@ -55,6 +55,10 @@ variables
   char scrParam1[100]; //ƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚Ìƒpƒ‰ƒ[ƒ^‚P
   char scrParam2[120]; //ƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚Ìƒpƒ‰ƒ[ƒ^‚QiƒRƒƒ“ƒgj
   char InputGaibuFile[200]; // ŠO•”ƒRƒ}ƒ“ƒh@ƒtƒ@ƒCƒ‹–¼ batƒtƒ@ƒCƒ‹‚ğ‚½‚½‚­
+  char GaibuCaseNo[100];
+  char GaibuTag[120];
+  char GaibuRepeat[100];
+  char GaibuArgs[350];
   int screensize ;
   char InputFolder[200]; // ƒtƒHƒ‹ƒ_‚ğ“Ç‚İ‚Ş@‘º¼
   char InputFileList[200];
@@ -208,6 +212,46 @@ void ReadScript() {  // ƒOƒ[ƒoƒ‹•Ï”Buffer‚É“Ç‚İ‚ñ‚¾ƒXƒNƒŠƒvƒg‚Ps‚Ì•¶š—ñˆ
 //                 2: Ÿ‚ÌƒXƒNƒŠƒvƒg‚Ìs‚ÌÀs‚ğ‘¦ŒÄ‚Ño‚µ
 //    ˆø”F‚È‚µ
 //--------------------------------------------------------------------------------
+
+int IsGaibuBaseName(char fullPath[], char expectedName[]) {
+  int i;
+  int baseStart;
+  int fullPathLen;
+  int expectedLen;
+  int pathChar;
+  int expectedChar;
+
+  fullPathLen = strlen(fullPath);
+  expectedLen = strlen(expectedName);
+  baseStart = 0;
+
+  for (i = 0; i < fullPathLen; i++) {
+    if ((fullPath[i] == 0x5C) || (fullPath[i] == 0x2F)) {
+      baseStart = i + 1;
+    }
+  }
+
+  if ((fullPathLen - baseStart) != expectedLen) {
+    return 0;
+  }
+
+  for (i = 0; i < expectedLen; i++) {
+    pathChar = fullPath[baseStart + i];
+    expectedChar = expectedName[i];
+
+    if ((pathChar > 0x60) && (pathChar < 0x7B)) {
+      pathChar = pathChar - 0x20;
+    }
+    if ((expectedChar > 0x60) && (expectedChar < 0x7B)) {
+      expectedChar = expectedChar - 0x20;
+    }
+    if (pathChar != expectedChar) {
+      return 0;
+    }
+  }
+
+  return 1;
+}
 
 int dispatch() { //–ß‚è’l‚P‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‘Ò‚¿‚ÖB‚O‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‚ğ‘Ò‚½‚È‚¢iƒEƒFƒCƒgA‚à‚µ‚­‚ÍƒGƒ‰[I—¹j
   // "BA" :  +B‚ÌON/OFF§Œä  VH:V30, IOPiggy:DOUT0 
@@ -513,8 +557,27 @@ int dispatch() { //–ß‚è’l‚P‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‘Ò‚¿‚ÖB‚O‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‚ğ‘Ò‚½‚È‚¢iƒEƒ
 
   
   if (strncmp(scrCommand,"GAIBU",strlen(scrCommand))==0) {//ŠO•”ƒRƒ}ƒ“ƒhÀs—p
-    write("commandline:%s",scrParam1);
-    sysExec(scrParam1 ,"","C:\\Users\\TMC\\Desktop\\Veri\\batfile");
+    sysGetVariableString(sysvar::VERI::Case1,GaibuCaseNo,elCount(GaibuCaseNo));
+    sysGetVariableString(sysvar::VERI::Case2,GaibuTag,elCount(GaibuTag));
+    sysGetVariableString(sysvar::VERI::RepCNT1,GaibuRepeat,elCount(GaibuRepeat));
+    GaibuArgs[0] = 0x00;
+
+    if ((IsGaibuBaseName(scrParam1,"START_REC.bat") == 1) ||
+        (IsGaibuBaseName(scrParam1,"START_REC3.bat") == 1) ||
+        (IsGaibuBaseName(scrParam1,"STOP_REC.bat") == 1)) {
+      snprintf(GaibuArgs,elCount(GaibuArgs),"\"%s\" \"%s\"",GaibuCaseNo,GaibuTag);
+    } else if (IsGaibuBaseName(scrParam1,"STOP_REC2.bat") == 1) {
+      snprintf(GaibuArgs,elCount(GaibuArgs),"\"%s\" \"%s\" \"%s\"",GaibuCaseNo,GaibuTag,GaibuRepeat);
+    } else if (IsGaibuBaseName(scrParam1,"START_REC2.bat") == 1) {
+      GaibuArgs[0] = 0x00;
+    }
+
+    if (strlen(GaibuArgs) == 0) {
+      write("commandline:%s args:<none>",scrParam1);
+    } else {
+      write("commandline:%s args:%s",scrParam1,GaibuArgs);
+    }
+    sysExec(scrParam1,GaibuArgs,"C:\\Users\\TMC\\Desktop\\Veri\\batfile");
     return 1;
   }
 //---- ƒfƒB[ƒ‰[’²®‰æ–Ê‚Ö‚Ì‘JˆÚ ---  
