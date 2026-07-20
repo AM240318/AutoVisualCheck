@@ -17,10 +17,13 @@ set "LOG_START_UTC=UNKNOWN"
 set "OBS_START_SUCCEEDED=0"
 set "SESSION_START_OK=0"
 set "SESSION_ID_OK=0"
+set "LEGACY_MARKER_CURRENT=0"
 set "CASE_PRESENT=0"
 set "TAG_PRESENT=0"
 if defined RAW_CASE set "CASE_PRESENT=1"
 if defined RAW_TAG set "TAG_PRESENT=1"
+
+call :InvalidateLegacyMarker
 
 call :GetUtcNow SESSION_START_UTC SESSION_START_OK
 if "%SESSION_START_OK%"=="0" (
@@ -235,14 +238,57 @@ set "MARKER_WRITE_OK=0"
 if errorlevel 1 (
   echo [ERROR] Failed to write marker temporary file.
   set "ERROR_STATE=1"
+  if "%LEGACY_MARKER_CURRENT%"=="0" call :InvalidateLegacyMarker
+  goto :eof
+)
+if exist "%LEGACY_SESSION_FILE%\NUL" (
+  echo [ERROR] Legacy session marker path is a directory and cannot be replaced: "%LEGACY_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%LEGACY_MARKER_CURRENT%"=="0" call :InvalidateLegacyMarker
   goto :eof
 )
 move /y "%LEGACY_SESSION_TEMP%" "%LEGACY_SESSION_FILE%" >nul
 if errorlevel 1 (
   echo [ERROR] Failed to replace legacy_session.marker.
   set "ERROR_STATE=1"
+  if "%LEGACY_MARKER_CURRENT%"=="0" call :InvalidateLegacyMarker
   goto :eof
 )
+if exist "%LEGACY_SESSION_FILE%\NUL" (
+  echo [ERROR] Replaced legacy session marker is not a regular file: "%LEGACY_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%LEGACY_MARKER_CURRENT%"=="0" call :InvalidateLegacyMarker
+  goto :eof
+)
+if not exist "%LEGACY_SESSION_FILE%" (
+  echo [ERROR] Replaced legacy session marker was not found: "%LEGACY_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%LEGACY_MARKER_CURRENT%"=="0" call :InvalidateLegacyMarker
+  goto :eof
+)
+if exist "%LEGACY_SESSION_TEMP%" (
+  echo [ERROR] Legacy session marker temporary file remained after replacement: "%LEGACY_SESSION_TEMP%"
+  set "ERROR_STATE=1"
+  if "%LEGACY_MARKER_CURRENT%"=="0" call :InvalidateLegacyMarker
+  goto :eof
+)
+set "LEGACY_MARKER_CURRENT=1"
 set "MARKER_WRITE_OK=1"
 echo [INFO] Marker updated: "%LEGACY_SESSION_FILE%"
+goto :eof
+
+:InvalidateLegacyMarker
+if exist "%LEGACY_SESSION_FILE%\NUL" (
+  echo [ERROR] Legacy session marker path is a directory and could not be invalidated: "%LEGACY_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  goto :eof
+)
+if not exist "%LEGACY_SESSION_FILE%" goto :eof
+del /f /q "%LEGACY_SESSION_FILE%" >nul 2>&1
+if exist "%LEGACY_SESSION_FILE%" (
+  echo [ERROR] Failed to invalidate legacy session marker: "%LEGACY_SESSION_FILE%"
+  set "ERROR_STATE=1"
+) else (
+  echo [INFO] Invalidated legacy session marker: "%LEGACY_SESSION_FILE%"
+)
 goto :eof

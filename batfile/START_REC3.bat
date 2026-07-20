@@ -17,6 +17,7 @@ set "PARENT_DIR="
 set "SESSION_ID=UNKNOWN"
 set "LOG_SESSION_LINK_OK=0"
 set "SESSION_ID_OK=0"
+set "VIDEO_MARKER_CURRENT=0"
 set "VIDEO_START_UTC=UNKNOWN"
 set "VIDEO_START_OK=0"
 set "OBS_START_SUCCEEDED=0"
@@ -24,6 +25,8 @@ set "CASE_PRESENT=0"
 set "TAG_PRESENT=0"
 if defined RAW_CASE set "CASE_PRESENT=1"
 if defined RAW_TAG set "TAG_PRESENT=1"
+
+call :InvalidateVideoMarker
 
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
@@ -155,13 +158,56 @@ goto :eof
 if errorlevel 1 (
   echo [ERROR] Failed to write video marker temporary file.
   set "ERROR_STATE=1"
+  if "%VIDEO_MARKER_CURRENT%"=="0" call :InvalidateVideoMarker
+  goto :eof
+)
+if exist "%VIDEO_SESSION_FILE%\NUL" (
+  echo [ERROR] Video session marker path is a directory and cannot be replaced: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%VIDEO_MARKER_CURRENT%"=="0" call :InvalidateVideoMarker
   goto :eof
 )
 move /y "%VIDEO_SESSION_TEMP%" "%VIDEO_SESSION_FILE%" >nul
 if errorlevel 1 (
   echo [ERROR] Failed to replace video session marker.
   set "ERROR_STATE=1"
+  if "%VIDEO_MARKER_CURRENT%"=="0" call :InvalidateVideoMarker
   goto :eof
 )
+if exist "%VIDEO_SESSION_FILE%\NUL" (
+  echo [ERROR] Replaced video session marker is not a regular file: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%VIDEO_MARKER_CURRENT%"=="0" call :InvalidateVideoMarker
+  goto :eof
+)
+if not exist "%VIDEO_SESSION_FILE%" (
+  echo [ERROR] Replaced video session marker was not found: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%VIDEO_MARKER_CURRENT%"=="0" call :InvalidateVideoMarker
+  goto :eof
+)
+if exist "%VIDEO_SESSION_TEMP%" (
+  echo [ERROR] Video session marker temporary file remained after replacement: "%VIDEO_SESSION_TEMP%"
+  set "ERROR_STATE=1"
+  if "%VIDEO_MARKER_CURRENT%"=="0" call :InvalidateVideoMarker
+  goto :eof
+)
+set "VIDEO_MARKER_CURRENT=1"
 echo [INFO] Updated video session marker: "%VIDEO_SESSION_FILE%"
+goto :eof
+
+:InvalidateVideoMarker
+if exist "%VIDEO_SESSION_FILE%\NUL" (
+  echo [ERROR] Video session marker path is a directory and could not be invalidated: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  goto :eof
+)
+if not exist "%VIDEO_SESSION_FILE%" goto :eof
+del /f /q "%VIDEO_SESSION_FILE%" >nul 2>&1
+if exist "%VIDEO_SESSION_FILE%" (
+  echo [ERROR] Failed to invalidate video session marker: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+) else (
+  echo [INFO] Invalidated video session marker: "%VIDEO_SESSION_FILE%"
+)
 goto :eof

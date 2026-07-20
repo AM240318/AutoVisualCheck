@@ -3,11 +3,15 @@ setlocal EnableExtensions DisableDelayedExpansion
 set "ERROR_STATE=0"
 set "LOG_SESSION_FILE=%~dp0log_session.marker"
 set "LOG_SESSION_TEMP=%LOG_SESSION_FILE%.tmp"
+set "VIDEO_SESSION_FILE=%~dp0video_session.marker"
 set "SESSION_ID=UNKNOWN"
 set "SESSION_START_UTC=UNKNOWN"
 set "LOG_START_UTC=UNKNOWN"
 set "SESSION_START_OK=0"
 set "SESSION_ID_OK=0"
+set "LOG_MARKER_CURRENT=0"
+
+call :InvalidateSplitMarkers
 
 call :GetUtcNow SESSION_START_UTC SESSION_START_OK
 if "%SESSION_START_OK%"=="0" (
@@ -22,6 +26,7 @@ if "%SESSION_ID_OK%"=="0" (
 
 echo [INFO] Marker path: "%LOG_SESSION_FILE%"
 echo [INFO] SessionId=%SESSION_ID% SessionStartTimeUtc=%SESSION_START_UTC%
+call :WriteLogMarker
 
 REM CANログスタート
 :CANLOG
@@ -148,13 +153,77 @@ goto :eof
 if errorlevel 1 (
   echo [ERROR] Failed to write temporary log session marker.
   set "ERROR_STATE=1"
+  if "%LOG_MARKER_CURRENT%"=="0" call :InvalidateSplitMarkers
+  goto :eof
+)
+if exist "%LOG_SESSION_FILE%\NUL" (
+  echo [ERROR] Log session marker path is a directory and cannot be replaced: "%LOG_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%LOG_MARKER_CURRENT%"=="0" call :InvalidateSplitMarkers
   goto :eof
 )
 move /y "%LOG_SESSION_TEMP%" "%LOG_SESSION_FILE%" > nul
 if errorlevel 1 (
   echo [ERROR] Failed to replace log session marker.
   set "ERROR_STATE=1"
+  if "%LOG_MARKER_CURRENT%"=="0" call :InvalidateSplitMarkers
   goto :eof
 )
+if exist "%LOG_SESSION_FILE%\NUL" (
+  echo [ERROR] Replaced log session marker is not a regular file: "%LOG_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%LOG_MARKER_CURRENT%"=="0" call :InvalidateSplitMarkers
+  goto :eof
+)
+if not exist "%LOG_SESSION_FILE%" (
+  echo [ERROR] Replaced log session marker was not found: "%LOG_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  if "%LOG_MARKER_CURRENT%"=="0" call :InvalidateSplitMarkers
+  goto :eof
+)
+if exist "%LOG_SESSION_TEMP%" (
+  echo [ERROR] Log session marker temporary file remained after replacement: "%LOG_SESSION_TEMP%"
+  set "ERROR_STATE=1"
+  if "%LOG_MARKER_CURRENT%"=="0" call :InvalidateSplitMarkers
+  goto :eof
+)
+set "LOG_MARKER_CURRENT=1"
 echo [INFO] Updated log session marker: "%LOG_SESSION_FILE%"
+goto :eof
+
+:InvalidateSplitMarkers
+call :InvalidateVideoMarker
+call :InvalidateLogMarker
+goto :eof
+
+:InvalidateVideoMarker
+if exist "%VIDEO_SESSION_FILE%\NUL" (
+  echo [ERROR] Video session marker path is a directory and could not be invalidated: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  goto :eof
+)
+if not exist "%VIDEO_SESSION_FILE%" goto :eof
+del /f /q "%VIDEO_SESSION_FILE%" >nul 2>&1
+if exist "%VIDEO_SESSION_FILE%" (
+  echo [ERROR] Failed to invalidate video session marker: "%VIDEO_SESSION_FILE%"
+  set "ERROR_STATE=1"
+) else (
+  echo [INFO] Invalidated video session marker: "%VIDEO_SESSION_FILE%"
+)
+goto :eof
+
+:InvalidateLogMarker
+if exist "%LOG_SESSION_FILE%\NUL" (
+  echo [ERROR] Log session marker path is a directory and could not be invalidated: "%LOG_SESSION_FILE%"
+  set "ERROR_STATE=1"
+  goto :eof
+)
+if not exist "%LOG_SESSION_FILE%" goto :eof
+del /f /q "%LOG_SESSION_FILE%" >nul 2>&1
+if exist "%LOG_SESSION_FILE%" (
+  echo [ERROR] Failed to invalidate log session marker: "%LOG_SESSION_FILE%"
+  set "ERROR_STATE=1"
+) else (
+  echo [INFO] Invalidated log session marker: "%LOG_SESSION_FILE%"
+)
 goto :eof
