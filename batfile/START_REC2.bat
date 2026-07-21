@@ -25,6 +25,7 @@ if "%SESSION_ID_OK%"=="0" (
 )
 
 echo [INFO] Marker path: "%LOG_SESSION_FILE%"
+echo [INFO] NirCmd path: "%~dp0nircmd.exe"
 echo [INFO] SessionId=%SESSION_ID% SessionStartTimeUtc=%SESSION_START_UTC%
 call :WriteLogMarker
 

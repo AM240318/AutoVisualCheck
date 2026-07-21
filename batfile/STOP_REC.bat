@@ -2,11 +2,14 @@
 setlocal EnableExtensions DisableDelayedExpansion
 set "ERROR_STATE=0"
 set "WARNING_STATE=0"
-set "BASEDIR=C:\Users\TMC\Desktop\LogZips"
-set "CAPTURE_DIR=C:\Users\TMC\Videos\Captures"
-set "SCREENSHOT_DIR=C:\Users\TMC\Pictures\Screenshots"
+set "USER_DATA_ROOT=%USERPROFILE%"
+if not defined USER_DATA_ROOT set "USER_DATA_ROOT=C:\Users\TMC"
+set "BASEDIR=%USER_DATA_ROOT%\Desktop\LogZips"
+set "CAPTURE_DIR=%USER_DATA_ROOT%\Videos\Captures"
+set "SCREENSHOT_DIR=%USER_DATA_ROOT%\Pictures\Screenshots"
 set "TERATERM_LOG_DIR=C:\teraterm-5.2\log"
-set "CAN_LOG_DIR=C:\Users\TMC\Desktop\LogZips\CANtemp"
+set "CAN_LOG_DIR=%BASEDIR%\CANtemp"
+set "OBS_SCRIPT=%~dp0obs_record_stop.ps1"
 set "LEGACY_SESSION_FILE=%~dp0legacy_session.marker"
 set "RAW_CASE=%~1"
 set "RAW_TAG=%~2"
@@ -45,11 +48,13 @@ if not defined RAW_TAG set "TAG_VALID=1"
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [ERROR] Invalid non-empty CaseNo or Tag.
-  set "ERROR_STATE=1"
+  echo [WARN] Invalid non-empty CaseNo or Tag; marker or date-time fallback will be used.
+  set "WARNING_STATE=1"
 )
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
 echo [INFO] Normalized arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED%
+echo [INFO] OBS script path: "%OBS_SCRIPT%"
+echo [INFO] NirCmd path: "%~dp0nircmd.exe"
 
 if exist "%LEGACY_SESSION_FILE%" (
   set "MARKER_PRESENT=1"
@@ -61,12 +66,14 @@ if "%MARKER_VALID%"=="1" (
   echo [INFO] VideoStartTimeUtc=%MARKER_VIDEO_START_UTC% LogStartTimeUtc=%MARKER_LOG_START_UTC%
 ) else (
   if "%MARKER_PRESENT%"=="1" (
-    echo [ERROR] Marker path: "%LEGACY_SESSION_FILE%" Status=invalid
+    echo [WARN] Marker path: "%LEGACY_SESSION_FILE%" Status=invalid
   ) else (
-    echo [ERROR] Marker path: "%LEGACY_SESSION_FILE%" Status=missing
+    echo [WARN] Marker path: "%LEGACY_SESSION_FILE%" Status=missing
   )
-  set "ERROR_STATE=1"
+  set "WARNING_STATE=1"
 )
+if "%MARKER_VALID%"=="1" call :ApplyMarkerArgumentFallback
+echo [INFO] Effective arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED%
 call :DetermineModes
 
 call :GetStopDateTime
@@ -85,7 +92,7 @@ if errorlevel 1 (
   set "ERROR_STATE=1"
 )
 REM call "%~dp0start_stop_CAN_log.bat"
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" win activate title "Measurement Setup"
+"%~dp0nircmd.exe" win activate title "Measurement Setup"
 if errorlevel 1 (
   echo [ERROR] Failed to activate Measurement Setup.
   set "ERROR_STATE=1"
@@ -95,7 +102,7 @@ if errorlevel 1 (
   echo [ERROR] CAN activation wait failed.
   set "ERROR_STATE=1"
 )
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" sendkeypress t
+"%~dp0nircmd.exe" sendkeypress t
 if errorlevel 1 (
   echo [ERROR] CAN stop key failed.
   set "ERROR_STATE=1"
@@ -108,24 +115,19 @@ if errorlevel 1 (
 
 REM OBS録画停止
 echo [INFO] Stopping OBS recording.
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference='Stop'; try { $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File','C:\Users\TMC\Desktop\Veri\batfile\obs_record_stop.ps1') -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   echo [INFO] OBS stop result: success.
 ) else (
   set "ERROR_STATE=1"
-  if "%OBS_EXIT_CODE%"=="124" (
-    echo [ERROR] OBS stop timed out after 20 seconds.
-  ) else (
-    echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
-  )
+  echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
 )
 
 REM COM42 Tera Termログ停止
 echo [INFO] Stopping COM42 Tera Term log.
 REM call "%~dp0stop_teraterm_log_com42.bat"
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" win activate title "COM42 - Tera Term VT"
+"%~dp0nircmd.exe" win activate title "COM42 - Tera Term VT"
 if errorlevel 1 (
   echo [ERROR] Failed to activate COM42 Tera Term.
   set "ERROR_STATE=1"
@@ -135,7 +137,7 @@ if errorlevel 1 (
   echo [ERROR] COM42 activation wait failed.
   set "ERROR_STATE=1"
 )
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" sendkeypress alt+f
+"%~dp0nircmd.exe" sendkeypress alt+f
 if errorlevel 1 (
   echo [ERROR] COM42 Alt+F failed.
   set "ERROR_STATE=1"
@@ -145,12 +147,12 @@ if errorlevel 1 (
   echo [ERROR] COM42 menu wait failed.
   set "ERROR_STATE=1"
 )
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" sendkeypress q
+"%~dp0nircmd.exe" sendkeypress q
 if errorlevel 1 (
   echo [ERROR] COM42 stop command failed.
   set "ERROR_STATE=1"
 )
-timeout /t 3 > nul
+timeout /t 5 > nul
 if errorlevel 1 (
   echo [ERROR] Post-stop wait failed.
   set "ERROR_STATE=1"
@@ -171,6 +173,32 @@ if "%ERROR_STATE%"=="0" (
   echo [RESULT] STOP_REC completed with errors. ExitCode=1
 )
 exit /b %ERROR_STATE%
+
+:ApplyMarkerArgumentFallback
+if "%CASE_PRESENT%"=="0" call :UseMarkerCaseFallback
+if "%CASE_VALID%"=="0" call :UseMarkerCaseFallback
+if "%TAG_PRESENT%"=="0" call :UseMarkerTagFallback
+if "%TAG_VALID%"=="0" call :UseMarkerTagFallback
+set "ARGS_VALID=0"
+if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
+goto :eof
+
+:UseMarkerCaseFallback
+if not defined MARKER_CASE_CANONICAL goto :eof
+set "CASE_CANONICAL=%MARKER_CASE_CANONICAL%"
+set "CASE_DISPLAY=%MARKER_CASE_CANONICAL%"
+if "%MARKER_CASE_CANONICAL:~2,1%"=="" set "CASE_DISPLAY=0%CASE_DISPLAY%"
+if "%MARKER_CASE_CANONICAL:~1,1%"=="" set "CASE_DISPLAY=0%CASE_DISPLAY%"
+set "CASE_VALID=1"
+echo [INFO] CaseNo was obtained from the START marker.
+goto :eof
+
+:UseMarkerTagFallback
+if not defined MARKER_TAG_NORMALIZED goto :eof
+set "TAG_NORMALIZED=%MARKER_TAG_NORMALIZED%"
+set "TAG_VALID=1"
+echo [INFO] Tag was obtained from the START marker.
+goto :eof
 
 :ValidateArguments
 for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c.Length -gt 0){ if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } } }; $t=$env:RAW_TAG; if($t.Length -gt 0 -and $t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
@@ -208,13 +236,13 @@ if "%MARKER_OBS_START_SUCCEEDED%"=="0" (
   set "ERROR_STATE=1"
 )
 if not "%MARKER_ARGS_VALID%"=="1" (
-  echo [ERROR] START marker contained an invalid non-empty CaseNo or Tag; valid matching fields will still be used.
-  set "ERROR_STATE=1"
+  echo [WARN] START marker contained an invalid non-empty CaseNo or Tag; valid matching fields will still be used.
+  set "WARNING_STATE=1"
 )
-if not "%CASE_CANONICAL%"=="%MARKER_CASE_CANONICAL%" goto :DetermineCaseMismatch
-if /i not "%TAG_NORMALIZED%"=="%MARKER_TAG_NORMALIZED%" goto :DetermineCaseMismatch
+if defined CASE_CANONICAL if defined MARKER_CASE_CANONICAL if not "%CASE_CANONICAL%"=="%MARKER_CASE_CANONICAL%" goto :DetermineCaseMismatch
+if defined TAG_NORMALIZED if defined MARKER_TAG_NORMALIZED if /i not "%TAG_NORMALIZED%"=="%MARKER_TAG_NORMALIZED%" goto :DetermineCaseMismatch
 set "NAMING_MODE=NORMAL"
-echo [INFO] START and STOP CaseNo/Tag match.
+echo [INFO] START and STOP CaseNo/Tag are compatible.
 goto :eof
 
 :DetermineWithoutMarker

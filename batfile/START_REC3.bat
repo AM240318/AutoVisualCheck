@@ -2,6 +2,7 @@
 setlocal EnableExtensions DisableDelayedExpansion
 set "ERROR_STATE=0"
 set "SAVE_ROOT=C:\Users\TMC\Desktop\LogZips"
+set "OBS_SCRIPT=%~dp0obs_record_start.ps1"
 set "LOG_SESSION_FILE=%~dp0log_session.marker"
 set "VIDEO_SESSION_FILE=%~dp0video_session.marker"
 set "VIDEO_SESSION_TEMP=%VIDEO_SESSION_FILE%.tmp"
@@ -58,23 +59,19 @@ if "%VIDEO_START_OK%"=="0" (
   set "ERROR_STATE=1"
 )
 echo [INFO] Video marker path: "%VIDEO_SESSION_FILE%"
+echo [INFO] OBS script path: "%OBS_SCRIPT%"
 echo [INFO] SessionId=%SESSION_ID% VideoStartTimeUtc=%VIDEO_START_UTC%
 call :WriteVideoMarker
 
 REM OBS録画スタート
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference='Stop'; try { $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File','C:\Users\TMC\Desktop\Veri\batfile\obs_record_start.ps1') -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   set "OBS_START_SUCCEEDED=1"
   echo [INFO] OBS start result: success.
 ) else (
   set "ERROR_STATE=1"
-  if "%OBS_EXIT_CODE%"=="124" (
-    echo [ERROR] OBS start timed out after 20 seconds.
-  ) else (
-    echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
-  )
+  echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
 )
 call :WriteVideoMarker
 

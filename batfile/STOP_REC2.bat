@@ -7,6 +7,7 @@ set "CAPTURE_DIR=C:\Users\TMC\Videos\Captures"
 set "SCREENSHOT_DIR=C:\Users\TMC\Pictures\Screenshots"
 set "TERATERM_LOG_DIR=C:\teraterm-5.2\log"
 set "CAN_LOG_DIR=C:\Users\TMC\Desktop\LogZips\CANtemp"
+set "OBS_SCRIPT=%~dp0obs_record_stop.ps1"
 set "LOG_SESSION_FILE=%~dp0log_session.marker"
 set "VIDEO_SESSION_FILE=%~dp0video_session.marker"
 set "RAW_CASE=%~1"
@@ -69,6 +70,8 @@ if "%ARGS_VALID%"=="0" (
 )
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT% RepeatPresent=%REPEAT_PRESENT%
 echo [INFO] Normalized arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED% Repeat=%REPEAT_CANONICAL%
+echo [INFO] OBS script path: "%OBS_SCRIPT%"
+echo [INFO] NirCmd path: "%~dp0nircmd.exe"
 
 if exist "%LOG_SESSION_FILE%" (
   set "LOG_MARKER_PRESENT=1"
@@ -118,7 +121,7 @@ if errorlevel 1 (
   set "ERROR_STATE=1"
 )
 REM call "%~dp0start_stop_CAN_log.bat"
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" win activate title "Measurement Setup"
+"%~dp0nircmd.exe" win activate title "Measurement Setup"
 if errorlevel 1 (
   echo [ERROR] Failed to activate Measurement Setup.
   set "ERROR_STATE=1"
@@ -128,7 +131,7 @@ if errorlevel 1 (
   echo [ERROR] CAN activation wait failed.
   set "ERROR_STATE=1"
 )
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" sendkeypress t
+"%~dp0nircmd.exe" sendkeypress t
 if errorlevel 1 (
   echo [ERROR] CAN stop key failed.
   set "ERROR_STATE=1"
@@ -141,24 +144,19 @@ if errorlevel 1 (
 
 REM OBS録画停止
 echo [INFO] Stopping OBS recording.
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference='Stop'; try { $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File','C:\Users\TMC\Desktop\Veri\batfile\obs_record_stop.ps1') -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   echo [INFO] OBS stop result: success.
 ) else (
   set "ERROR_STATE=1"
-  if "%OBS_EXIT_CODE%"=="124" (
-    echo [ERROR] OBS stop timed out after 20 seconds.
-  ) else (
-    echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
-  )
+  echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
 )
 
 REM COM42 Tera Termログ停止
 echo [INFO] Stopping COM42 Tera Term log.
 REM call "%~dp0stop_teraterm_log_com42.bat"
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" win activate title "COM42 - Tera Term VT"
+"%~dp0nircmd.exe" win activate title "COM42 - Tera Term VT"
 if errorlevel 1 (
   echo [ERROR] Failed to activate COM42 Tera Term.
   set "ERROR_STATE=1"
@@ -168,7 +166,7 @@ if errorlevel 1 (
   echo [ERROR] COM42 activation wait failed.
   set "ERROR_STATE=1"
 )
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" sendkeypress alt+f
+"%~dp0nircmd.exe" sendkeypress alt+f
 if errorlevel 1 (
   echo [ERROR] COM42 Alt+F failed.
   set "ERROR_STATE=1"
@@ -178,12 +176,12 @@ if errorlevel 1 (
   echo [ERROR] COM42 menu wait failed.
   set "ERROR_STATE=1"
 )
-"C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe" sendkeypress q
+"%~dp0nircmd.exe" sendkeypress q
 if errorlevel 1 (
   echo [ERROR] COM42 stop command failed.
   set "ERROR_STATE=1"
 )
-timeout /t 3 > nul
+timeout /t 5 > nul
 if errorlevel 1 (
   echo [ERROR] Post-stop wait failed.
   set "ERROR_STATE=1"

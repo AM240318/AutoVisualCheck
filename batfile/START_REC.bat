@@ -1,6 +1,8 @@
 @echo off
 setlocal EnableExtensions DisableDelayedExpansion
 set "ERROR_STATE=0"
+set "WARNING_STATE=0"
+set "OBS_SCRIPT=%~dp0obs_record_start.ps1"
 set "LEGACY_SESSION_FILE=%~dp0legacy_session.marker"
 set "LEGACY_SESSION_TEMP=%LEGACY_SESSION_FILE%.tmp"
 set "RAW_CASE=%~1"
@@ -41,13 +43,15 @@ if "%SESSION_ID_OK%"=="0" (
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [ERROR] Invalid non-empty CaseNo or Tag.
-  set "ERROR_STATE=1"
+  echo [WARN] Invalid non-empty CaseNo or Tag; recording will continue using only valid fields.
+  set "WARNING_STATE=1"
 )
 
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
 echo [INFO] Normalized arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED%
 echo [INFO] Marker path: "%LEGACY_SESSION_FILE%"
+echo [INFO] OBS script path: "%OBS_SCRIPT%"
+echo [INFO] NirCmd path: "%~dp0nircmd.exe"
 echo [INFO] SessionId=%SESSION_ID% SessionStartTimeUtc=%SESSION_START_UTC%
 call :WriteLegacyMarker
 
@@ -64,19 +68,14 @@ if "%VIDEO_START_OK%"=="0" (
 call :WriteLegacyMarker
 echo [INFO] VideoStartTimeUtc=%VIDEO_START_UTC%
 REM timeout /t 3 > nul
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference='Stop'; try { $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File','C:\Users\TMC\Desktop\Veri\batfile\obs_record_start.ps1') -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   set "OBS_START_SUCCEEDED=1"
   echo [INFO] OBS start result: success.
 ) else (
   set "ERROR_STATE=1"
-  if "%OBS_EXIT_CODE%"=="124" (
-    echo [ERROR] OBS start timed out after 20 seconds.
-  ) else (
-    echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
-  )
+  echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
 )
 call :WriteLegacyMarker
 REM timeout /t 3 > nul
@@ -178,7 +177,11 @@ if errorlevel 1 (
 )
 
 if "%ERROR_STATE%"=="0" (
-  echo [RESULT] START_REC completed successfully. ExitCode=0
+  if "%WARNING_STATE%"=="1" (
+    echo [RESULT] START_REC completed with warnings. ExitCode=0
+  ) else (
+    echo [RESULT] START_REC completed successfully. ExitCode=0
+  )
 ) else (
   echo [RESULT] START_REC completed with errors. ExitCode=1
 )
@@ -186,13 +189,13 @@ exit /b %ERROR_STATE%
 
 echo Teraterm39
 REM call "%~dp0start_teraterm_log_com39.bat"
-C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe win activate title "COM39 - Tera Term VT"
+"%~dp0nircmd.exe" win activate title "COM39 - Tera Term VT"
 timeout /t 1 > nul
-C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe sendkeypress alt+f
+"%~dp0nircmd.exe" sendkeypress alt+f
 timeout /t 1 > nul
-C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe sendkeypress l
+"%~dp0nircmd.exe" sendkeypress l
 timeout /t 2 > nul
-C:\Users\TMC\Desktop\Veri\batfile\nircmd.exe sendkeypress enter
+"%~dp0nircmd.exe" sendkeypress enter
 timeout /t 1 > nul
 
 
