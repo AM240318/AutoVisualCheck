@@ -13,36 +13,39 @@ set "RAW_TAG=%~2"
 set "CASE_VALID=0"
 set "TAG_VALID=0"
 set "ARGS_VALID=0"
-set "CASE_CANONICAL=UNKNOWN"
-set "CASE_DISPLAY=UNKNOWN"
-set "TAG_NORMALIZED=UNKNOWN"
+set "CASE_CANONICAL="
+set "CASE_DISPLAY="
+set "TAG_NORMALIZED="
 set "CASE_PRESENT=0"
 set "TAG_PRESENT=0"
 set "MARKER_PRESENT=0"
 set "MARKER_VALID=0"
 set "MARKER_SESSION_ID=UNKNOWN"
 set "MARKER_ARGS_VALID=UNKNOWN"
-set "MARKER_CASE_CANONICAL=UNKNOWN"
-set "MARKER_TAG_NORMALIZED=UNKNOWN"
+set "MARKER_CASE_CANONICAL="
+set "MARKER_TAG_NORMALIZED="
 set "MARKER_SESSION_START_UTC=UNKNOWN"
 set "MARKER_VIDEO_START_UTC=UNKNOWN"
 set "MARKER_LOG_START_UTC=UNKNOWN"
 set "MARKER_OBS_START_SUCCEEDED=UNKNOWN"
-set "NAMING_MODE=DATETIME"
+set "NAMING_MODE=NORMAL"
 set "SELECTION_MODE=LATEST"
 set "SKIP_MP4=0"
 set "DT=UNKNOWN"
 set "DT_OK=0"
 set "DEST_FOLDER="
 set "FILE_PREFIX="
+set "NAME_BASE="
 set "DEST_READY=0"
 if defined RAW_CASE set "CASE_PRESENT=1"
 if defined RAW_TAG set "TAG_PRESENT=1"
+if not defined RAW_CASE set "CASE_VALID=1"
+if not defined RAW_TAG set "TAG_VALID=1"
 
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [ERROR] Invalid CaseNo or Tag.
+  echo [ERROR] Invalid non-empty CaseNo or Tag.
   set "ERROR_STATE=1"
 )
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
@@ -170,7 +173,7 @@ if "%ERROR_STATE%"=="0" (
 exit /b %ERROR_STATE%
 
 :ValidateArguments
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } }; $t=$env:RAW_TAG; if($t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c.Length -gt 0){ if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } } }; $t=$env:RAW_TAG; if($t.Length -gt 0 -and $t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
   if /i "%%A"=="CASE_VALID" set "CASE_VALID=%%B"
   if /i "%%A"=="CASE_CANONICAL" set "CASE_CANONICAL=%%B"
   if /i "%%A"=="CASE_DISPLAY" set "CASE_DISPLAY=%%B"
@@ -180,7 +183,7 @@ for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$
 goto :eof
 
 :ReadLegacyMarker
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; try { $required=@('Version','SessionId','ArgsValid','CaseNoCanonical','TagNormalized','SessionStartTimeUtc','VideoStartTimeUtc','LogStartTimeUtc','ObsStartSucceeded'); $values=@{}; foreach($line in [IO.File]::ReadAllLines($env:LEGACY_SESSION_FILE)){ $i=$line.IndexOf('='); if($i -lt 1){ throw 1 }; $key=$line.Substring(0,$i); if($required -ccontains $key){ if($values.Keys -ccontains $key){ throw 1 }; $values[$key]=$line.Substring($i+1) } }; foreach($key in $required){ if(-not ($values.Keys -ccontains $key)){ throw 1 } }; if($values['Version'] -cne '1'){ throw 1 }; $guid=[Guid]::Empty; if(-not [Guid]::TryParseExact($values['SessionId'],'D',[ref]$guid)){ throw 1 }; $args=$values['ArgsValid']; if($args -cne '0' -and $args -cne '1'){ throw 1 }; $case='UNKNOWN'; if($values['CaseNoCanonical'] -cne 'UNKNOWN'){ if($values['CaseNoCanonical'] -notmatch '\A[0-9]+\z'){ throw 1 }; $case=$values['CaseNoCanonical'].TrimStart('0'); if($case.Length -eq 0){ throw 1 } }; $tag='UNKNOWN'; if($values['TagNormalized'] -cne 'UNKNOWN'){ if($values['TagNormalized'] -notmatch '\A[A-Z0-9_-]+\z'){ throw 1 }; $tag=$values['TagNormalized'] }; if($args -ceq '1' -and ($case -ceq 'UNKNOWN' -or $tag -ceq 'UNKNOWN')){ throw 1 }; [DateTime]$sessionTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['SessionStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$sessionTime)){ throw 1 }; if($sessionTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; [DateTime]$videoTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['VideoStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$videoTime)){ throw 1 }; if($videoTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; [DateTime]$logTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['LogStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$logTime)){ throw 1 }; if($logTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; $obs=$values['ObsStartSucceeded']; if($obs -cne '0' -and $obs -cne '1'){ throw 1 }; Write-Output ('MARKER_SESSION_ID='+$guid.ToString()); Write-Output ('MARKER_ARGS_VALID='+$args); Write-Output ('MARKER_CASE_CANONICAL='+$case); Write-Output ('MARKER_TAG_NORMALIZED='+$tag); Write-Output ('MARKER_SESSION_START_UTC='+$values['SessionStartTimeUtc']); Write-Output ('MARKER_VIDEO_START_UTC='+$values['VideoStartTimeUtc']); Write-Output ('MARKER_LOG_START_UTC='+$values['LogStartTimeUtc']); Write-Output ('MARKER_OBS_START_SUCCEEDED='+$obs); Write-Output 'MARKER_VALID=1' } catch { exit 3 }" 2^>nul`) do (
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; try { $required=@('Version','SessionId','ArgsValid','CaseNoCanonical','TagNormalized','SessionStartTimeUtc','VideoStartTimeUtc','LogStartTimeUtc','ObsStartSucceeded'); $values=@{}; foreach($line in [IO.File]::ReadAllLines($env:LEGACY_SESSION_FILE)){ $i=$line.IndexOf('='); if($i -lt 1){ throw 1 }; $key=$line.Substring(0,$i); if($required -ccontains $key){ if($values.Keys -ccontains $key){ throw 1 }; $values[$key]=$line.Substring($i+1) } }; foreach($key in $required){ if(-not ($values.Keys -ccontains $key)){ throw 1 } }; $version=$values['Version']; if($version -cne '1' -and $version -cne '2'){ throw 1 }; $guid=[Guid]::Empty; if(-not [Guid]::TryParseExact($values['SessionId'],'D',[ref]$guid)){ throw 1 }; $args=$values['ArgsValid']; if($args -cne '0' -and $args -cne '1'){ throw 1 }; $case=$values['CaseNoCanonical']; if($version -ceq '1' -and $case -ceq 'UNKNOWN'){ $case='' }; if($case.Length -gt 0){ if($case -notmatch '\A[0-9]+\z'){ throw 1 }; $case=$case.TrimStart('0'); if($case.Length -eq 0){ throw 1 } }; $tag=$values['TagNormalized']; if($version -ceq '1' -and $tag -ceq 'UNKNOWN'){ $tag='' }; if($tag.Length -gt 0 -and $tag -notmatch '\A[A-Z0-9_-]+\z'){ throw 1 }; if($version -ceq '1' -and $args -ceq '1' -and ($case.Length -eq 0 -or $tag.Length -eq 0)){ throw 1 }; [DateTime]$sessionTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['SessionStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$sessionTime)){ throw 1 }; if($sessionTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; [DateTime]$videoTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['VideoStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$videoTime)){ throw 1 }; if($videoTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; [DateTime]$logTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['LogStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$logTime)){ throw 1 }; if($logTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; $obs=$values['ObsStartSucceeded']; if($obs -cne '0' -and $obs -cne '1'){ throw 1 }; Write-Output ('MARKER_SESSION_ID='+$guid.ToString()); Write-Output ('MARKER_ARGS_VALID='+$args); Write-Output ('MARKER_CASE_CANONICAL='+$case); Write-Output ('MARKER_TAG_NORMALIZED='+$tag); Write-Output ('MARKER_SESSION_START_UTC='+$values['SessionStartTimeUtc']); Write-Output ('MARKER_VIDEO_START_UTC='+$values['VideoStartTimeUtc']); Write-Output ('MARKER_LOG_START_UTC='+$values['LogStartTimeUtc']); Write-Output ('MARKER_OBS_START_SUCCEEDED='+$obs); Write-Output 'MARKER_VALID=1' } catch { exit 3 }" 2^>nul`) do (
   if /i "%%A"=="MARKER_SESSION_ID" set "MARKER_SESSION_ID=%%B"
   if /i "%%A"=="MARKER_ARGS_VALID" set "MARKER_ARGS_VALID=%%B"
   if /i "%%A"=="MARKER_CASE_CANONICAL" set "MARKER_CASE_CANONICAL=%%B"
@@ -194,7 +197,7 @@ for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$
 goto :eof
 
 :DetermineModes
-set "NAMING_MODE=DATETIME"
+set "NAMING_MODE=NORMAL"
 set "SELECTION_MODE=LATEST"
 set "SKIP_MP4=0"
 if "%MARKER_VALID%"=="0" goto :DetermineWithoutMarker
@@ -205,11 +208,9 @@ if "%MARKER_OBS_START_SUCCEEDED%"=="0" (
   set "ERROR_STATE=1"
 )
 if not "%MARKER_ARGS_VALID%"=="1" (
-  echo [ERROR] START marker arguments were invalid; date-time fallback naming will be used.
+  echo [ERROR] START marker contained an invalid non-empty CaseNo or Tag; valid matching fields will still be used.
   set "ERROR_STATE=1"
-  goto :eof
 )
-if not "%ARGS_VALID%"=="1" goto :DetermineStopArgumentsInvalid
 if not "%CASE_CANONICAL%"=="%MARKER_CASE_CANONICAL%" goto :DetermineCaseMismatch
 if /i not "%TAG_NORMALIZED%"=="%MARKER_TAG_NORMALIZED%" goto :DetermineCaseMismatch
 set "NAMING_MODE=NORMAL"
@@ -217,17 +218,12 @@ echo [INFO] START and STOP CaseNo/Tag match.
 goto :eof
 
 :DetermineWithoutMarker
-if "%ARGS_VALID%"=="1" set "NAMING_MODE=NORMAL"
 echo [INFO] Marker-time selection unavailable; latest-one fallback selection will be used.
-goto :eof
-
-:DetermineStopArgumentsInvalid
-echo [ERROR] STOP arguments are invalid; date-time fallback naming will be used.
-set "ERROR_STATE=1"
 goto :eof
 
 :DetermineCaseMismatch
 echo [ERROR] START and STOP CaseNo/Tag do not match; date-time fallback naming will be used.
+set "NAMING_MODE=DATETIME"
 set "ERROR_STATE=1"
 goto :eof
 
@@ -240,14 +236,27 @@ set "DT_OK=1"
 goto :eof
 
 :PrepareDestination
-if /i "%NAMING_MODE%"=="NORMAL" goto :PrepareNormalDestination
+set "NAME_BASE="
+if /i not "%NAMING_MODE%"=="NORMAL" goto :FinalizeDestinationName
+if "%CASE_VALID%"=="1" if defined CASE_DISPLAY set "NAME_BASE=Case%CASE_DISPLAY%"
+if not "%TAG_VALID%"=="1" goto :FinalizeDestinationName
+if not defined TAG_NORMALIZED goto :FinalizeDestinationName
+if defined NAME_BASE goto :AppendTagToDestinationName
+set "NAME_BASE=%TAG_NORMALIZED%"
+goto :FinalizeDestinationName
+
+:AppendTagToDestinationName
+set "NAME_BASE=%NAME_BASE%_%TAG_NORMALIZED%"
+
+:FinalizeDestinationName
+if defined NAME_BASE goto :UseNamedDestination
 set "FILE_PREFIX=%DT%"
 set "DEST_FOLDER=%BASEDIR%\%DT%"
 goto :CreateDestination
 
-:PrepareNormalDestination
-set "FILE_PREFIX=Case%CASE_DISPLAY%_%TAG_NORMALIZED%"
-set "DEST_FOLDER=%BASEDIR%\%FILE_PREFIX%_%DT%"
+:UseNamedDestination
+set "FILE_PREFIX=%NAME_BASE%"
+set "DEST_FOLDER=%BASEDIR%\%NAME_BASE%_%DT%"
 
 :CreateDestination
 echo [INFO] Destination folder: "%DEST_FOLDER%"

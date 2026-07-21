@@ -16,11 +16,10 @@ set "CASE_VALID=0"
 set "TAG_VALID=0"
 set "REPEAT_VALID=0"
 set "ARGS_VALID=0"
-set "CASE_CANONICAL=UNKNOWN"
-set "CASE_DISPLAY=UNKNOWN"
-set "TAG_NORMALIZED=UNKNOWN"
-set "REPEAT_CANONICAL=UNKNOWN"
-set "REPEAT_NAME=Unknown"
+set "CASE_CANONICAL="
+set "CASE_DISPLAY="
+set "TAG_NORMALIZED="
+set "REPEAT_CANONICAL="
 set "CASE_PRESENT=0"
 set "TAG_PRESENT=0"
 set "REPEAT_PRESENT=0"
@@ -33,13 +32,13 @@ set "VIDEO_MARKER_PRESENT=0"
 set "VIDEO_MARKER_VALID=0"
 set "VIDEO_SESSION_ID=UNKNOWN"
 set "VIDEO_MARKER_ARGS_VALID=UNKNOWN"
-set "VIDEO_CASE_CANONICAL=UNKNOWN"
-set "VIDEO_TAG_NORMALIZED=UNKNOWN"
+set "VIDEO_CASE_CANONICAL="
+set "VIDEO_TAG_NORMALIZED="
 set "VIDEO_START_UTC=UNKNOWN"
 set "VIDEO_OBS_START_SUCCEEDED=UNKNOWN"
 set "LOG_SELECTION_MODE=LATEST"
 set "VIDEO_SELECTION_MODE=LATEST"
-set "NAMING_MODE=FALLBACK"
+set "NAMING_MODE=NORMAL"
 set "SESSION_MISMATCH=0"
 set "CASE_MISMATCH=0"
 set "VIDEO_ARGS_INVALID=0"
@@ -47,20 +46,25 @@ set "SKIP_MP4=0"
 set "DT=UNKNOWN"
 set "DT_OK=0"
 set "PARENT_FOLDER="
+set "PARENT_NAME="
 set "PARENT_READY=0"
 set "FILE_PREFIX="
+set "NAME_COMPONENT="
+set "RUN_FOLDER_NAME="
 set "ARCHIVE_READY=0"
 set "DEST_FOLDER="
 set "DEST_READY=0"
 if defined RAW_CASE set "CASE_PRESENT=1"
 if defined RAW_TAG set "TAG_PRESENT=1"
 if defined RAW_REPEAT set "REPEAT_PRESENT=1"
+if not defined RAW_CASE set "CASE_VALID=1"
+if not defined RAW_TAG set "TAG_VALID=1"
+if not defined RAW_REPEAT set "REPEAT_VALID=1"
 
 call :ValidateArguments
-if "%REPEAT_VALID%"=="1" set "REPEAT_NAME=%REPEAT_CANONICAL%"
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" if "%REPEAT_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [ERROR] Invalid CaseNo, Tag, or Repeat.
+  echo [ERROR] Invalid non-empty CaseNo, Tag, or Repeat.
   set "ERROR_STATE=1"
 )
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT% RepeatPresent=%REPEAT_PRESENT%
@@ -206,7 +210,7 @@ if "%ERROR_STATE%"=="0" (
 exit /b %ERROR_STATE%
 
 :ValidateArguments
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } }; $t=$env:RAW_TAG; if($t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }; $r=$env:RAW_REPEAT; if($r -match '\A[0-9]+\z'){ $repeat=$r.TrimStart('0'); if($repeat.Length -gt 0){ Write-Output 'REPEAT_VALID=1'; Write-Output ('REPEAT_CANONICAL='+$repeat) } }" 2^>nul`) do (
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c.Length -gt 0){ if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } } }; $t=$env:RAW_TAG; if($t.Length -gt 0 -and $t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }; $r=$env:RAW_REPEAT; if($r.Length -gt 0){ if($r -match '\A[0-9]+\z'){ $repeat=$r.TrimStart('0'); if($repeat.Length -gt 0){ Write-Output 'REPEAT_VALID=1'; Write-Output ('REPEAT_CANONICAL='+$repeat) } } }" 2^>nul`) do (
   if /i "%%A"=="CASE_VALID" set "CASE_VALID=%%B"
   if /i "%%A"=="CASE_CANONICAL" set "CASE_CANONICAL=%%B"
   if /i "%%A"=="CASE_DISPLAY" set "CASE_DISPLAY=%%B"
@@ -227,7 +231,7 @@ for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$
 goto :eof
 
 :ReadVideoMarker
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; try { $required=@('Version','SessionId','ArgsValid','CaseNoCanonical','TagNormalized','VideoStartTimeUtc','ObsStartSucceeded'); $values=@{}; foreach($line in [IO.File]::ReadAllLines($env:VIDEO_SESSION_FILE)){ $i=$line.IndexOf('='); if($i -lt 1){ throw 1 }; $key=$line.Substring(0,$i); if($required -ccontains $key){ if($values.Keys -ccontains $key){ throw 1 }; $values[$key]=$line.Substring($i+1) } }; foreach($key in $required){ if(-not ($values.Keys -ccontains $key)){ throw 1 } }; if($values['Version'] -cne '1'){ throw 1 }; $guid=[Guid]::Empty; if(-not [Guid]::TryParseExact($values['SessionId'],'D',[ref]$guid)){ throw 1 }; $args=$values['ArgsValid']; if($args -cne '0' -and $args -cne '1'){ throw 1 }; $case='UNKNOWN'; if($values['CaseNoCanonical'] -cne 'UNKNOWN'){ if($values['CaseNoCanonical'] -notmatch '\A[0-9]+\z'){ throw 1 }; $case=$values['CaseNoCanonical'].TrimStart('0'); if($case.Length -eq 0){ throw 1 } }; $tag='UNKNOWN'; if($values['TagNormalized'] -cne 'UNKNOWN'){ if($values['TagNormalized'] -notmatch '\A[A-Z0-9_-]+\z'){ throw 1 }; $tag=$values['TagNormalized'] }; if($args -ceq '1' -and ($case -ceq 'UNKNOWN' -or $tag -ceq 'UNKNOWN')){ throw 1 }; [DateTime]$videoTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['VideoStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$videoTime)){ throw 1 }; if($videoTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; $obs=$values['ObsStartSucceeded']; if($obs -cne '0' -and $obs -cne '1'){ throw 1 }; Write-Output ('VIDEO_SESSION_ID='+$guid.ToString()); Write-Output ('VIDEO_MARKER_ARGS_VALID='+$args); Write-Output ('VIDEO_CASE_CANONICAL='+$case); Write-Output ('VIDEO_TAG_NORMALIZED='+$tag); Write-Output ('VIDEO_START_UTC='+$values['VideoStartTimeUtc']); Write-Output ('VIDEO_OBS_START_SUCCEEDED='+$obs); Write-Output 'VIDEO_MARKER_VALID=1' } catch { exit 3 }" 2^>nul`) do (
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; try { $required=@('Version','SessionId','ArgsValid','CaseNoCanonical','TagNormalized','VideoStartTimeUtc','ObsStartSucceeded'); $values=@{}; foreach($line in [IO.File]::ReadAllLines($env:VIDEO_SESSION_FILE)){ $i=$line.IndexOf('='); if($i -lt 1){ throw 1 }; $key=$line.Substring(0,$i); if($required -ccontains $key){ if($values.Keys -ccontains $key){ throw 1 }; $values[$key]=$line.Substring($i+1) } }; foreach($key in $required){ if(-not ($values.Keys -ccontains $key)){ throw 1 } }; $version=$values['Version']; if($version -cne '1' -and $version -cne '2'){ throw 1 }; $guid=[Guid]::Empty; if(-not [Guid]::TryParseExact($values['SessionId'],'D',[ref]$guid)){ throw 1 }; $args=$values['ArgsValid']; if($args -cne '0' -and $args -cne '1'){ throw 1 }; $case=$values['CaseNoCanonical']; if($version -ceq '1' -and $case -ceq 'UNKNOWN'){ $case='' }; if($case.Length -gt 0){ if($case -notmatch '\A[0-9]+\z'){ throw 1 }; $case=$case.TrimStart('0'); if($case.Length -eq 0){ throw 1 } }; $tag=$values['TagNormalized']; if($version -ceq '1' -and $tag -ceq 'UNKNOWN'){ $tag='' }; if($tag.Length -gt 0 -and $tag -notmatch '\A[A-Z0-9_-]+\z'){ throw 1 }; if($version -ceq '1' -and $args -ceq '1' -and ($case.Length -eq 0 -or $tag.Length -eq 0)){ throw 1 }; [DateTime]$videoTime=[DateTime]::MinValue; if(-not [DateTime]::TryParseExact($values['VideoStartTimeUtc'],'o',[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind,[ref]$videoTime)){ throw 1 }; if($videoTime.Kind -ne [DateTimeKind]::Utc){ throw 1 }; $obs=$values['ObsStartSucceeded']; if($obs -cne '0' -and $obs -cne '1'){ throw 1 }; Write-Output ('VIDEO_SESSION_ID='+$guid.ToString()); Write-Output ('VIDEO_MARKER_ARGS_VALID='+$args); Write-Output ('VIDEO_CASE_CANONICAL='+$case); Write-Output ('VIDEO_TAG_NORMALIZED='+$tag); Write-Output ('VIDEO_START_UTC='+$values['VideoStartTimeUtc']); Write-Output ('VIDEO_OBS_START_SUCCEEDED='+$obs); Write-Output 'VIDEO_MARKER_VALID=1' } catch { exit 3 }" 2^>nul`) do (
   if /i "%%A"=="VIDEO_SESSION_ID" set "VIDEO_SESSION_ID=%%B"
   if /i "%%A"=="VIDEO_MARKER_ARGS_VALID" set "VIDEO_MARKER_ARGS_VALID=%%B"
   if /i "%%A"=="VIDEO_CASE_CANONICAL" set "VIDEO_CASE_CANONICAL=%%B"
@@ -241,14 +245,13 @@ goto :eof
 :DetermineModes
 set "LOG_SELECTION_MODE=LATEST"
 set "VIDEO_SELECTION_MODE=LATEST"
-set "NAMING_MODE=FALLBACK"
+set "NAMING_MODE=NORMAL"
 set "SKIP_MP4=0"
 if "%LOG_MARKER_VALID%"=="1" set "LOG_SELECTION_MODE=MARKER"
 if "%VIDEO_MARKER_VALID%"=="1" set "VIDEO_SELECTION_MODE=MARKER"
 if "%LOG_MARKER_VALID%"=="1" if "%VIDEO_MARKER_VALID%"=="1" if /i not "%LOG_SESSION_ID%"=="%VIDEO_SESSION_ID%" goto :DetermineSessionMismatch
 if "%VIDEO_MARKER_VALID%"=="1" if "%VIDEO_OBS_START_SUCCEEDED%"=="0" call :MarkObsStartFailed
-if not "%ARGS_VALID%"=="1" goto :DetermineStopArgumentsInvalid
-if "%VIDEO_MARKER_VALID%"=="1" if not "%VIDEO_MARKER_ARGS_VALID%"=="1" goto :DetermineVideoArgsInvalid
+if "%VIDEO_MARKER_VALID%"=="1" if not "%VIDEO_MARKER_ARGS_VALID%"=="1" call :DetermineVideoArgsInvalid
 if "%VIDEO_MARKER_VALID%"=="1" if not "%CASE_CANONICAL%"=="%VIDEO_CASE_CANONICAL%" goto :DetermineCaseMismatch
 if "%VIDEO_MARKER_VALID%"=="1" if /i not "%TAG_NORMALIZED%"=="%VIDEO_TAG_NORMALIZED%" goto :DetermineCaseMismatch
 set "NAMING_MODE=NORMAL"
@@ -262,6 +265,7 @@ set "VIDEO_MARKER_VALID=0"
 set "LOG_SELECTION_MODE=LATEST"
 set "VIDEO_SELECTION_MODE=LATEST"
 set "SKIP_MP4=0"
+set "NAMING_MODE=FALLBACK"
 echo [ERROR] Log and video SessionId values do not match; both marker timelines are discarded.
 set "ERROR_STATE=1"
 goto :eof
@@ -272,20 +276,16 @@ echo [ERROR] OBS start was not successful; MP4 will not be moved.
 set "ERROR_STATE=1"
 goto :eof
 
-:DetermineStopArgumentsInvalid
-echo [ERROR] STOP arguments are invalid; CaseUnknown_UNKNOWN naming will be used.
-set "ERROR_STATE=1"
-goto :eof
-
 :DetermineVideoArgsInvalid
 set "VIDEO_ARGS_INVALID=1"
-echo [ERROR] Video marker arguments were invalid; CaseUnknown_UNKNOWN naming will be used.
+echo [ERROR] Video marker contained an invalid non-empty CaseNo or Tag; valid matching fields will still be used.
 set "ERROR_STATE=1"
 goto :eof
 
 :DetermineCaseMismatch
 set "CASE_MISMATCH=1"
-echo [ERROR] START and STOP CaseNo/Tag do not match; CaseUnknown_UNKNOWN naming will be used.
+set "NAMING_MODE=FALLBACK"
+echo [ERROR] START and STOP CaseNo/Tag do not match; CaseNo and Tag will be omitted from names.
 set "ERROR_STATE=1"
 goto :eof
 
@@ -298,14 +298,43 @@ set "DT_OK=1"
 goto :eof
 
 :PrepareParentFolder
-if /i "%NAMING_MODE%"=="NORMAL" goto :PrepareNormalParent
-set "PARENT_FOLDER=%BASEDIR%\CaseUnknown_UNKNOWN"
-set "FILE_PREFIX=CaseUnknown_UNKNOWN#%REPEAT_NAME%"
+set "PARENT_NAME="
+set "NAME_COMPONENT="
+if /i not "%NAMING_MODE%"=="NORMAL" goto :AppendRepeatToName
+if "%CASE_VALID%"=="1" if defined CASE_DISPLAY set "PARENT_NAME=Case%CASE_DISPLAY%"
+if not "%TAG_VALID%"=="1" goto :CopyParentToName
+if not defined TAG_NORMALIZED goto :CopyParentToName
+if defined PARENT_NAME goto :AppendTagToParentName
+set "PARENT_NAME=%TAG_NORMALIZED%"
+goto :CopyParentToName
+
+:AppendTagToParentName
+set "PARENT_NAME=%PARENT_NAME%_%TAG_NORMALIZED%"
+
+:CopyParentToName
+set "NAME_COMPONENT=%PARENT_NAME%"
+
+:AppendRepeatToName
+if not "%REPEAT_VALID%"=="1" goto :FinalizeNames
+if not defined REPEAT_CANONICAL goto :FinalizeNames
+if defined NAME_COMPONENT goto :AppendRepeatSuffix
+set "NAME_COMPONENT=Repeat%REPEAT_CANONICAL%"
+goto :FinalizeNames
+
+:AppendRepeatSuffix
+set "NAME_COMPONENT=%NAME_COMPONENT%#%REPEAT_CANONICAL%"
+
+:FinalizeNames
+set "PARENT_FOLDER=%BASEDIR%"
+if defined PARENT_NAME set "PARENT_FOLDER=%BASEDIR%\%PARENT_NAME%"
+if defined NAME_COMPONENT goto :UseNameComponent
+set "FILE_PREFIX=%DT%"
+set "RUN_FOLDER_NAME=%DT%"
 goto :EnsureParentFolder
 
-:PrepareNormalParent
-set "PARENT_FOLDER=%BASEDIR%\Case%CASE_DISPLAY%_%TAG_NORMALIZED%"
-set "FILE_PREFIX=Case%CASE_DISPLAY%_%TAG_NORMALIZED%#%REPEAT_CANONICAL%"
+:UseNameComponent
+set "FILE_PREFIX=%NAME_COMPONENT%"
+set "RUN_FOLDER_NAME=%NAME_COMPONENT%_%DT%"
 
 :EnsureParentFolder
 echo [INFO] Parent folder: "%PARENT_FOLDER%"
@@ -331,7 +360,7 @@ set "PARENT_READY=1"
 goto :eof
 
 :ArchivePreviousChild
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; try { $pattern='\A'+[Regex]::Escape($env:FILE_PREFIX)+'_[0-9]{8}_[0-9]{6}\z'; $candidate=@(Get-ChildItem -LiteralPath $env:PARENT_FOLDER -Directory -ErrorAction Stop | Where-Object { $_.Name -notmatch '_OLD_' -and $_.Name -match $pattern } | Sort-Object -Property Name -Descending | Select-Object -First 1); if($candidate.Count -eq 0){ Write-Output '[INFO] No previous normal child folder requires archiving.'; exit 0 }; $archiveBase=$candidate[0].Name+'_OLD_'+$env:DT; $archiveName=$archiveBase; $index=1; while(Test-Path -LiteralPath (Join-Path -Path $env:PARENT_FOLDER -ChildPath $archiveName)){ $archiveName=$archiveBase+'_'+$index.ToString('00',[Globalization.CultureInfo]::InvariantCulture); $index++ }; Rename-Item -LiteralPath $candidate[0].FullName -NewName $archiveName -ErrorAction Stop; Write-Output ('[INFO] Archived OLD folder: "'+(Join-Path -Path $env:PARENT_FOLDER -ChildPath $archiveName)+'"'); exit 0 } catch { Write-Output '[ERROR] Failed to archive the latest previous normal child folder.'; exit 1 }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; try { if([string]::IsNullOrEmpty($env:NAME_COMPONENT)){ $pattern='\A[0-9]{8}_[0-9]{6}\z' } else { $pattern='\A'+[Regex]::Escape($env:NAME_COMPONENT)+'_[0-9]{8}_[0-9]{6}\z' }; $candidate=@(Get-ChildItem -LiteralPath $env:PARENT_FOLDER -Directory -ErrorAction Stop | Where-Object { $_.Name -notmatch '_OLD_' -and $_.Name -match $pattern } | Sort-Object -Property Name -Descending | Select-Object -First 1); if($candidate.Count -eq 0){ Write-Output '[INFO] No previous matching child folder requires archiving.'; exit 0 }; $archiveBase=$candidate[0].Name+'_OLD_'+$env:DT; $archiveName=$archiveBase; $index=1; while(Test-Path -LiteralPath (Join-Path -Path $env:PARENT_FOLDER -ChildPath $archiveName)){ $archiveName=$archiveBase+'_'+$index.ToString('00',[Globalization.CultureInfo]::InvariantCulture); $index++ }; Rename-Item -LiteralPath $candidate[0].FullName -NewName $archiveName -ErrorAction Stop; Write-Output ('[INFO] Archived OLD folder: "'+(Join-Path -Path $env:PARENT_FOLDER -ChildPath $archiveName)+'"'); exit 0 } catch { Write-Output '[ERROR] Failed to archive the latest previous matching child folder.'; exit 1 }"
 set "ARCHIVE_EXIT_CODE=%ERRORLEVEL%"
 if "%ARCHIVE_EXIT_CODE%"=="0" (
   set "ARCHIVE_READY=1"
@@ -342,7 +371,7 @@ set "ERROR_STATE=1"
 goto :eof
 
 :CreateChildFolder
-set "DEST_FOLDER=%PARENT_FOLDER%\%FILE_PREFIX%_%DT%"
+set "DEST_FOLDER=%PARENT_FOLDER%\%RUN_FOLDER_NAME%"
 echo [INFO] Destination child folder: "%DEST_FOLDER%"
 if exist "%DEST_FOLDER%" (
   echo [ERROR] Destination child already exists; file movement will be skipped: "%DEST_FOLDER%"

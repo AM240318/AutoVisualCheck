@@ -57,11 +57,11 @@ STARTとSTOPには同じ `CaseNo` と `Tag` を渡してください。新方式
 ### 実行順
 
 ```text
-START_REC.bat CaseNo Tag
+START_REC.bat [CaseNo] [Tag]
   ↓
 テスト本体
   ↓
-STOP_REC.bat CaseNo Tag
+STOP_REC.bat [CaseNo] [Tag]
 ```
 
 手動実行例（CaseNo `1`、Tag `MM`）:
@@ -74,7 +74,7 @@ call STOP_REC.bat 1 MM
 
 ### `START_REC.bat` の役割
 
-`START_REC.bat CaseNo Tag` は、次を順番に実行します。
+`START_REC.bat [CaseNo] [Tag]` は、次を順番に実行します。CaseNoとTagは空欄でも構いません。
 
 1. `legacy_session.marker` を作成し、CaseNo、Tag、セッションID、開始時刻を記録する
 2. `obs_record_start.ps1` を呼び出してOBS録画を開始する
@@ -86,7 +86,7 @@ OBS開始処理は最大20秒待ちます。処理が失敗しても後続のCAN
 
 ### `STOP_REC.bat` の役割
 
-`STOP_REC.bat CaseNo Tag` は、次を順番に実行します。
+`STOP_REC.bat [CaseNo] [Tag]` は、次を順番に実行します。空欄は省略として扱い、入力された項目だけを命名に使用します。
 
 1. 引数と `legacy_session.marker` を検証する
 2. CANログを停止する
@@ -97,7 +97,7 @@ OBS開始処理は最大20秒待ちます。処理が失敗しても後続のCAN
 
 マーカーが有効な場合は、各開始時刻以降のファイルを選びます。MP4が複数ある場合は最新の1件、PNG・LOG・ASCは条件に一致した全件が対象です。マーカーがない、または無効な場合は、各種類の最新1件を選ぶフォールバック動作になります。
 
-保存先は次の形式です。
+CaseNoとTagがある場合の保存先は次の形式です。
 
 ```text
 C:\Users\TMC\Desktop\LogZips\Case{CaseNoを3桁以上に0埋め}_{大文字Tag}_{yyyyMMdd_HHmmss}
@@ -109,13 +109,13 @@ C:\Users\TMC\Desktop\LogZips\Case{CaseNoを3桁以上に0埋め}_{大文字Tag}_
 C:\Users\TMC\Desktop\LogZips\Case001_MM_20260721_143000
 ```
 
-引数が無効、STARTとSTOPのCaseNo/Tagが不一致、または有効なSTARTマーカー内の引数が無効な場合は、日時だけのフォールバック名を使用します。
+CaseNoまたはTagが空欄の場合は、存在する項目だけを使用します。両方空欄、STARTとSTOPのCaseNo/Tagが不一致、または有効なSTARTマーカー内の値と一致しない場合は、日時だけの名前を使用します。
 
 ```text
 C:\Users\TMC\Desktop\LogZips\20260721_143000
 ```
 
-ただし、マーカーがない場合でもSTOPの引数が有効なら、通常の `Case001_MM_...` 形式を使用します。
+マーカーがない場合でも、STOP側で入力された有効なCaseNoまたはTagを命名に使用します。空欄ではない不正値は名前から除外し、最終終了コードを1にします。
 
 ## 5. 新方式の使い方
 
@@ -124,11 +124,11 @@ C:\Users\TMC\Desktop\LogZips\20260721_143000
 ```text
 START_REC2.bat
   ↓
-START_REC3.bat CaseNo Tag
+START_REC3.bat [CaseNo] [Tag]
   ↓
 テスト本体
   ↓
-STOP_REC2.bat CaseNo Tag Repeat
+STOP_REC2.bat [CaseNo] [Tag] [Repeat]
 ```
 
 手動実行例（CaseNo `1`、Tag `MM`、Repeat `1`）:
@@ -154,10 +154,10 @@ call STOP_REC2.bat 1 MM 1
 
 ### `START_REC3.bat` の役割
 
-`START_REC3.bat CaseNo Tag` は録画側の開始処理を担当します。
+`START_REC3.bat [CaseNo] [Tag]` は録画側の開始処理を担当します。
 
 1. 前回の `video_session.marker` を無効化する
-2. 引数が有効なら `C:\Users\TMC\Desktop\LogZips\Case{CaseNo}_{Tag}` 親フォルダを作成または再利用する
+2. 有効なCaseNoまたはTagがあれば、その項目だけで親フォルダを作成または再利用し、両方空欄なら `LogZips` 直下を使用する
 3. `log_session.marker` からセッションIDを引き継ぐ
 4. 録画開始時刻とCaseNo/Tagを `video_session.marker` に記録する
 5. OBS録画を開始し、成功結果を同マーカーへ記録する
@@ -166,7 +166,7 @@ call STOP_REC2.bat 1 MM 1
 
 ### `STOP_REC2.bat` の役割
 
-`STOP_REC2.bat CaseNo Tag Repeat` は、次を実行します。
+`STOP_REC2.bat [CaseNo] [Tag] [Repeat]` は、次を実行します。
 
 1. 引数、`log_session.marker`、`video_session.marker` を個別に検証する
 2. 両マーカーが有効ならセッションIDが一致するか検証する
@@ -179,7 +179,7 @@ call STOP_REC2.bat 1 MM 1
 
 ## 6. 保存先フォルダとファイル名
 
-### 新方式の通常構造
+### 新方式の保存構造
 
 ```text
 C:\Users\TMC\Desktop\LogZips\
@@ -197,17 +197,24 @@ C:\Users\TMC\Desktop\LogZips\
 - MP4名: `Case{CaseNo}_{Tag}#{Repeat}.mp4`
 - PNG、LOG、ASC名: `Case{CaseNo}_{Tag}#{Repeat}_{移動元ファイル名}`
 
-引数不正やCaseNo/Tag不一致などで通常名を使用できない場合、新方式は次へ保存します。
+空欄項目は省略し、余分な `_` や `#` は付けません。
 
-```text
-C:\Users\TMC\Desktop\LogZips\CaseUnknown_UNKNOWN\CaseUnknown_UNKNOWN#1_20260721_143000
-```
+| 入力 | 子フォルダ名 |
+| --- | --- |
+| Case、Tag、Repeat | `Case001_TAG#2_20260721_143000` |
+| Case、Tag | `Case001_TAG_20260721_143000` |
+| Case、Repeat | `Case001#2_20260721_143000` |
+| Tag、Repeat | `TAG#2_20260721_143000` |
+| Caseのみ | `Case001_20260721_143000` |
+| Tagのみ | `TAG_20260721_143000` |
+| Repeatのみ | `Repeat2_20260721_143000` |
+| すべて空欄 | `20260721_143000` |
 
-Repeatも無効な場合は `#Unknown` になります。
+CaseまたはTagがある場合は、それらだけで構成した親フォルダを使用します。CaseとTagが両方空欄なら `LogZips` 直下へ子フォルダを作ります。MP4と他の移動ファイルも同じ命名部品を使用し、すべて空欄の場合は日時をファイル接頭辞にします。
 
 ### 新方式の退避フォルダ
 
-新しい子フォルダを作る前に、同じ親フォルダ内から、同じCaseNo/Tag/Repeatに一致する最新の通常子フォルダ1件を探します。見つかった場合は次の形式へ名前を変更します。
+新しい子フォルダを作る前に、同じ親フォルダ内から、同じ有効なCaseNo/Tag/Repeatの組合せに完全一致する最新の子フォルダ1件を探します。全項目空欄の場合は日時形式だけのフォルダを対象にします。見つかった場合は次の形式へ名前を変更します。
 
 ```text
 Case001_MM#1_20260721_130000_OLD_20260721_143000
@@ -242,7 +249,7 @@ Case001_MM#1_20260721_130000_OLD_20260721_143000
 
 `CaseNo` と `Tag` はテスト定義の `CaseNo` 行の第1・第2パラメータ、`Repeat` は `Repeat` 行の第1パラメータから保持されます。新方式へ切り替える場合は、テスト定義側のGAIBU呼び出しも、3つの新方式BATの順序に合わせる必要があります。
 
-現在の `MM_前進ミラー開_153Cases.txt` は、従来方式の `START_REC.bat` と `STOP_REC.bat` を呼び出しています。また、確認した各 `CaseNo` 行では第2パラメータ（Tag）が空です。現行BATでは空のTagを無効と判定するため、このテスト定義をそのまま実行すると `ArgsValid=0` になり、通常のCase/Tag名では保存されません。
+現在の `MM_前進ミラー開_153Cases.txt` は、従来方式の `START_REC.bat` と `STOP_REC.bat` を呼び出しています。また、確認した各 `CaseNo` 行では第2パラメータ（Tag）が空です。空のTagは正常な省略として扱うため、このテスト定義ではCaseNoだけの名前で保存されます。
 
 CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマンド用の値 `1` を返します。そのため、BATが終了コード1を返してもCANoeのテストシーケンス自体は止めず、次のコマンドへ進む設計です。異常の有無はBATの `[RESULT]` 表示と保存結果で確認してください。
 
@@ -251,13 +258,14 @@ CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマ
 ### CaseNo/Tag不一致
 
 - STARTとSTOPで正規化後のCaseNo/Tagが一致しないと `[ERROR] START and STOP CaseNo/Tag do not match` が出ます。
-- 従来方式は日時だけのフォルダ名、新方式は `CaseUnknown_UNKNOWN` へフォールバックします。
+- 従来方式は日時だけのフォルダ名、新方式は有効なRepeatがあれば `Repeat{Repeat}_{日時}`、なければ日時だけの名前へフォールバックします。
 - エラー終了しますが、停止処理と、準備できた保存先へのファイル移動は続行します。
 
 ### マーカーなし・マーカー不正
 
 - 従来方式は `legacy_session.marker`、新方式は `log_session.marker` と `video_session.marker` を使用します。
 - マーカーはBATと同じフォルダに作成され、STOPの最後に削除されます。
+- `legacy_session.marker` と `video_session.marker` はVersion 2で、欠落したCaseNo/Tagを空欄で記録します。STOP側はVersion 1も読み込み、従来の `UNKNOWN` を空欄として扱います。
 - マーカーがない種類は、開始時刻による絞り込みができないため最新1件を選びます。
 - 新方式で両マーカーのセッションIDが違う場合は、両マーカーの時刻を破棄します。
 

@@ -147,8 +147,8 @@ commandline:<実行ファイル> args:<引数または<none>>
 ## インターフェース
 
 ```text
-%1 = CaseNo
-%2 = Tag
+%1 = CaseNo（省略可）
+%2 = Tag（省略可）
 ```
 
 ## 維持する既存順序
@@ -179,6 +179,8 @@ Tag：
 - `^[A-Za-z0-9_-]+$`
 - 大文字へ正規化
 
+CaseNoとTagの空欄は正常な省略とし、`ArgsValid=1`の対象にしてください。空欄ではない不正値だけをエラーにします。
+
 引数不正でもOBS、CAN、Tera Term、スクリーンショットを可能な限り試行してください。危険な値をパスやコマンドへ連結しないでください。
 
 ## マーカー
@@ -190,11 +192,11 @@ set "LEGACY_SESSION_FILE=%~dp0legacy_session.marker"
 `KEY=VALUE`形式で最低限、次を保存してください。
 
 ```text
-Version=1
+Version=2
 SessionId=<GUID>
 ArgsValid=0または1
-CaseNoCanonical=<有効時の数値。不正時はUNKNOWN>
-TagNormalized=<有効時の大文字Tag。不正時はUNKNOWN>
+CaseNoCanonical=<有効時の数値。空欄または不正時は空欄>
+TagNormalized=<有効時の大文字Tag。空欄または不正時は空欄>
 SessionStartTimeUtc=<UTC ISO 8601>
 VideoStartTimeUtc=<UTC ISO 8601>
 LogStartTimeUtc=<UTC ISO 8601>
@@ -314,8 +316,8 @@ LogStartTimeUtc=<UTC ISO 8601>
 ## インターフェース
 
 ```text
-%1 = CaseNo
-%2 = Tag
+%1 = CaseNo（省略可）
+%2 = Tag（省略可）
 ```
 
 Repeatは受け取りません。
@@ -345,6 +347,7 @@ C:\Users\TMC\Desktop\LogZips\Case001_WB
 ```
 
 - Tagは大文字へ正規化。
+- CaseNoまたはTagが空欄なら、存在する有効項目だけで親フォルダ名を作る。両方空欄なら`LogZips`直下を使用。
 - 親フォルダがあれば削除、退避、初期化せず再利用。
 - 親フォルダ作成失敗でもOBS開始を試行。
 - 引数不正でもOBS開始を試行。
@@ -367,11 +370,11 @@ set "VIDEO_SESSION_FILE=%~dp0video_session.marker"
 最低限：
 
 ```text
-Version=1
+Version=2
 SessionId=<引継ぎまたは新規GUID>
 ArgsValid=0または1
-CaseNoCanonical=<有効時の数値。不正時はUNKNOWN>
-TagNormalized=<有効時の大文字Tag。不正時はUNKNOWN>
+CaseNoCanonical=<有効時の数値。空欄または不正時は空欄>
+TagNormalized=<有効時の大文字Tag。空欄または不正時は空欄>
 VideoStartTimeUtc=<UTC ISO 8601>
 ObsStartSucceeded=0または1
 ```
@@ -401,8 +404,8 @@ ObsStartSucceeded=0または1
 ## インターフェース
 
 ```text
-%1 = CaseNo
-%2 = Tag
+%1 = CaseNo（省略可）
+%2 = Tag（省略可）
 ```
 
 ## 必須順序
@@ -434,11 +437,12 @@ legacy_session.marker削除
 
 - CaseNoは1以上の10進整数。数値比較で`1`と`001`は一致。
 - Tagは`^[A-Za-z0-9_-]+$`、大文字へ正規化。
+- 空欄は正常な省略。両側が空欄なら一致、片側だけ空欄なら不一致。
 - マーカーのCaseNo／TagとSTOP側を比較。
 
 正常一致：正常命名。
 
-引数不正、マーカーの`ArgsValid=0`、または開始・停止不一致：有効な開始マーカー時刻で今回分を検索するが、STOP側Case名は使わず日時だけのフォールバック命名。終了コード1。
+空欄項目は名前から省きます。不正な非空欄項目は名前から除外して終了コード1。開始・停止不一致では有効な開始マーカー時刻で今回分を検索しますが、CaseNoとTagを使わず日時だけの命名にして終了コード1。
 
 ## 正常命名
 
@@ -478,7 +482,7 @@ C:\Users\TMC\Desktop\LogZips\20260717_143025
 
 ## マーカーなし／破損時
 
-STOP側引数が正常なら正常命名を使い、各種類の最新1件だけを移動してください。
+STOP側の有効なCaseNoまたはTagだけで命名し、各種類の最新1件だけを移動してください。両方空欄なら日時だけを使用します。
 
 | 種類 | 最新判定 |
 |---|---|
@@ -522,9 +526,9 @@ STOP側引数が正常なら正常命名を使い、各種類の最新1件だけ
 ## インターフェース
 
 ```text
-%1 = CaseNo
-%2 = Tag
-%3 = 現在のRepeat番号
+%1 = CaseNo（省略可）
+%2 = Tag（省略可）
+%3 = 現在のRepeat番号（省略可）
 ```
 
 ## 必須順序
@@ -561,8 +565,9 @@ COM42 Tera Termログ停止
 - CaseNo：1以上の10進整数、最低3桁、1000以上を切り捨てない。
 - Tag：`^[A-Za-z0-9_-]+$`、大文字化。
 - Repeat：1以上の10進整数、ゼロ埋めなし。
+- 各項目の空欄は正常な省略とし、入力された有効項目だけを命名に使用する。
 
-CaseNo、Tag、Repeatのいずれか不正、または動画マーカーの`ArgsValid=0`なら新方式のフォールバックを使い、終了コード1。
+空欄ではない不正値または動画マーカーの`ArgsValid=0`はエラーとして保持し、不正項目だけを名前から除外します。
 
 ## 正常命名
 
@@ -578,32 +583,25 @@ C:\Users\TMC\Desktop\LogZips
       └─ Case001_WB#2_<元名>.asc
 ```
 
-## フォールバック命名
+## 空欄項目の命名
 
-Repeat正常：
-
-```text
-CaseUnknown_UNKNOWN
-└─ CaseUnknown_UNKNOWN#2_20260717_143025
-   ├─ CaseUnknown_UNKNOWN#2.mp4
-   └─ CaseUnknown_UNKNOWN#2_<元名>.<ext>
-```
-
-Repeat不正：
-
-```text
-CaseUnknown_UNKNOWN
-└─ CaseUnknown_UNKNOWN#Unknown_20260717_143025
-   ├─ CaseUnknown_UNKNOWN#Unknown.mp4
-   └─ CaseUnknown_UNKNOWN#Unknown_<元名>.<ext>
-```
+| 入力 | 子フォルダ名 |
+|---|---|
+| Case、Tag、Repeat | `Case001_TAG#2_20260717_143025` |
+| Case、Tag | `Case001_TAG_20260717_143025` |
+| Case、Repeat | `Case001#2_20260717_143025` |
+| Tag、Repeat | `TAG#2_20260717_143025` |
+| Caseのみ | `Case001_20260717_143025` |
+| Tagのみ | `TAG_20260717_143025` |
+| Repeatのみ | `Repeat2_20260717_143025` |
+| すべて空欄 | `20260717_143025` |
 
 ## 開始・停止一致判定
 
 - `video_session.marker`のCaseNoは数値比較。
 - Tagは大文字正規化後に比較。
-- 不一致なら、有効な開始マーカー時刻でファイルを検索するが、STOP側Case名を使わず`CaseUnknown_UNKNOWN`へ保存し、終了コード1。
-- `log_session.marker`と`video_session.marker`のSessionId不一致も`CaseUnknown_UNKNOWN`へのフォールバック扱い。両マーカーを不正扱いにし、両系統とも各保存元の最新1件フォールバックを使い、終了コード1。
+- 不一致なら、有効な開始マーカー時刻でファイルを検索するが、CaseNoとTagを命名から除外し、有効なRepeatと日時だけで保存して終了コード1。
+- `log_session.marker`と`video_session.marker`のSessionId不一致でもCaseNoとTagを除外する。両マーカーを不正扱いにし、両系統とも各保存元の最新1件フォールバックを使い、終了コード1。
 - Repeatは開始側へ渡していないため、STOP側の値だけを検証する。
 
 ## 直前フォルダ退避
@@ -669,8 +667,8 @@ ASC: LastWriteTimeUtc >= LogStartTimeUtc
 
 - 動画マーカーなし：最新MP4 1件。
 - ログマーカーなし：最新PNG、最新LOG、最新ASCを各1件。
-- STOP側引数が正常なら正常命名。
-- STOP側引数不正ならフォールバック命名。
+- STOP側の有効な項目だけで命名し、すべて空欄なら日時だけを使用する。
+- STOP側に不正な非空欄項目があれば、その項目を除外して終了コード1。
 - マーカー欠落・破損があるため、移動成功でも終了コード1。
 - 片方だけ欠落なら、その系統だけ最新1件へフォールバックし、もう片方は有効時刻条件を使う。
 
@@ -762,10 +760,16 @@ yyyyMMdd_HHmmss\yyyyMMdd_HHmmss.mp4
 Case001_WB\Case001_WB#2_yyyyMMdd_HHmmss\Case001_WB#2.mp4
 ```
 
-新方式フォールバック：
+新方式でCaseNoとTagが使えずRepeatだけが有効：
 
 ```text
-CaseUnknown_UNKNOWN\CaseUnknown_UNKNOWN#2_yyyyMMdd_HHmmss\CaseUnknown_UNKNOWN#2.mp4
+Repeat2_yyyyMMdd_HHmmss\Repeat2.mp4
+```
+
+新方式ですべて空欄：
+
+```text
+yyyyMMdd_HHmmss\yyyyMMdd_HHmmss.mp4
 ```
 
 ## 4. ファイル選別契約

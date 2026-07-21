@@ -10,9 +10,10 @@ set "RAW_TAG=%~2"
 set "CASE_VALID=0"
 set "TAG_VALID=0"
 set "ARGS_VALID=0"
-set "CASE_CANONICAL=UNKNOWN"
-set "CASE_DISPLAY=UNKNOWN"
-set "TAG_NORMALIZED=UNKNOWN"
+set "CASE_CANONICAL="
+set "CASE_DISPLAY="
+set "TAG_NORMALIZED="
+set "PARENT_NAME="
 set "PARENT_DIR="
 set "SESSION_ID=UNKNOWN"
 set "LOG_SESSION_LINK_OK=0"
@@ -25,19 +26,21 @@ set "CASE_PRESENT=0"
 set "TAG_PRESENT=0"
 if defined RAW_CASE set "CASE_PRESENT=1"
 if defined RAW_TAG set "TAG_PRESENT=1"
+if not defined RAW_CASE set "CASE_VALID=1"
+if not defined RAW_TAG set "TAG_VALID=1"
 
 call :InvalidateVideoMarker
 
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [ERROR] Invalid CaseNo or Tag.
+  echo [ERROR] Invalid non-empty CaseNo or Tag.
   set "ERROR_STATE=1"
 )
 
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
 echo [INFO] Normalized arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED%
-if "%ARGS_VALID%"=="1" call :PrepareParentFolder
+call :PrepareParentFolder
 
 call :ReadLogSession
 if "%LOG_SESSION_LINK_OK%"=="1" (
@@ -83,7 +86,7 @@ if "%ERROR_STATE%"=="0" (
 exit /b %ERROR_STATE%
 
 :ValidateArguments
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } }; $t=$env:RAW_TAG; if($t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c.Length -gt 0){ if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical); Write-Output ('CASE_DISPLAY='+$canonical.PadLeft(3,'0')) } } }; $t=$env:RAW_TAG; if($t.Length -gt 0 -and $t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
   if /i "%%A"=="CASE_VALID" set "CASE_VALID=%%B"
   if /i "%%A"=="CASE_CANONICAL" set "CASE_CANONICAL=%%B"
   if /i "%%A"=="CASE_DISPLAY" set "CASE_DISPLAY=%%B"
@@ -93,7 +96,20 @@ for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$
 goto :eof
 
 :PrepareParentFolder
-set "PARENT_DIR=%SAVE_ROOT%\Case%CASE_DISPLAY%_%TAG_NORMALIZED%"
+set "PARENT_NAME="
+if "%CASE_VALID%"=="1" if defined CASE_DISPLAY set "PARENT_NAME=Case%CASE_DISPLAY%"
+if not "%TAG_VALID%"=="1" goto :SetParentDirectory
+if not defined TAG_NORMALIZED goto :SetParentDirectory
+if defined PARENT_NAME goto :AppendTagToParent
+set "PARENT_NAME=%TAG_NORMALIZED%"
+goto :SetParentDirectory
+
+:AppendTagToParent
+set "PARENT_NAME=%PARENT_NAME%_%TAG_NORMALIZED%"
+
+:SetParentDirectory
+set "PARENT_DIR=%SAVE_ROOT%"
+if defined PARENT_NAME set "PARENT_DIR=%SAVE_ROOT%\%PARENT_NAME%"
 if exist "%PARENT_DIR%\" (
   echo [INFO] Reusing parent folder: "%PARENT_DIR%"
   goto :eof
@@ -147,7 +163,7 @@ goto :eof
 
 :WriteVideoMarker
 > "%VIDEO_SESSION_TEMP%" (
-  echo Version=1
+  echo Version=2
   echo SessionId=%SESSION_ID%
   echo ArgsValid=%ARGS_VALID%
   echo CaseNoCanonical=%CASE_CANONICAL%

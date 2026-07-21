@@ -8,8 +8,8 @@ set "RAW_TAG=%~2"
 set "CASE_VALID=0"
 set "TAG_VALID=0"
 set "ARGS_VALID=0"
-set "CASE_CANONICAL=UNKNOWN"
-set "TAG_NORMALIZED=UNKNOWN"
+set "CASE_CANONICAL="
+set "TAG_NORMALIZED="
 set "SESSION_ID=UNKNOWN"
 set "SESSION_START_UTC=UNKNOWN"
 set "VIDEO_START_UTC=UNKNOWN"
@@ -22,6 +22,8 @@ set "CASE_PRESENT=0"
 set "TAG_PRESENT=0"
 if defined RAW_CASE set "CASE_PRESENT=1"
 if defined RAW_TAG set "TAG_PRESENT=1"
+if not defined RAW_CASE set "CASE_VALID=1"
+if not defined RAW_TAG set "TAG_VALID=1"
 
 call :InvalidateLegacyMarker
 
@@ -39,7 +41,7 @@ if "%SESSION_ID_OK%"=="0" (
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [ERROR] Invalid CaseNo or Tag.
+  echo [ERROR] Invalid non-empty CaseNo or Tag.
   set "ERROR_STATE=1"
 )
 
@@ -214,7 +216,7 @@ set "%~2=1"
 goto :eof
 
 :ValidateArguments
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical) } }; $t=$env:RAW_TAG; if($t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $c=$env:RAW_CASE; if($c.Length -gt 0){ if($c -match '\A[0-9]+\z'){ $canonical=$c.TrimStart('0'); if($canonical.Length -gt 0){ Write-Output 'CASE_VALID=1'; Write-Output ('CASE_CANONICAL='+$canonical) } } }; $t=$env:RAW_TAG; if($t.Length -gt 0 -and $t -match '\A[A-Za-z0-9_-]+\z'){ Write-Output 'TAG_VALID=1'; Write-Output ('TAG_NORMALIZED='+$t.ToUpperInvariant()) }" 2^>nul`) do (
   if /i "%%A"=="CASE_VALID" set "CASE_VALID=%%B"
   if /i "%%A"=="CASE_CANONICAL" set "CASE_CANONICAL=%%B"
   if /i "%%A"=="TAG_VALID" set "TAG_VALID=%%B"
@@ -225,7 +227,7 @@ goto :eof
 :WriteLegacyMarker
 set "MARKER_WRITE_OK=0"
 > "%LEGACY_SESSION_TEMP%" (
-  echo Version=1
+  echo Version=2
   echo SessionId=%SESSION_ID%
   echo ArgsValid=%ARGS_VALID%
   echo CaseNoCanonical=%CASE_CANONICAL%
