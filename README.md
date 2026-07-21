@@ -2,7 +2,7 @@
 
 ## 1. このプロジェクトの目的
 
-このプロジェクトは、CANoeでテストを実行しながら、次の証跡を取得して `C:\Users\TMC\Desktop\LogZips` 配下へまとめるためのものです。
+このプロジェクトは、CANoeでテストを実行しながら、次の証跡を取得して `%USERPROFILE%\Desktop\LogZips` 配下へまとめるためのものです。
 
 - OBSの録画（MP4）
 - Windowsのスクリーンショット（PNG）
@@ -32,7 +32,7 @@ C:\Users\TMC\Desktop\Veri\batfile
 - CANoeの対象ウィンドウ名が `Measurement Setup` であること
 - Tera Termの対象ウィンドウ名が `COM42 - Tera Term VT` であること
 - `nircmd.exe`、`obs_record_start.ps1`、`obs_record_stop.ps1` がBATと同じ運用フォルダにあること
-- 次の移動元・保存先へアクセスできること
+- 次の移動元・保存先へアクセスできること。ユーザーデータのパスはBAT実行ユーザーの `%USERPROFILE%` を基準にすること
 
 手動実行する場合は、コマンドプロンプトで次のように運用フォルダへ移動します。
 
@@ -228,10 +228,10 @@ Case001_MM#1_20260721_130000_OLD_20260721_143000
 
 | 種類 | 移動元 | 通常時の選択基準 |
 | --- | --- | --- |
-| MP4 | `C:\Users\TMC\Videos\Captures` | 録画開始時刻以降に作成されたMP4のうち最新1件 |
-| PNG | `C:\Users\TMC\Pictures\Screenshots` | セッション開始時刻以降に作成されたPNG全件 |
+| MP4 | `%USERPROFILE%\Videos\Captures` | 録画開始時刻以降に作成されたMP4のうち最新1件 |
+| PNG | `%USERPROFILE%\Pictures\Screenshots` | セッション開始時刻以降に作成されたPNG全件 |
 | LOG | `C:\teraterm-5.2\log` | ログ開始時刻以降に更新されたLOG全件 |
-| ASC | `C:\Users\TMC\Desktop\LogZips\CANtemp` | ログ開始時刻以降に更新されたASC全件 |
+| ASC | `%USERPROFILE%\Desktop\LogZips\CANtemp` | ログ開始時刻以降に更新されたASC全件 |
 
 ファイルはコピーではなく移動されます。マーカー時刻を利用できない種類では、その種類の最新1件だけを選びます。1件ずつ移動するため、あるファイルの移動失敗後も、同じ種類の残りのファイルや後続種類の処理を続けます。
 
@@ -297,6 +297,8 @@ CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマ
 | `[ERROR] Invalid CaseNo, Tag, or Repeat.` | 上記に加え、Repeatが正の数字か確認する |
 | `Status=missing` | 対応するSTARTが未実行、START順序が違う、または前回STOPですでにマーカーが削除された可能性を確認する |
 | `Status=invalid` | マーカーが途中状態、破損、または必要項目不足になっていないか確認する。STARTからやり直す |
+| `OBS ... script was not found` | `obs_record_start.ps1` または `obs_record_stop.ps1` が実行したBATと同じフォルダにあるか確認する |
+| `NirCmd was not found` | `nircmd.exe` が実行したBATと同じフォルダにあるか確認する |
 | `Valid SessionId could not be read from ...log_session.marker` | `START_REC2.bat` が正常に完了してから `START_REC3.bat` を実行したか確認する |
 | `Log and video SessionId values do not match` | `START_REC2.bat` と `START_REC3.bat` の間で別セッションのマーカーが混在していないか確認する |
 | `START and STOP CaseNo/Tag do not match` | STARTとSTOPへ渡したCaseNo/Tag、およびCANoeの `CaseNo` 行を確認する |
@@ -304,7 +306,7 @@ CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマ
 | `OBS ... timed out after 20 seconds` | OBSまたはPowerShell処理が応答しているか確認する。BAT側は20秒でタイムアウトする |
 | `Failed to activate Measurement Setup` | CANoeのウィンドウが存在し、タイトルが一致しているか確認する |
 | `Failed to activate COM42 Tera Term` / `COM42 window activation failed` | COM42のTera Termが起動し、ウィンドウタイトルが一致しているか確認する |
-| `No MP4 file matched the selection rule.` | OBSが実際に録画したか、MP4が `C:\Users\TMC\Videos\Captures` にあるか、作成時刻が開始時刻以降か確認する |
+| `No MP4 file matched the selection rule.` | OBSが実際に録画したか、MP4が `%USERPROFILE%\Videos\Captures` にあるか、作成時刻が開始時刻以降か確認する |
 | `No PNG/LOG/ASC file matched the selection rule.` | 対応する移動元パス、拡張子、作成・更新時刻を確認する |
 | `Destination ... already exists` | 同一秒にSTOPしたフォルダや残存フォルダがないか確認する。既存データを確認してから再実行する |
 | `Failed to archive the latest previous normal child folder.` | 対象フォルダが使用中でないか、名前変更権限があるか確認する。この場合は新規保存と移動もスキップされる |

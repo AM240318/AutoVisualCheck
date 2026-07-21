@@ -29,6 +29,15 @@ if not defined RAW_TAG set "TAG_VALID=1"
 
 call :InvalidateLegacyMarker
 
+if not exist "%OBS_SCRIPT%" (
+  echo [ERROR] OBS start script was not found: "%OBS_SCRIPT%"
+  set "ERROR_STATE=1"
+)
+if not exist "%~dp0nircmd.exe" (
+  echo [ERROR] NirCmd was not found: "%~dp0nircmd.exe"
+  set "ERROR_STATE=1"
+)
+
 call :GetUtcNow SESSION_START_UTC SESSION_START_OK
 if "%SESSION_START_OK%"=="0" (
   echo [ERROR] Failed to get SessionStartTimeUtc.
@@ -43,8 +52,8 @@ if "%SESSION_ID_OK%"=="0" (
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [WARN] Invalid non-empty CaseNo or Tag; recording will continue using only valid fields.
-  set "WARNING_STATE=1"
+  echo [ERROR] Invalid non-empty CaseNo or Tag; recording will continue using only valid fields.
+  set "ERROR_STATE=1"
 )
 
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
@@ -68,14 +77,19 @@ if "%VIDEO_START_OK%"=="0" (
 call :WriteLegacyMarker
 echo [INFO] VideoStartTimeUtc=%VIDEO_START_UTC%
 REM timeout /t 3 > nul
-powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; try { $scriptArg=[char]34+$env:OBS_SCRIPT+[char]34; $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$scriptArg) -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   set "OBS_START_SUCCEEDED=1"
   echo [INFO] OBS start result: success.
 ) else (
   set "ERROR_STATE=1"
-  echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
+  if "%OBS_EXIT_CODE%"=="124" (
+    echo [ERROR] OBS start timed out after 20 seconds.
+  ) else (
+    echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
+  )
 )
 call :WriteLegacyMarker
 REM timeout /t 3 > nul

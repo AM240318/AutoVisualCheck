@@ -209,27 +209,29 @@ type-a -> TYPE-A
 
 ## 7. 共通パス
 
-既存環境の次のパスを使用します。
+ユーザーデータはBAT実行ユーザーの `%USERPROFILE%` を基準にし、次のパスを使用します。`%USERPROFILE%` が未定義の場合だけ `C:\Users\TMC` を使用します。
 
 ```text
 保存先ルート:
-C:\Users\TMC\Desktop\LogZips
+%USERPROFILE%\Desktop\LogZips
 
 OBS録画元:
-C:\Users\TMC\Videos\Captures
+%USERPROFILE%\Videos\Captures
 
 スクリーンショット元:
-C:\Users\TMC\Pictures\Screenshots
+%USERPROFILE%\Pictures\Screenshots
 
 Tera Termログ元:
 C:\teraterm-5.2\log
 
 CANログ元:
-C:\Users\TMC\Desktop\LogZips\CANtemp
+%USERPROFILE%\Desktop\LogZips\CANtemp
 
 BAT配置先・マーカー配置先:
 %~dp0
 ```
+
+`nircmd.exe`、`obs_record_start.ps1`、`obs_record_stop.ps1` は使用するBATと同じ `%~dp0` に配置します。必要な依存ファイルが見つからない場合はエラーとして保持し、安全に実行できる後続処理だけを続け、最終終了コードを1にしてください。
 
 すべてのパスを二重引用符で囲んでください。ワイルドカードを無条件で `move` せず、対象ファイルを列挙して1件ずつ移動してください。
 

@@ -1,7 +1,9 @@
 @echo off
 setlocal EnableExtensions DisableDelayedExpansion
 set "ERROR_STATE=0"
-set "SAVE_ROOT=C:\Users\TMC\Desktop\LogZips"
+set "USER_DATA_ROOT=%USERPROFILE%"
+if not defined USER_DATA_ROOT set "USER_DATA_ROOT=C:\Users\TMC"
+set "SAVE_ROOT=%USER_DATA_ROOT%\Desktop\LogZips"
 set "OBS_SCRIPT=%~dp0obs_record_start.ps1"
 set "LOG_SESSION_FILE=%~dp0log_session.marker"
 set "VIDEO_SESSION_FILE=%~dp0video_session.marker"
@@ -31,6 +33,11 @@ if not defined RAW_CASE set "CASE_VALID=1"
 if not defined RAW_TAG set "TAG_VALID=1"
 
 call :InvalidateVideoMarker
+
+if not exist "%OBS_SCRIPT%" (
+  echo [ERROR] OBS start script was not found: "%OBS_SCRIPT%"
+  set "ERROR_STATE=1"
+)
 
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
@@ -64,14 +71,19 @@ echo [INFO] SessionId=%SESSION_ID% VideoStartTimeUtc=%VIDEO_START_UTC%
 call :WriteVideoMarker
 
 REM OBS録画スタート
-powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; try { $scriptArg=[char]34+$env:OBS_SCRIPT+[char]34; $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$scriptArg) -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   set "OBS_START_SUCCEEDED=1"
   echo [INFO] OBS start result: success.
 ) else (
   set "ERROR_STATE=1"
-  echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
+  if "%OBS_EXIT_CODE%"=="124" (
+    echo [ERROR] OBS start timed out after 20 seconds.
+  ) else (
+    echo [ERROR] OBS start failed. ExitCode=%OBS_EXIT_CODE%
+  )
 )
 call :WriteVideoMarker
 

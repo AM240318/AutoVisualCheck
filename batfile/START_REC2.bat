@@ -13,6 +13,11 @@ set "LOG_MARKER_CURRENT=0"
 
 call :InvalidateSplitMarkers
 
+if not exist "%~dp0nircmd.exe" (
+  echo [ERROR] NirCmd was not found: "%~dp0nircmd.exe"
+  set "ERROR_STATE=1"
+)
+
 call :GetUtcNow SESSION_START_UTC SESSION_START_OK
 if "%SESSION_START_OK%"=="0" (
   echo [ERROR] Failed to get SessionStartTimeUtc.

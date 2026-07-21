@@ -48,13 +48,21 @@ if not defined RAW_TAG set "TAG_VALID=1"
 call :ValidateArguments
 if "%CASE_VALID%"=="1" if "%TAG_VALID%"=="1" set "ARGS_VALID=1"
 if "%ARGS_VALID%"=="0" (
-  echo [WARN] Invalid non-empty CaseNo or Tag; marker or date-time fallback will be used.
-  set "WARNING_STATE=1"
+  echo [ERROR] Invalid non-empty CaseNo or Tag; marker or date-time fallback will be used.
+  set "ERROR_STATE=1"
 )
 echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
 echo [INFO] Normalized arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED%
 echo [INFO] OBS script path: "%OBS_SCRIPT%"
 echo [INFO] NirCmd path: "%~dp0nircmd.exe"
+if not exist "%OBS_SCRIPT%" (
+  echo [ERROR] OBS stop script was not found: "%OBS_SCRIPT%"
+  set "ERROR_STATE=1"
+)
+if not exist "%~dp0nircmd.exe" (
+  echo [ERROR] NirCmd was not found: "%~dp0nircmd.exe"
+  set "ERROR_STATE=1"
+)
 
 if exist "%LEGACY_SESSION_FILE%" (
   set "MARKER_PRESENT=1"
@@ -66,11 +74,11 @@ if "%MARKER_VALID%"=="1" (
   echo [INFO] VideoStartTimeUtc=%MARKER_VIDEO_START_UTC% LogStartTimeUtc=%MARKER_LOG_START_UTC%
 ) else (
   if "%MARKER_PRESENT%"=="1" (
-    echo [WARN] Marker path: "%LEGACY_SESSION_FILE%" Status=invalid
+    echo [ERROR] Marker path: "%LEGACY_SESSION_FILE%" Status=invalid
   ) else (
-    echo [WARN] Marker path: "%LEGACY_SESSION_FILE%" Status=missing
+    echo [ERROR] Marker path: "%LEGACY_SESSION_FILE%" Status=missing
   )
-  set "WARNING_STATE=1"
+  set "ERROR_STATE=1"
 )
 if "%MARKER_VALID%"=="1" call :ApplyMarkerArgumentFallback
 echo [INFO] Effective arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED%
@@ -115,13 +123,18 @@ if errorlevel 1 (
 
 REM OBS録画停止
 echo [INFO] Stopping OBS recording.
-powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; try { $scriptArg=[char]34+$env:OBS_SCRIPT+[char]34; $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$scriptArg) -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   echo [INFO] OBS stop result: success.
 ) else (
   set "ERROR_STATE=1"
-  echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
+  if "%OBS_EXIT_CODE%"=="124" (
+    echo [ERROR] OBS stop timed out after 20 seconds.
+  ) else (
+    echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
+  )
 )
 
 REM COM42 Tera Termログ停止
@@ -236,8 +249,8 @@ if "%MARKER_OBS_START_SUCCEEDED%"=="0" (
   set "ERROR_STATE=1"
 )
 if not "%MARKER_ARGS_VALID%"=="1" (
-  echo [WARN] START marker contained an invalid non-empty CaseNo or Tag; valid matching fields will still be used.
-  set "WARNING_STATE=1"
+  echo [ERROR] START marker contained an invalid non-empty CaseNo or Tag; valid matching fields will still be used.
+  set "ERROR_STATE=1"
 )
 if defined CASE_CANONICAL if defined MARKER_CASE_CANONICAL if not "%CASE_CANONICAL%"=="%MARKER_CASE_CANONICAL%" goto :DetermineCaseMismatch
 if defined TAG_NORMALIZED if defined MARKER_TAG_NORMALIZED if /i not "%TAG_NORMALIZED%"=="%MARKER_TAG_NORMALIZED%" goto :DetermineCaseMismatch

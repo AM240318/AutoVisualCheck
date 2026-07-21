@@ -2,11 +2,13 @@
 setlocal EnableExtensions DisableDelayedExpansion
 set "ERROR_STATE=0"
 set "WARNING_STATE=0"
-set "BASEDIR=C:\Users\TMC\Desktop\LogZips"
-set "CAPTURE_DIR=C:\Users\TMC\Videos\Captures"
-set "SCREENSHOT_DIR=C:\Users\TMC\Pictures\Screenshots"
+set "USER_DATA_ROOT=%USERPROFILE%"
+if not defined USER_DATA_ROOT set "USER_DATA_ROOT=C:\Users\TMC"
+set "BASEDIR=%USER_DATA_ROOT%\Desktop\LogZips"
+set "CAPTURE_DIR=%USER_DATA_ROOT%\Videos\Captures"
+set "SCREENSHOT_DIR=%USER_DATA_ROOT%\Pictures\Screenshots"
 set "TERATERM_LOG_DIR=C:\teraterm-5.2\log"
-set "CAN_LOG_DIR=C:\Users\TMC\Desktop\LogZips\CANtemp"
+set "CAN_LOG_DIR=%BASEDIR%\CANtemp"
 set "OBS_SCRIPT=%~dp0obs_record_stop.ps1"
 set "LOG_SESSION_FILE=%~dp0log_session.marker"
 set "VIDEO_SESSION_FILE=%~dp0video_session.marker"
@@ -72,6 +74,14 @@ echo [INFO] Raw arguments: CaseNoPresent=%CASE_PRESENT% TagPresent=%TAG_PRESENT%
 echo [INFO] Normalized arguments: ArgsValid=%ARGS_VALID% CaseNo=%CASE_CANONICAL% Tag=%TAG_NORMALIZED% Repeat=%REPEAT_CANONICAL%
 echo [INFO] OBS script path: "%OBS_SCRIPT%"
 echo [INFO] NirCmd path: "%~dp0nircmd.exe"
+if not exist "%OBS_SCRIPT%" (
+  echo [ERROR] OBS stop script was not found: "%OBS_SCRIPT%"
+  set "ERROR_STATE=1"
+)
+if not exist "%~dp0nircmd.exe" (
+  echo [ERROR] NirCmd was not found: "%~dp0nircmd.exe"
+  set "ERROR_STATE=1"
+)
 
 if exist "%LOG_SESSION_FILE%" (
   set "LOG_MARKER_PRESENT=1"
@@ -144,13 +154,18 @@ if errorlevel 1 (
 
 REM OBS録画停止
 echo [INFO] Stopping OBS recording.
-powershell -NoProfile -ExecutionPolicy Bypass -File "%OBS_SCRIPT%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; try { $scriptArg=[char]34+$env:OBS_SCRIPT+[char]34; $p=Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$scriptArg) -WindowStyle Hidden -PassThru; if(-not $p.WaitForExit(20000)){ try { $p.Kill(); if(-not $p.WaitForExit(2000)){ exit 125 } } catch { exit 125 }; exit 124 }; exit $p.ExitCode } catch { exit 125 }"
 set "OBS_EXIT_CODE=%ERRORLEVEL%"
 if "%OBS_EXIT_CODE%"=="0" (
   echo [INFO] OBS stop result: success.
 ) else (
   set "ERROR_STATE=1"
-  echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
+  if "%OBS_EXIT_CODE%"=="124" (
+    echo [ERROR] OBS stop timed out after 20 seconds.
+  ) else (
+    echo [ERROR] OBS stop failed. ExitCode=%OBS_EXIT_CODE%
+  )
 )
 
 REM COM42 Tera Termログ停止
