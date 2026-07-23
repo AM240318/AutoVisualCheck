@@ -31,7 +31,7 @@ C:\Users\TMC\Desktop\Veri\batfile
 - OBSが起動し、OBS WebSocketを `ws://127.0.0.1:4455` で利用できること
 - CANoeの対象ウィンドウ名が `Measurement Setup` であること
 - Tera Termの対象ウィンドウ名が `COM42 - Tera Term VT` であること
-- `nircmd.exe`、`obs_record_start.ps1`、`obs_record_stop.ps1` がBATと同じ運用フォルダにあること
+- `nircmd.exe`、`obs_record_start.ps1`、`obs_record_stop.ps1` と切り戻し用の `obs_record_start_legacy.ps1`、`obs_record_stop_legacy.ps1` がBATと同じ運用フォルダにあること
 - 次の移動元・保存先へアクセスできること。ユーザーデータのパスはBAT実行ユーザーの `%USERPROFILE%` を基準にすること
 
 手動実行する場合は、コマンドプロンプトで次のように運用フォルダへ移動します。
@@ -45,23 +45,24 @@ cd /d C:\Users\TMC\Desktop\Veri\batfile
 | 引数 | 使用BAT | 形式と正規化 |
 | --- | --- | --- |
 | `CaseNo` | `START_REC.bat`、`STOP_REC.bat`、`START_REC3.bat`、`STOP_REC2.bat` | 1文字以上の数字。先頭の0を除いて管理し、保存名では3桁以上になるよう左側を0埋めする。`0` や数字以外は無効 |
-| `Tag` | 同上 | 英字、数字、`_`、`-` のみ。保存名と比較時は大文字へ正規化する。空文字は無効 |
-| `Repeat` | `STOP_REC2.bat`のみ | 1文字以上の数字。先頭の0を除いて管理する。`0` や数字以外は無効 |
+| `Tag` | 同上 | 空欄、または英字、数字、`_`、`-` のみ。保存名と比較時は大文字へ正規化する。空白、日本語、引用符は使用できない |
+| `Repeat` | `START_REC.bat`、`STOP_REC.bat`、`STOP_REC2.bat` | 空欄、または1文字以上の数字。先頭の0を除いて管理する。`0` や数字以外は無効 |
+| `OperationId` | `START_REC.bat`、`STOP_REC.bat` | CAPLが生成する英数字・`_`・`-`の識別子。手動実行で省略した場合はBATがGUIDを生成する |
 
 例: `CaseNo=1`、`Tag=mm-a`、`Repeat=01` は、保存名ではそれぞれ `001`、`MM-A`、`1` になります。
 
-STARTとSTOPには同じ `CaseNo` と `Tag` を渡してください。新方式では、`START_REC2.bat` に引数はありません。
+STARTとSTOPには同じ `CaseNo`、`Tag`、`Repeat` を渡してください。新方式では、`START_REC2.bat` に引数はありません。
 
 ## 4. 従来方式の使い方
 
 ### 実行順
 
 ```text
-START_REC.bat [CaseNo] [Tag]
+START_REC.bat [CaseNo] [Tag] [Repeat] [OperationId]
   ↓
 テスト本体
   ↓
-STOP_REC.bat [CaseNo] [Tag]
+STOP_REC.bat [CaseNo] [Tag] [Repeat] [OperationId]
 ```
 
 手動実行例（CaseNo `1`、Tag `MM`）:
@@ -74,28 +75,49 @@ call STOP_REC.bat 1 MM
 
 ### `START_REC.bat` の役割
 
-`START_REC.bat [CaseNo] [Tag]` は、次を順番に実行します。CaseNoとTagは空欄でも構いません。
+`START_REC.bat [CaseNo] [Tag] [Repeat] [OperationId]` は、次を順番に実行します。CaseNo、Tag、Repeatは空欄でも構いません。
 
-1. `legacy_session.marker` を作成し、CaseNo、Tag、セッションID、開始時刻を記録する
-2. `obs_record_start.ps1` を呼び出してOBS録画を開始する
-3. `Measurement Setup` をアクティブにし、`t` キーでCANログを開始する
-4. `COM42 - Tera Term VT` を操作し、Tera Termログを開始する
-5. `rwin+printscreen` を送信してスクリーンショットを取得する
+1. `recording_operation.lock` を取得し、OperationId、コマンド名、開始時刻を記録する
+2. `legacy_session.marker` を一時ファイル経由で作成し、CaseNo、Tag、Repeat、OperationId、セッションID、開始時刻を記録する
+3. `obs_record_start.ps1` を同期実行し、接続・要求・状態確認が内部タイムアウト内に完了するまで待つ
+4. PowerShell終了後にだけ、`Measurement Setup` を再確認・アクティブ化してCANログを開始する
+5. CAN用NirCmd終了後にだけ、`COM42 - Tera Term VT` を再確認・アクティブ化してTera Termログを開始する
+6. Tera Term用NirCmd終了後にスクリーンショットを取得する
+7. ロックを解除し、`recording_command.result` を一時ファイル経由で公開する
 
-OBS開始処理は最大20秒待ちます。処理が失敗しても後続のCANログ、Tera Termログ、スクリーンショット処理を続け、最後にエラー終了します。
+OBS開始を確認できない場合も、PowerShellプロセスが終了してからCANログ、Tera Termログ、スクリーンショット処理を続けます。この場合の完了状態は `DEGRADED` です。PowerShellと同一BAT内のNirCmd、およびCAN用とTera Term用のNirCmdは直列実行されます。
 
 ### `STOP_REC.bat` の役割
 
-`STOP_REC.bat [CaseNo] [Tag]` は、次を順番に実行します。空欄は省略として扱い、入力された項目だけを命名に使用します。
+`STOP_REC.bat [CaseNo] [Tag] [Repeat] [OperationId]` は、次を順番に実行します。空欄は省略として扱い、入力された項目だけを命名に使用します。
 
-1. 引数と `legacy_session.marker` を検証する
-2. CANログを停止する
-3. `obs_record_stop.ps1` を呼び出してOBS録画を停止する
-4. COM42のTera Termログを停止する
-5. 保存フォルダを作成し、MP4、PNG、LOG、ASCを移動する
-6. `legacy_session.marker` を削除する
+1. `recording_operation.lock` を取得する
+2. 引数と `legacy_session.marker` のCaseNo、Tag、Repeatを検証する
+3. 対象ウィンドウを再確認してCANログを停止する
+4. `obs_record_stop.ps1` を同期実行し、停止完了とOBSが返した `outputPath` を確認する
+5. CAN用NirCmdとPowerShellの終了後に、COM42のTera Termログを停止する
+6. 保存フォルダを作成し、MP4、PNG、LOG、ASCを移動する
+7. `legacy_session.marker` を削除し、ロック解除後に `recording_command.result` を公開する
 
-マーカーが有効な場合は、各開始時刻以降のファイルを選びます。MP4が複数ある場合は最新の1件、PNG・LOG・ASCは条件に一致した全件が対象です。マーカーがない、または無効な場合は、各種類の最新1件を選ぶフォールバック動作になります。
+MP4はOBS WebSocketの `StopRecord` 応答から得た正確な `outputPath` を第一候補とします。利用できない場合だけ最新の安定したMP4を1件選び、結果へ `Mp4SelectionMode=LATEST_FALLBACK` と `EvidenceConfidence=UNVERIFIED_FALLBACK` を記録します。最新MP4がロック中またはサイズ変化中なら移動しません。PNG・LOG・ASCは、マーカーが有効な場合は開始時刻以降の全件、利用できない場合は各種類の最新1件を選びます。
+
+### 完了通知と処理ロック
+
+CANoeから起動する従来方式では、CAPLが `CaseNo Tag Repeat OperationId` を渡し、`recording_command.result` のOperationIdが一致するまで次のスクリプト行を実行しません。
+
+| `State` | CAPLの動作 |
+| --- | --- |
+| `SUCCEEDED` | 次行へ進む |
+| `DEGRADED` | OBS失敗やフォールバック等を観測値へ残し、次行へ進む |
+| `FAILED` | 次行へ進まず停止する |
+
+結果ファイル不在・古いOperationIdは待機を継続し、既定180秒で `CAPL_RESULT_TIMEOUT` として停止します。`RecordingHandshakeEnabled=0` にすると従来の非同期進行へ切り戻せます。
+
+自己完結型PowerShellから旧処理へ一時的に切り戻す場合は、CANoeを起動する環境で `RECORDING_USE_LEGACY_OBS_SCRIPT=1` を設定します。旧処理でもBATが最大20秒待ち、タイムアウト時はPowerShellプロセスの終了を確認してからNirCmdへ進みます。終了を確認できない場合は `FAILED` として後続処理を止め、ロックを残します。通常運用は未設定または `0` です。
+
+`recording_operation.lock` が存在する間は別の従来方式START／STOPを開始しません。異常終了でロックが残った場合は自動削除されません。OBSの録画状態と対象のBAT、PowerShell、NirCmdが終了していることを確認してから、運用フォルダ内の `recording_operation.lock` だけを手動で削除してください。
+
+処理時刻は `recording_timeline.log` とCANoe Writeウィンドウの `[REC_TIMELINE]` に記録されます。外部アプリや手動操作によるフォーカス奪取までは防止できないため、ウィンドウなし・複数候補の警告も確認してください。
 
 CaseNoとTagがある場合の保存先は次の形式です。
 
@@ -241,23 +263,30 @@ Case001_MM#1_20260721_130000_OLD_20260721_143000
 
 | BAT | GAIBUから渡される引数 |
 | --- | --- |
-| `START_REC.bat` | `CaseNo Tag` |
-| `STOP_REC.bat` | `CaseNo Tag` |
+| `START_REC.bat` | `CaseNo Tag Repeat OperationId` |
+| `STOP_REC.bat` | `CaseNo Tag Repeat OperationId` |
 | `START_REC2.bat` | 引数なし |
 | `START_REC3.bat` | `CaseNo Tag` |
 | `STOP_REC2.bat` | `CaseNo Tag Repeat` |
 
-`CaseNo` と `Tag` はテスト定義の `CaseNo` 行の第1・第2パラメータ、`Repeat` は `Repeat` 行の第1パラメータから保持されます。新方式へ切り替える場合は、テスト定義側のGAIBU呼び出しも、3つの新方式BATの順序に合わせる必要があります。
+従来方式では、`CaseNo` 行の第1パラメータを `RecordingCaseNo` へ保持し、その時点で前ケースの `RecordingRepeat` と `RecordingTag` をクリアします。`Repeat` 行の第1パラメータは `RecordingRepeat`、専用の `Tag` 行の第1パラメータは `RecordingTag` へ保持します。`CaseNo` 行の第2パラメータは従来どおり表示用コメントとして残り、録画Tagには使用しません。新方式の既存引数組み立ては変更していません。
 
-現在の `MM_前進ミラー開_153Cases.txt` は、従来方式の `START_REC.bat` と `STOP_REC.bat` を呼び出しています。また、確認した各 `CaseNo` 行では第2パラメータ（Tag）が空です。空のTagは正常な省略として扱うため、このテスト定義ではCaseNoだけの名前で保存されます。
+```text
+CaseNo<TAB>1<TAB>表示コメント
+Repeat<TAB>2<TAB>
+Tag<TAB>WB<TAB>
+Gaibu<TAB>START_REC.bat<TAB>
+```
 
-CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマンド用の値 `1` を返します。そのため、BATが終了コード1を返してもCANoeのテストシーケンス自体は止めず、次のコマンドへ進む設計です。異常の有無はBATの `[RESULT]` 表示と保存結果で確認してください。
+現在の `MM_前進ミラー開_153Cases.txt` は、従来方式の `START_REC.bat` と `STOP_REC.bat` を呼び出しています。固定の `WaitMS 18000` は、実機で代表3ケース、10ケース、153ケースの順に完了通知を確認するまで残します。安定確認前に削除しないでください。
+
+一般のGAIBUと分割方式は従来どおり `sysExec` 後に進みます。従来方式の `START_REC.bat` と `STOP_REC.bat` だけは完了結果を待ち、`SUCCEEDED`／`DEGRADED`で再開し、`FAILED`／タイムアウトで停止します。
 
 ## 9. よくある注意点
 
-### CaseNo/Tag不一致
+### CaseNo/Tag/Repeat不一致
 
-- STARTとSTOPで正規化後のCaseNo/Tagが一致しないと `[ERROR] START and STOP CaseNo/Tag do not match` が出ます。
+- STARTとSTOPで正規化後のCaseNo/Tag/Repeatが一致しないと `[ERROR] START and STOP CaseNo, Tag, or Repeat do not match` が出ます。
 - 従来方式は日時だけのフォルダ名、新方式は有効なRepeatがあれば `Repeat{Repeat}_{日時}`、なければ日時だけの名前へフォールバックします。
 - エラー終了しますが、停止処理と、準備できた保存先へのファイル移動は続行します。
 
@@ -265,15 +294,16 @@ CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマ
 
 - 従来方式は `legacy_session.marker`、新方式は `log_session.marker` と `video_session.marker` を使用します。
 - マーカーはBATと同じフォルダに作成され、STOPの最後に削除されます。
-- `legacy_session.marker` と `video_session.marker` はVersion 2で、欠落したCaseNo/Tagを空欄で記録します。STOP側はVersion 1も読み込み、従来の `UNKNOWN` を空欄として扱います。
+- `legacy_session.marker` はVersion 3で、OperationIdとRepeatを追加しています。STOP側はVersion 1・2も読み込み、従来の `UNKNOWN` を空欄として扱います。
+- `video_session.marker` は分割方式の既存Versionのままです。
 - マーカーがない種類は、開始時刻による絞り込みができないため最新1件を選びます。
 - 新方式で両マーカーのセッションIDが違う場合は、両マーカーの時刻を破棄します。
 
 ### MP4なし
 
-- 選択条件に合うMP4がない場合は `[WARN] No MP4 file matched the selection rule.` が出ます。
-- ほかにエラーがなければ警告扱いで、STOPの終了コードは0です。
-- `ObsStartSucceeded=0` の場合はMP4移動自体をスキップし、STOPはエラー終了します。
+- 正確なOBS出力パスを利用できない場合は最新MP4フォールバックを試し、必ず `LATEST_FALLBACK`／`UNVERIFIED_FALLBACK` と記録します。
+- 最新MP4がない、ロック中、またはサイズ変化中の場合は移動せず `DEGRADED` とします。
+- `ObsStartSucceeded=0` でも、停止可能な処理とフォールバック選択は続けます。
 
 ### フォルダ既存時の扱い
 
@@ -282,11 +312,11 @@ CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマ
 - 今回作成する子フォルダと完全に同じ名前が残っている場合は、ファイル移動をスキップしてエラー終了します。
 - 従来方式の保存先が既存の場合も、ファイル移動をスキップしてエラー終了します。
 
-### 非0終了でもテストを止めない
+### 完了状態とテスト継続
 
 - 各BATは処理中にエラーを記録しても、可能な後続処理を続けます。
-- 最後に `[RESULT] ... ExitCode=0` または `ExitCode=1` を表示します。
-- CANoeのGAIBU呼び出しはBATの終了コードを判定しないため、BATが1でもテストシーケンスは継続します。
+- OBS失敗など後続処理を完了できた異常は `DEGRADED` として公開し、CAPLはテストを続けます。
+- ロック取得失敗、結果公開不能、CAPL待機タイムアウトなど完了を保証できない異常は `FAILED` とし、CAPLは停止します。
 - 手動実行や別の呼び出し元では、必要に応じて `%ERRORLEVEL%` を確認してください。
 
 ## 10. トラブルシュート
@@ -301,9 +331,15 @@ CAPLは `sysExec` の終了コードを確認せず、GAIBU処理後に次コマ
 | `NirCmd was not found` | `nircmd.exe` が実行したBATと同じフォルダにあるか確認する |
 | `Valid SessionId could not be read from ...log_session.marker` | `START_REC2.bat` が正常に完了してから `START_REC3.bat` を実行したか確認する |
 | `Log and video SessionId values do not match` | `START_REC2.bat` と `START_REC3.bat` の間で別セッションのマーカーが混在していないか確認する |
-| `START and STOP CaseNo/Tag do not match` | STARTとSTOPへ渡したCaseNo/Tag、およびCANoeの `CaseNo` 行を確認する |
+| `START and STOP CaseNo, Tag, or Repeat do not match` | STARTとSTOPへ渡したCaseNo/Tag/Repeat、およびCANoeの `CaseNo`、`Repeat`、`Tag` 行を確認する |
 | `OBS start failed` / `OBS stop failed` | OBS起動状態、OBS WebSocketのポート `4455`、認証設定、`obs_record_*.ps1` の配置を確認する |
-| `OBS ... timed out after 20 seconds` | OBSまたはPowerShell処理が応答しているか確認する。BAT側は20秒でタイムアウトする |
+| `OBS_*_TIMEOUT` | OBS WebSocketの接続、要求、状態確認がPowerShell内部の期限を超えた。OBS状態と `obs_start.result`／`obs_stop.result` を確認する |
+| `LEGACY_*_TIMEOUT_TERMINATED` | 旧PowerShellが20秒で終了せず、BATが終了を確認してから縮退処理を続けた |
+| `OBS_POWERSHELL_TERMINATION_UNCONFIRMED` | 旧PowerShellの終了を確認できなかったため後続処理を停止し、処理ロックを残した |
+| `OPERATION_LOCK_BUSY_OR_CREATE_FAILED` | 別の録画BATが処理中か、ロックフォルダを作成できない状態か確認する。残留ロックの場合は関連プロセスとOBS状態を確認してから手動解除する |
+| `OPERATION_LOCK_METADATA_FAILED` | 新規ロックの所有者情報を書けなかった。運用フォルダの権限と残留ロックを確認する |
+| `CAPL_RESULT_TIMEOUT` | `recording_command.result` の有無、OperationId、BATの停止位置、結果ファイル公開失敗を確認する |
+| `LATEST_MP4_FALLBACK` | 正確なOBS出力パスが使えず最新MP4を未確認証跡として選択した。結果内の元パス・時刻・サイズを確認する |
 | `Failed to activate Measurement Setup` | CANoeのウィンドウが存在し、タイトルが一致しているか確認する |
 | `Failed to activate COM42 Tera Term` / `COM42 window activation failed` | COM42のTera Termが起動し、ウィンドウタイトルが一致しているか確認する |
 | `No MP4 file matched the selection rule.` | OBSが実際に録画したか、MP4が `%USERPROFILE%\Videos\Captures` にあるか、作成時刻が開始時刻以降か確認する |

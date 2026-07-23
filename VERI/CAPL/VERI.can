@@ -17,6 +17,19 @@ variables
   int CommandInterval ; //@ƒRƒ}ƒ“ƒhÀsƒCƒ“ƒ^[ƒoƒ‹ ŠÖ”‚ğ”²‚¯‚é‚½‚ß
   msTimer msExecInterval; // ƒRƒ}ƒ“ƒhÀsƒCƒ“ƒ^[ƒoƒ‹—pƒ^ƒCƒ}[
   int alive_msExecInterval = 0; // ƒRƒ}ƒ“ƒhÀsƒCƒ“ƒ^[ƒoƒ‹—pƒ^ƒCƒ}[Às’†‚Í‚PACANCEL’†‚Í0;
+  msTimer msRecordingCommand; // ˜^‰æBAT‚ÌŠ®—¹Œ‹‰Êƒ|[ƒŠƒ“ƒO—pƒ^ƒCƒ}[
+  int alive_msRecordingCommand = 0;
+  int RecordingWaitElapsedMs = 0;
+  int RecordingWaitTimeoutMs = 180000;
+  int RecordingOperationCounter = 0;
+  char RecordingOperationId[100];
+  char RecordingExpectedCommand[40];
+  char RecordingResultOperationId[100];
+  char RecordingResultCommand[40];
+  char RecordingResultState[40];
+  char RecordingResultReason[160];
+  char RecordingResultMp4SelectionMode[80];
+  char RecordingResultLine[512];
 //«---WaitMSƒRƒ}ƒ“ƒh‚ÅAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ÆWaitŠÔ‚ğ—¼•û‘Ò‚Á‚Ä‚µ‚Ü‚¤‚½‚ßAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ğƒEƒFƒCƒgŠÔ‚É•ÏX------260116------
 //  msTimer msWaitTimer; // ƒEƒFƒCƒg—pƒ^ƒCƒ}[ ƒEƒFƒCƒg‚ğƒRƒ}ƒ“ƒhƒCƒ“ƒ^[ƒoƒ‹‚É‚ÄÀs‚·‚é‚Ì‚ÅA•s—v‚É‚È‚Á‚½B
 //  int alive_msWaitTimer = 0; // ƒEƒFƒCƒg—pƒ^ƒCƒ}[Às’†‚Í1,CANCEL’†‚Í0;  // •s—v
@@ -58,7 +71,7 @@ variables
   char GaibuCaseNo[100];
   char GaibuTag[120];
   char GaibuRepeat[100];
-  char GaibuArgs[350];
+  char GaibuArgs[500];
   int screensize ;
   char InputFolder[200]; // ƒtƒHƒ‹ƒ_‚ğ“Ç‚İ‚Ş@‘º¼
   char InputFileList[200];
@@ -108,6 +121,13 @@ on start {
   CommandInterval = 0; //ƒRƒ}ƒ“ƒh‚ÌÀsŠÔŠu •ÏX‚·‚é‚É‚ÍAinterval ƒRƒ}ƒ“ƒh‚Å•ÏX
   openPanel("TEST_EXEC");
   sysSetVariableInt(sysvar::VERI::TouchPanelAvailable,0); // ƒ^ƒbƒ`ƒpƒlƒ‹–³Œø
+  sysSetVariableString(sysvar::VERI::RecordingCaseNo,"");
+  sysSetVariableString(sysvar::VERI::RecordingRepeat,"");
+  sysSetVariableString(sysvar::VERI::RecordingTag,"");
+  sysSetVariableString(sysvar::VERI::RecordingOperationId,"");
+  sysSetVariableString(sysvar::VERI::RecordingCommandState,"IDLE");
+  sysSetVariableString(sysvar::VERI::RecordingCommandReason,"NOT_STARTED");
+  sysSetVariableString(sysvar::VERI::RecordingMp4SelectionMode,"NOT_APPLICABLE");
   // Piggyê—p‚Æ‚·‚éBˆÈ‰ºÀ{2025/9/4 (VH‚ğŠO‚·j
   //  ‚PjCANoeİ’è•ÏXF  ƒeƒXƒgFƒeƒXƒgŠÂ‹«‚©‚çAPowerControl‚ğŠO‚·
   //  ‚QjˆÈ‰º‚Qs‚ğ’Ç‰Á
@@ -124,6 +144,10 @@ on start {
         •Êƒtƒ@ƒCƒ‹‚ğw’è‚µ‚½ê‡‚É‚±‚Ìƒnƒ“ƒhƒ‰‚ªŒÄ‚Î‚ê‚é‚Ì‚ÅAŠJ‚¢‚Ä‚¢‚½ƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚Ìƒtƒ@ƒCƒ‹ƒnƒ“ƒhƒ‹‚ğƒNƒ[ƒY‚µ‚Ü‚·B
 ******************************************************************************************/
 on sysvar VERI::ScriptFile {  // ƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚ª•Ï‚í‚Á‚½‚çAƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
+  if (alive_msRecordingCommand == 1) {
+    cancelTimer(msRecordingCommand);
+    alive_msRecordingCommand = 0;
+  }
   fileClose(ScriptFileHandle);
   ScriptFileOpened=0;
 }
@@ -199,6 +223,129 @@ void ReadScript() {  // ƒOƒ[ƒoƒ‹•Ï”Buffer‚É“Ç‚İ‚ñ‚¾ƒXƒNƒŠƒvƒg‚Ps‚Ì•¶š—ñˆ
   scrParam2[r]=0x00;
   write ("Read %s, %s, %s",scrCommand,scrParam1,scrParam2);
   return ;
+}
+
+void CopyRecordingResultValue(char source[], int sourceOffset, char destination[], int destinationSize) {
+  int sourceIndex;
+  int destinationIndex;
+
+  destinationIndex = 0;
+  for (sourceIndex=sourceOffset;
+       (source[sourceIndex] != 0x00) &&
+       (source[sourceIndex] != 0x0a) &&
+       (source[sourceIndex] != 0x0d) &&
+       (destinationIndex < destinationSize-1);
+       sourceIndex++) {
+    destination[destinationIndex] = source[sourceIndex];
+    destinationIndex++;
+  }
+  destination[destinationIndex] = 0x00;
+}
+
+int RecordingTextEquals(char leftText[], char rightText[]) {
+  if (strlen(leftText) != strlen(rightText)) {
+    return 0;
+  }
+  if (strncmp(leftText,rightText,strlen(rightText)) != 0) {
+    return 0;
+  }
+  return 1;
+}
+
+int ReadRecordingCommandResult() {
+  dword resultFileHandle;
+  int lineRead;
+  int operationIdFound;
+  int commandFound;
+  int stateFound;
+
+  RecordingResultOperationId[0] = 0x00;
+  RecordingResultCommand[0] = 0x00;
+  RecordingResultState[0] = 0x00;
+  RecordingResultReason[0] = 0x00;
+  RecordingResultMp4SelectionMode[0] = 0x00;
+  operationIdFound = 0;
+  commandFound = 0;
+  stateFound = 0;
+
+  resultFileHandle = openFileRead("C:\\Users\\TMC\\Desktop\\Veri\\batfile\\recording_command.result",0);
+  if (resultFileHandle == 0) {
+    return 0;
+  }
+
+  lineRead = fileGetString(RecordingResultLine,elCount(RecordingResultLine),resultFileHandle);
+  while (lineRead != 0) {
+    if (strncmp(RecordingResultLine,"OperationId=",12) == 0) {
+      CopyRecordingResultValue(RecordingResultLine,12,RecordingResultOperationId,elCount(RecordingResultOperationId));
+      operationIdFound = 1;
+    } else if (strncmp(RecordingResultLine,"Command=",8) == 0) {
+      CopyRecordingResultValue(RecordingResultLine,8,RecordingResultCommand,elCount(RecordingResultCommand));
+      commandFound = 1;
+    } else if (strncmp(RecordingResultLine,"State=",6) == 0) {
+      CopyRecordingResultValue(RecordingResultLine,6,RecordingResultState,elCount(RecordingResultState));
+      stateFound = 1;
+    } else if (strncmp(RecordingResultLine,"Reason=",7) == 0) {
+      CopyRecordingResultValue(RecordingResultLine,7,RecordingResultReason,elCount(RecordingResultReason));
+    } else if (strncmp(RecordingResultLine,"Mp4SelectionMode=",17) == 0) {
+      CopyRecordingResultValue(RecordingResultLine,17,RecordingResultMp4SelectionMode,elCount(RecordingResultMp4SelectionMode));
+    }
+    lineRead = fileGetString(RecordingResultLine,elCount(RecordingResultLine),resultFileHandle);
+  }
+  fileClose(resultFileHandle);
+
+  if ((operationIdFound == 0) ||
+      (RecordingTextEquals(RecordingResultOperationId,RecordingOperationId) == 0)) {
+    return 0;
+  }
+
+  if ((commandFound == 0) ||
+      (RecordingTextEquals(RecordingResultCommand,RecordingExpectedCommand) == 0)) {
+    snprintf(RecordingResultReason,elCount(RecordingResultReason),"RESULT_COMMAND_MISMATCH");
+    sysSetVariableString(sysvar::VERI::RecordingCommandState,"FAILED");
+    sysSetVariableString(sysvar::VERI::RecordingCommandReason,RecordingResultReason);
+    return -1;
+  }
+
+  if (stateFound == 0) {
+    snprintf(RecordingResultReason,elCount(RecordingResultReason),"RESULT_STATE_MISSING");
+    sysSetVariableString(sysvar::VERI::RecordingCommandState,"FAILED");
+    sysSetVariableString(sysvar::VERI::RecordingCommandReason,RecordingResultReason);
+    return -1;
+  }
+
+  if (strlen(RecordingResultReason) == 0) {
+    snprintf(RecordingResultReason,elCount(RecordingResultReason),"RESULT_REASON_MISSING");
+  }
+  if (strlen(RecordingResultMp4SelectionMode) == 0) {
+    snprintf(RecordingResultMp4SelectionMode,elCount(RecordingResultMp4SelectionMode),"NOT_APPLICABLE");
+  }
+
+  sysSetVariableString(sysvar::VERI::RecordingCommandState,RecordingResultState);
+  sysSetVariableString(sysvar::VERI::RecordingCommandReason,RecordingResultReason);
+  sysSetVariableString(sysvar::VERI::RecordingMp4SelectionMode,RecordingResultMp4SelectionMode);
+
+  if ((RecordingTextEquals(RecordingResultState,"SUCCEEDED") == 1) ||
+      (RecordingTextEquals(RecordingResultState,"DEGRADED") == 1)) {
+    return 1;
+  }
+  if (RecordingTextEquals(RecordingResultState,"FAILED") == 1) {
+    return -1;
+  }
+
+  snprintf(RecordingResultReason,elCount(RecordingResultReason),"INVALID_RESULT_STATE");
+  sysSetVariableString(sysvar::VERI::RecordingCommandState,"FAILED");
+  sysSetVariableString(sysvar::VERI::RecordingCommandReason,RecordingResultReason);
+  return -1;
+}
+
+void BeginRecordingCommandWait() {
+  RecordingWaitElapsedMs = 0;
+  RecordingWaitTimeoutMs = sysGetVariableInt(sysvar::VERI::RecordingCommandTimeoutMs);
+  if (RecordingWaitTimeoutMs < 1000) {
+    RecordingWaitTimeoutMs = 180000;
+  }
+  setTimer(msRecordingCommand,100);
+  alive_msRecordingCommand = 1;
 }
 
 //--------------------------------------------------------------------------------
@@ -496,11 +643,19 @@ int dispatch() { //–ß‚è’l‚P‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‘Ò‚¿‚ÖB‚O‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‚ğ‘Ò‚½‚È‚¢iƒEƒ
   if (strncmp(scrCommand,"CASENO",strlen(scrCommand))==0) { // ƒP[ƒX”Ô†•\¦—p
     sysSetVariableString(sysvar::VERI::Case1,scrParam1);
     sysSetVariableString(sysvar::VERI::Case2,scrParam2);
+    sysSetVariableString(sysvar::VERI::RecordingCaseNo,scrParam1);
+    sysSetVariableString(sysvar::VERI::RecordingRepeat,"");
+    sysSetVariableString(sysvar::VERI::RecordingTag,"");
     return 1;
   }
   if (strncmp(scrCommand,"REPEAT",strlen(scrCommand))==0) { // ƒŠƒs[ƒg‰ñ”•\¦—p
     sysSetVariableString(sysvar::VERI::RepCNT1,scrParam1);
     sysSetVariableString(sysvar::VERI::RepCNT2,scrParam2);
+    sysSetVariableString(sysvar::VERI::RecordingRepeat,scrParam1);
+    return 1;
+  }
+  if (strncmp(scrCommand,"TAG",strlen(scrCommand))==0) { // ˜^‰æ¯•Êq
+    sysSetVariableString(sysvar::VERI::RecordingTag,scrParam1);
     return 1;
   }
   if (strncmp(scrCommand,"MIRROR",strlen(scrCommand))==0) { // ƒ~ƒ‰[ŠJ•Â
@@ -557,14 +712,37 @@ int dispatch() { //–ß‚è’l‚P‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‘Ò‚¿‚ÖB‚O‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‚ğ‘Ò‚½‚È‚¢iƒEƒ
 
   
   if (strncmp(scrCommand,"GAIBU",strlen(scrCommand))==0) {//ŠO•”ƒRƒ}ƒ“ƒhÀs—p
+    int previousResultStatus;
+
     sysGetVariableString(sysvar::VERI::Case1,GaibuCaseNo,elCount(GaibuCaseNo));
     sysGetVariableString(sysvar::VERI::Case2,GaibuTag,elCount(GaibuTag));
     sysGetVariableString(sysvar::VERI::RepCNT1,GaibuRepeat,elCount(GaibuRepeat));
     GaibuArgs[0] = 0x00;
 
     if ((IsGaibuBaseName(scrParam1,"START_REC.bat") == 1) ||
-        (IsGaibuBaseName(scrParam1,"START_REC3.bat") == 1) ||
         (IsGaibuBaseName(scrParam1,"STOP_REC.bat") == 1)) {
+      sysGetVariableString(sysvar::VERI::RecordingCaseNo,GaibuCaseNo,elCount(GaibuCaseNo));
+      sysGetVariableString(sysvar::VERI::RecordingTag,GaibuTag,elCount(GaibuTag));
+      sysGetVariableString(sysvar::VERI::RecordingRepeat,GaibuRepeat,elCount(GaibuRepeat));
+      RecordingOperationCounter++;
+      snprintf(RecordingOperationId,elCount(RecordingOperationId),"CANOE_%d_%d",timeNow(),RecordingOperationCounter);
+      if (IsGaibuBaseName(scrParam1,"START_REC.bat") == 1) {
+        snprintf(RecordingExpectedCommand,elCount(RecordingExpectedCommand),"START_REC");
+      } else {
+        snprintf(RecordingExpectedCommand,elCount(RecordingExpectedCommand),"STOP_REC");
+      }
+      previousResultStatus = ReadRecordingCommandResult();
+      if (previousResultStatus != 0) {
+        RecordingOperationCounter++;
+        snprintf(RecordingOperationId,elCount(RecordingOperationId),"CANOE_%d_%d",timeNow(),RecordingOperationCounter);
+        write("[REC_TIMELINE] Event=CAPL_OPERATION_ID_COLLISION_AVOIDED NewOperationId=%s",RecordingOperationId);
+      }
+      snprintf(GaibuArgs,elCount(GaibuArgs),"\"%s\" \"%s\" \"%s\" \"%s\"",GaibuCaseNo,GaibuTag,GaibuRepeat,RecordingOperationId);
+      sysSetVariableString(sysvar::VERI::RecordingOperationId,RecordingOperationId);
+      sysSetVariableString(sysvar::VERI::RecordingCommandState,"PENDING");
+      sysSetVariableString(sysvar::VERI::RecordingCommandReason,"WAITING_FOR_BAT");
+      sysSetVariableString(sysvar::VERI::RecordingMp4SelectionMode,"NOT_APPLICABLE");
+    } else if (IsGaibuBaseName(scrParam1,"START_REC3.bat") == 1) {
       snprintf(GaibuArgs,elCount(GaibuArgs),"\"%s\" \"%s\"",GaibuCaseNo,GaibuTag);
     } else if (IsGaibuBaseName(scrParam1,"STOP_REC2.bat") == 1) {
       snprintf(GaibuArgs,elCount(GaibuArgs),"\"%s\" \"%s\" \"%s\"",GaibuCaseNo,GaibuTag,GaibuRepeat);
@@ -577,7 +755,17 @@ int dispatch() { //–ß‚è’l‚P‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‘Ò‚¿‚ÖB‚O‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‚ğ‘Ò‚½‚È‚¢iƒEƒ
     } else {
       write("commandline:%s args:%s",scrParam1,GaibuArgs);
     }
+    if ((IsGaibuBaseName(scrParam1,"START_REC.bat") == 1) ||
+        (IsGaibuBaseName(scrParam1,"STOP_REC.bat") == 1)) {
+      write("[REC_TIMELINE] OperationId=%s Event=CAPL_BEFORE_SYSEXEC TimeNow=%d",RecordingOperationId,timeNow());
+    }
     sysExec(scrParam1,GaibuArgs,"C:\\Users\\TMC\\Desktop\\Veri\\batfile");
+    if (((IsGaibuBaseName(scrParam1,"START_REC.bat") == 1) ||
+         (IsGaibuBaseName(scrParam1,"STOP_REC.bat") == 1)) &&
+        (sysGetVariableInt(sysvar::VERI::RecordingHandshakeEnabled) == 1)) {
+      BeginRecordingCommandWait();
+      return 0;
+    }
     return 1;
   }
 //---- ƒfƒB[ƒ‰[’²®‰æ–Ê‚Ö‚Ì‘JˆÚ ---  
@@ -836,6 +1024,48 @@ int dispatch() { //–ß‚è’l‚P‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‘Ò‚¿‚ÖB‚O‚ÍŸ‚ÌƒRƒ}ƒ“ƒh‚ğ‘Ò‚½‚È‚¢iƒEƒ
   return 0;
 }
 
+on timer msRecordingCommand {
+  int recordingResult;
+
+  cancelTimer(msRecordingCommand);
+  recordingResult = ReadRecordingCommandResult();
+  if (recordingResult == 1) {
+    alive_msRecordingCommand = 0;
+    write("[REC_TIMELINE] OperationId=%s Event=CAPL_RESULT_RECEIVED State=%s Reason=%s TimeNow=%d",
+          RecordingOperationId,RecordingResultState,RecordingResultReason,timeNow());
+    write("[REC_TIMELINE] OperationId=%s Event=CAPL_NEXT_COMMAND TimeNow=%d",
+          RecordingOperationId,timeNow());
+    setTimer(msExecInterval,0);
+    alive_msExecInterval = 1;
+    return;
+  }
+  if (recordingResult == -1) {
+    alive_msRecordingCommand = 0;
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+    ShowCommand("˜^‰æˆ—¸”s",RecordingExpectedCommand,RecordingResultReason);
+    write("[REC_TIMELINE] OperationId=%s Event=CAPL_RESULT_FAILED Reason=%s TimeNow=%d",
+          RecordingOperationId,RecordingResultReason,timeNow());
+    return;
+  }
+
+  RecordingWaitElapsedMs = RecordingWaitElapsedMs + 100;
+  if (RecordingWaitElapsedMs >= RecordingWaitTimeoutMs) {
+    alive_msRecordingCommand = 0;
+    cancelTimer(msExecInterval);
+    alive_msExecInterval = 0;
+    sysSetVariableString(sysvar::VERI::RecordingCommandState,"FAILED");
+    sysSetVariableString(sysvar::VERI::RecordingCommandReason,"CAPL_RESULT_TIMEOUT");
+    ShowCommand("˜^‰æˆ—¸”s",RecordingExpectedCommand,"CAPL_RESULT_TIMEOUT");
+    write("[REC_TIMELINE] OperationId=%s Event=CAPL_RESULT_TIMEOUT TimeNow=%d",
+          RecordingOperationId,timeNow());
+    return;
+  }
+
+  setTimer(msRecordingCommand,100);
+  alive_msRecordingCommand = 1;
+}
+
 
 on timer msOnNinCameraTimer {
   setSignal(G5M::CDC_5::AVN1S78::DS_INST1,0);
@@ -890,6 +1120,9 @@ on sysvar VERI::Pause { // Pauseƒ{ƒ^ƒ“
     if (alive_msExecInterval == 1) {
       cancelTimer(msExecInterval);
     } 
+    if (alive_msRecordingCommand == 1) {
+      cancelTimer(msRecordingCommand);
+    }
 //«---WaitMSƒRƒ}ƒ“ƒh‚ÅAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ÆWaitŠÔ‚ğ—¼•û‘Ò‚Á‚Ä‚µ‚Ü‚¤‚½‚ßAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ğƒEƒFƒCƒgŠÔ‚É•ÏX------260116------
 //    if (alive_msWaitTimer == 1) {
 //      cancelTimer(msWaitTimer);
@@ -917,6 +1150,9 @@ on sysvar VERI::Pause { // Pauseƒ{ƒ^ƒ“
     if (alive_msExecInterval == 1) {
       setTimer(msExecInterval,CommandInterval);
     } 
+    if (alive_msRecordingCommand == 1) {
+      setTimer(msRecordingCommand,100);
+    }
 //«---WaitMSƒRƒ}ƒ“ƒh‚ÅAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ÆWaitŠÔ‚ğ—¼•û‘Ò‚Á‚Ä‚µ‚Ü‚¤‚½‚ßAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ğƒEƒFƒCƒgŠÔ‚É•ÏX------260116------
 //    if (alive_msWaitTimer == 1) {
 //      setTimer(msWaitTimer,msWaitTicks);
@@ -957,6 +1193,10 @@ on sysvar VERI::execStop { //ƒXƒgƒbƒvƒ{ƒ^ƒ“
       alive_msExecInterval = 0;
       cancelTimer(msExecInterval);
     } 
+    if (alive_msRecordingCommand == 1) {
+      alive_msRecordingCommand = 0;
+      cancelTimer(msRecordingCommand);
+    }
 //«---WaitMSƒRƒ}ƒ“ƒh‚ÅAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ÆWaitŠÔ‚ğ—¼•û‘Ò‚Á‚Ä‚µ‚Ü‚¤‚½‚ßAƒRƒ}ƒ“ƒhÀs‘Ò‚¿‚ğƒEƒFƒCƒgŠÔ‚É•ÏX------260116------
 //    if (alive_msWaitTimer == 1) {
 //      alive_msWaitTimer = 0;
